@@ -2,7 +2,7 @@
 
 namespace FlightBookingSystemAPI.Models
 {
-    public class Route
+    public class RouteInfo
     {
         [Key]
         public int RouteId { get; set; }

@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "YF8XN/F+hP+HkMq+GD6ljhYqd/T3/uDSdFxqj7CA8sc=",
+  "Source": "FlightBookingSystemAPI",
+  "BasePath": "_content/FlightBookingSystemAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

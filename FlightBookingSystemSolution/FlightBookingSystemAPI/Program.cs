@@ -1,3 +1,6 @@
+using FlightBookingSystemAPI.Contexts;
+using Microsoft.EntityFrameworkCore;
+
 namespace FlightBookingSystemAPI
 {
     public class Program
@@ -12,6 +15,12 @@ namespace FlightBookingSystemAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            #region Context
+            builder.Services.AddDbContext<FlightBookingContext>(
+                options => options.UseSqlServer(builder.Configuration.GetConnectionString("defaultConnection"))
+                );
+            #endregion
 
             var app = builder.Build();
 

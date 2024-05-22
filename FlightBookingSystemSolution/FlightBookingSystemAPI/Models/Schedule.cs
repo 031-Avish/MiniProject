@@ -13,7 +13,7 @@ namespace FlightBookingSystemAPI.Models
         public float Price { get; set; }
         public int RouteId { get; set; }
         [ForeignKey("RouteId")]
-        public Route RouteInfo { get; set; }
+        public RouteInfo RouteInfo { get; set; }
         public int FlightId { get; set; }
         [ForeignKey("FlightId")]
         public Flight FlightInfo { get; set; }  
