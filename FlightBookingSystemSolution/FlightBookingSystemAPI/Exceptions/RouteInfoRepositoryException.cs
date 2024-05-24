@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace FlightBookingSystemAPI.Repositories
+namespace FlightBookingSystemAPI.Exceptions
 {
     public class RouteInfoRepositoryException : Exception
     {

@@ -1,4 +1,5 @@
 ﻿using FlightBookingSystemAPI.Contexts;
+using FlightBookingSystemAPI.Exceptions;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;

@@ -19,7 +19,6 @@
   <ItemGroup>
     <Folder Include="Services\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Exceptions\" />
     <Folder Include="Controllers\" />
     <Folder Include="Models\DTOs\" />
   </ItemGroup>

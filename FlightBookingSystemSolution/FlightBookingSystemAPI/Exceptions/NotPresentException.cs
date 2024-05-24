@@ -1,11 +1,11 @@
 ﻿using System.Runtime.Serialization;
 
-namespace FlightBookingSystemAPI.Repositories
+namespace FlightBookingSystemAPI.Exceptions
 {
     public class NotPresentException : Exception
     {
-        string msg=string.Empty;
-        public NotPresentException(string message) 
+        string msg = string.Empty;
+        public NotPresentException(string message)
         {
             msg = message;
         }
