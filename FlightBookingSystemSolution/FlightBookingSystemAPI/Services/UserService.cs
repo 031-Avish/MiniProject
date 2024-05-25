@@ -3,6 +3,7 @@ using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
 using FlightBookingSystemAPI.Models.DTOs;
 using FlightBookingSystemAPI.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -12,15 +13,67 @@ namespace FlightBookingSystemAPI.Services
     {
         private readonly IRepository<int, User> _userRepo;
         private readonly IRepository<int, UserDetail> _userDetailRepo;
+        private readonly ITokenService _tokenService;
 
-        public UserService(IRepository<int,User> userRepo, IRepository<int, UserDetail> userDetailRepo)
+        public UserService(IRepository<int,User> userRepo, IRepository<int, UserDetail> userDetailRepo, ITokenService tokenService)
         {
             _userRepo = userRepo;
             _userDetailRepo= userDetailRepo;
+            _tokenService = tokenService;
         }
-        public Task<LoginReturnDTO> Login(UserLoginDTO userLoginDTO)
+        
+        public async Task<LoginReturnDTO> Login(UserLoginDTO loginDTO)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var userDb = await _userDetailRepo.GetByKey(loginDTO.UserId);
+                HMACSHA512 hMACSHA = new HMACSHA512(userDb.PasswordHashKey);
+                var encrypterPass = hMACSHA.ComputeHash(Encoding.UTF8.GetBytes(loginDTO.Password));
+                bool isPasswordSame = ComparePassword(encrypterPass, userDb.Password);
+                if (isPasswordSame)
+                {
+                    var user = await _userRepo.GetByKey(loginDTO.UserId);
+                    LoginReturnDTO loginReturnDTO = MapUserToLoginReturnDTO(user);
+                    return loginReturnDTO;
+                }
+                throw new UnauthorizedUserException("Invalid UserName or Password");
+            } catch (UnauthorizedUserException) {
+                throw;
+            }
+            catch(UserDetailRepositoryException)
+            {
+                throw;
+            }
+            catch(UserRepositoryException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new UnableToLoginException("Not Able to Register User at this moment", ex);
+            }
+        }
+
+        private LoginReturnDTO MapUserToLoginReturnDTO(User user)
+        {
+            LoginReturnDTO returnDTO = new LoginReturnDTO();    
+            returnDTO.UserId = user.UserId;
+            returnDTO.Role = user.Role;
+            returnDTO.Email = user.Email;
+            returnDTO.Token = _tokenService.GenerateToken(user);
+            return returnDTO;
+        }
+
+        private bool ComparePassword(byte[] encrypterPass, byte[] password)
+        {
+            for (int i = 0; i < encrypterPass.Length; i++)
+            {
+                if (encrypterPass[i] != password[i])
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public async Task<UserRegisterReturnDTO> Register(UserRegisterDTO userRegisterDTO)
