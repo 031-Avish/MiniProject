@@ -1,7 +1,7 @@
 ﻿using FlightBookingSystemAPI.Exceptions;
+using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models.DTOs;
-using FlightBookingSystemAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,4 +1,5 @@
 ﻿using FlightBookingSystemAPI.Exceptions;
+using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
 using FlightBookingSystemAPI.Models.DTOs;

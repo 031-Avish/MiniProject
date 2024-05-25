@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace FlightBookingSystemAPI.Services
+namespace FlightBookingSystemAPI.Exceptions
 {
     [Serializable]
     internal class UnauthorizedUserException : Exception
