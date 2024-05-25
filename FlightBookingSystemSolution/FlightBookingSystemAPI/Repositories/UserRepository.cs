@@ -21,17 +21,31 @@ namespace FlightBookingSystemAPI.Repositories
         public async Task<User> Add(User item)
         {
             try
-            {
-                
+            { 
+                var existingUserByEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email == item.Email);
+                if (existingUserByEmail != null)
+                {
+                    throw new DuplicateUserException("A user with the same email already exists.");
+                }
+                var existingUserByPhoneNumber = await _context.Users.FirstOrDefaultAsync(u => u.Phone == item.Phone);
+                if (existingUserByPhoneNumber != null)
+                {
+                    throw new DuplicateUserException("A user with the same phone number already exists.");
+                }
                 _context.Add(item);
                 await _context.SaveChangesAsync();
                 return item;
             }
+            catch (DuplicateUserException ex)
+            {
+                throw new UserRepositoryException("Error : " + ex.Message, ex);
+            }
             catch (Exception ex)
             {
-                throw new UserRepositoryException("Error occurred while adding user." , ex);
+                throw new UserRepositoryException("Error occurred while adding user.", ex);
             }
         }
+
 
         public async Task<User> DeleteByKey(int key)
         {

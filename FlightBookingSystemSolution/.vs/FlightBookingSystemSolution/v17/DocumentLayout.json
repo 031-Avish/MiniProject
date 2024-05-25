@@ -50,8 +50,16 @@
       "DocumentGroups": [
         {
           "DockedHeight": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
@@ -60,7 +68,7 @@
               "RelativeDocumentMoniker": "FlightBookingSystemAPI\\Repositories\\UserRepository.cs",
               "ToolTip": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\FlightBookingSystemAPI\\Repositories\\UserRepository.cs",
               "RelativeToolTip": "FlightBookingSystemAPI\\Repositories\\UserRepository.cs",
-              "ViewState": "AQIAABMAAAAAAAAAAAAgwCMAAAAwAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACgAAABPAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-25T11:51:07.45Z",
               "EditorCaption": ""
@@ -75,8 +83,7 @@
               "RelativeToolTip": "FlightBookingSystemAPI\\Services\\UserService.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAC0AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-25T11:33:20.119Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-25T11:33:20.119Z"
             },
             {
               "$type": "Document",
@@ -88,8 +95,7 @@
               "RelativeToolTip": "FlightBookingSystemAPI\\Models\\DTOs\\UserRegisterDTO.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAqAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-25T11:27:01.5Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-25T11:27:01.5Z"
             },
             {
               "$type": "Document",
@@ -101,8 +107,7 @@
               "RelativeToolTip": "FlightBookingSystemAPI\\Models\\UserDetail.cs",
               "ViewState": "AQIAAAIAAAAAAAAAAAAQwAkAAAApAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-24T07:10:41.325Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-24T07:10:41.325Z"
             },
             {
               "$type": "Document",
@@ -114,8 +119,7 @@
               "RelativeToolTip": "FlightBookingSystemAPI\\Models\\User.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-25T11:41:36.241Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-25T11:41:36.241Z"
             },
             {
               "$type": "Document",
@@ -127,8 +131,7 @@
               "RelativeToolTip": "FlightBookingSystemAPI\\Interfaces\\IUserService.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAABDAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-25T11:28:40.509Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-25T11:28:40.509Z"
             },
             {
               "$type": "Document",
@@ -140,8 +143,7 @@
               "RelativeToolTip": "FlightBookingSystemAPI\\Models\\DTOs\\UserLoginDTO.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAsAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-25T11:30:58.593Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-25T11:30:58.593Z"
             },
             {
               "$type": "Document",
@@ -153,16 +155,7 @@
               "RelativeToolTip": "FlightBookingSystemAPI\\appsettings.json",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-05-25T11:26:22.361Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+              "WhenOpened": "2024-05-25T11:26:22.361Z"
             },
             {
               "$type": "Document",
@@ -174,8 +167,7 @@
               "RelativeToolTip": "FlightBookingSystemAPI\\Migrations\\20240525112450_updatedUserDetail.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-25T11:24:50.218Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-25T11:24:50.218Z"
             },
             {
               "$type": "Document",
