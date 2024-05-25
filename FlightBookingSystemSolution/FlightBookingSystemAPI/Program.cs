@@ -3,7 +3,10 @@ using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
 using FlightBookingSystemAPI.Repositories;
 using FlightBookingSystemAPI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace FlightBookingSystemAPI
 {
@@ -20,6 +23,17 @@ namespace FlightBookingSystemAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey:JWT"]))
+                    };
+                });
             #region Context
             builder.Services.AddDbContext<FlightBookingContext>(
                 options => options.UseSqlServer(builder.Configuration.GetConnectionString("defaultConnection"))
@@ -34,7 +48,7 @@ namespace FlightBookingSystemAPI
             #endregion
 
             #region Services
-
+            builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IUserService, UserService>();
 
             #endregion
