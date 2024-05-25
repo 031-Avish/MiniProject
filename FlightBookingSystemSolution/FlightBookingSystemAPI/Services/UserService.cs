@@ -29,11 +29,11 @@ namespace FlightBookingSystemAPI.Services
             UserDetail userDetail=null ;
             try
             {
-                user = GenerateUser(userRegisterDTO);
-                userDetail = MapUserRegisterDTOToUserDetail(userRegisterDTO);
-                user = await _userRepo.Add(user);
-                userDetail.UserId = user.UserId;
-                userDetail = await _userDetailRepo.Add(userDetail);
+                User user1 = GenerateUser(userRegisterDTO);
+                UserDetail userDetail1 = MapUserRegisterDTOToUserDetail(userRegisterDTO);
+                user= await _userRepo.Add(user1);
+                userDetail1.UserId = user.UserId;
+                userDetail = await _userDetailRepo.Add(userDetail1);
                 UserRegisterReturnDTO userRegisterReturnDTO = MapUserToReturnDTO(user);
                 return userRegisterReturnDTO;
             }
@@ -81,6 +81,7 @@ namespace FlightBookingSystemAPI.Services
             UserDetail userDetail = new UserDetail();
             HMACSHA512 hMACSHA512 = new HMACSHA512();
             userDetail.PasswordHashKey = hMACSHA512.Key;
+            userDetail.Email = userRegisterDTO.Email;
             userDetail.Password = hMACSHA512.ComputeHash(Encoding.UTF8.GetBytes(userRegisterDTO.password));
             return userDetail;
         }

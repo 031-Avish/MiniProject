@@ -1,4 +1,8 @@
 using FlightBookingSystemAPI.Contexts;
+using FlightBookingSystemAPI.Interfaces;
+using FlightBookingSystemAPI.Models;
+using FlightBookingSystemAPI.Repositories;
+using FlightBookingSystemAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlightBookingSystemAPI
@@ -22,6 +26,18 @@ namespace FlightBookingSystemAPI
                 );
             #endregion
 
+            #region Repositories
+
+            builder.Services.AddScoped<IRepository<int, User>, UserRepository>();
+            builder.Services.AddScoped<IRepository<int, UserDetail>, UserDetailRepository>();
+
+            #endregion
+
+            #region Services
+
+            builder.Services.AddScoped<IUserService, UserService>();
+
+            #endregion
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
