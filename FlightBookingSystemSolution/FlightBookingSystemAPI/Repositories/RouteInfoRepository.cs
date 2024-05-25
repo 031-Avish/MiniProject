@@ -56,7 +56,7 @@ namespace FlightBookingSystemAPI.Repositories
             try
             {
                 var routes = await _context.RouteInfos.ToListAsync();
-                if (routes.Count < 0)
+                if (routes.Count <= 0)
                 {
                     throw new NotPresentException("No routes present.");
                 }

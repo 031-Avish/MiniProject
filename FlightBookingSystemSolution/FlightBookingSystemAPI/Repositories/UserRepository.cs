@@ -71,7 +71,7 @@ namespace FlightBookingSystemAPI.Repositories
             try
             {
                 var users = await _context.Users.ToListAsync();
-                if(users.Count<0)
+                if(users.Count<=0)
                 {
                     throw new NotPresentException("There is not user Present");
                 }

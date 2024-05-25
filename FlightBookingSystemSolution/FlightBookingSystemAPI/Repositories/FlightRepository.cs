@@ -56,7 +56,7 @@ namespace FlightBookingSystemAPI.Repositories
             try
             {
                 var flights = await _context.Flights.ToListAsync();
-                if (flights.Count < 0)
+                if (flights.Count <= 0)
                 {
                     throw new NotPresentException("No flights present.");
                 }

@@ -56,7 +56,7 @@ namespace FlightBookingSystemAPI.Repositories
             try
             {
                 var payments = await _context.Payments.ToListAsync();
-                if (payments.Count < 0)
+                if (payments.Count <= 0)
                 {
                     throw new NotPresentException("No payments present.");
                 }

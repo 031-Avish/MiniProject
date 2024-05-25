@@ -67,7 +67,7 @@ namespace FlightBookingSystemAPI.Repositories
             try
             {
                 var userDetails = await _context.UserDetails.ToListAsync();
-                if (userDetails.Count == 0)
+                if (userDetails.Count <=0)
                 {
                     throw new NotPresentException("There are no user details present.");
                 }

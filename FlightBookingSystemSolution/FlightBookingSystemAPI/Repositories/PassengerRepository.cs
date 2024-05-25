@@ -56,7 +56,7 @@ namespace FlightBookingSystemAPI.Repositories
             try
             {
                 var passengers = await _context.Passengers.ToListAsync();
-                if (passengers.Count < 0)
+                if (passengers.Count <= 0)
                 {
                     throw new NotPresentException("No passengers present.");
                 }

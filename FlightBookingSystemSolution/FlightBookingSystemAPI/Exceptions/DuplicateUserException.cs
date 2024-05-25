@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace FlightBookingSystemAPI.Repositories
+namespace FlightBookingSystemAPI.Exceptions
 {
     [Serializable]
     internal class DuplicateUserException : Exception

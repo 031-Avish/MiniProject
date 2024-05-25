@@ -2,7 +2,6 @@
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
 using FlightBookingSystemAPI.Models.DTOs;
-using FlightBookingSystemAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using System.Text;

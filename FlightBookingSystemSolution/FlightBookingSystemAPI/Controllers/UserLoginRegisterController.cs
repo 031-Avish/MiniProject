@@ -1,7 +1,6 @@
 ﻿using FlightBookingSystemAPI.Exceptions;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models.DTOs;
-using FlightBookingSystemAPI.Repositories;
 using FlightBookingSystemAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +12,13 @@ namespace FlightBookingSystemAPI.Controllers
     public class UserLoginRegisterController : ControllerBase
     {
         public readonly IUserService _userService;
-        public UserLoginRegisterController(IUserService userService)
+        public readonly IAdminService _adminService;
+        public UserLoginRegisterController(IUserService userService, IAdminService adminService)
         {
             _userService = userService;
+            _adminService = adminService;
         }
+        
 
         [HttpPost("Register")]
         [ProducesResponseType(typeof(UserRegisterReturnDTO) , StatusCodes.Status200OK)]
