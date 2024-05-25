@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FlightBookingSystemAPI.Models.DTOs;
+using System.ComponentModel.DataAnnotations;
 
 namespace FlightBookingSystemAPI.Models
 {
@@ -10,5 +11,6 @@ namespace FlightBookingSystemAPI.Models
         public string Email { get; set; }
         public string? Phone { get; set; }
         public string Role { get; set; } = "User";
+
     }
 }

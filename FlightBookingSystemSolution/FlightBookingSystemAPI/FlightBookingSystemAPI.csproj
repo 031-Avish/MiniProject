@@ -17,10 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
     <Folder Include="Migrations\" />
     <Folder Include="Controllers\" />
-    <Folder Include="Models\DTOs\" />
   </ItemGroup>
 
 </Project>
