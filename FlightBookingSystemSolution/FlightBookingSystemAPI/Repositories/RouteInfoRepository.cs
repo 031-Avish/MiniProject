@@ -97,7 +97,7 @@ namespace FlightBookingSystemAPI.Repositories
             try
             {
                 var routeInfo = await GetByKey(item.RouteId);
-                _context.Update(routeInfo);
+                _context.Update(item);
                 await _context.SaveChangesAsync(true);
                 return routeInfo;
             }

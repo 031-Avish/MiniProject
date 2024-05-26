@@ -96,9 +96,12 @@ namespace FlightBookingSystemAPI.Repositories
             try
             {
                 var flight = await GetByKey(item.FlightId);
-                _context.Update(flight);
+                //_context.Entry(item).State = EntityState.Modified;
+                //_context.Entry<Flight>(item).State = EntityState.Modified;
+                _context.Entry(flight).State = EntityState.Detached;
+                _context.Update(item);
                 await _context.SaveChangesAsync(true);
-                return flight;
+                return item;
             }
             catch (NotPresentException ex)
             {

@@ -97,7 +97,7 @@ namespace FlightBookingSystemAPI.Repositories
             try
             {
                 var payment = await GetByKey(item.PaymentId);
-                _context.Update(payment);
+                _context.Update(item);
                 await _context.SaveChangesAsync(true);
                 return payment;
             }

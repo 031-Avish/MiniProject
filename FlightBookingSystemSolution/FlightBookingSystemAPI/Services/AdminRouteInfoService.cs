@@ -3,6 +3,7 @@ using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
 using FlightBookingSystemAPI.Models.DTOs.RouteInfoDTO;
+using FlightBookingSystemAPI.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,10 +13,12 @@ namespace FlightBookingSystemAPI.Services
     public class AdminRouteInfoService : IAdminRouteInfoService
     {
         private readonly IRepository<int, RouteInfo> _repository;
+        private readonly IRepository<int, Schedule> _scheduleRepository;
 
-        public AdminRouteInfoService(IRepository<int, RouteInfo> repository)
+        public AdminRouteInfoService(IRepository<int, RouteInfo> routeInfoRepository, IRepository<int, Schedule> scheduleRepository)
         {
-            _repository = repository;
+            _repository = routeInfoRepository;
+            _scheduleRepository = scheduleRepository;
         }
 
         public async Task<RouteInfoReturnDTO> AddRouteInfo(RouteInfoDTO routeInfoDTO)
@@ -62,9 +65,20 @@ namespace FlightBookingSystemAPI.Services
         {
             try
             {
+                //var schedules = await _scheduleRepository.GetAll();
+                //bool hasSchedules = schedules.Any(s => s.RouteId == routeInfoId);
+                //if (hasSchedules)
+                //{
+                //    throw new UnableToDeleteRouteInfoException("Cannot delete RouteInfo because it has associated schedules.");
+                //}
+
                 RouteInfo routeInfo = await _repository.DeleteByKey(routeInfoId);
                 RouteInfoReturnDTO routeInfoReturnDTO = MapRouteInfoWithRouteInfoReturnDTO(routeInfo);
                 return routeInfoReturnDTO;
+            }
+            catch (UnableToDeleteRouteInfoException ex)
+            {
+                throw new AdminRouteInfoServiceException(ex.Message, ex);
             }
             catch (RouteInfoRepositoryException)
             {

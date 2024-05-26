@@ -96,7 +96,7 @@ namespace FlightBookingSystemAPI.Repositories
             try
             {
                 var booking = await GetByKey(item.BookingId);
-                _context.Update(booking);
+                _context.Update(item);
                 await _context.SaveChangesAsync(true);
                 return booking;
             }

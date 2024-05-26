@@ -55,14 +55,14 @@ namespace FlightBookingSystemAPI.Services
             try
             {
                 // Check if the flight is scheduled
-                var scheduledFlights = await _scheduleRepository.GetAll();
-                foreach (var scheduledFlight in scheduledFlights)
-                {
-                    if (scheduledFlight.FlightId == flightId)
-                    {
-                        throw new AdminFlightServiceException("Cannot delete the flight because it is scheduled.");
-                    }
-                }
+                //var scheduledFlights = await _scheduleRepository.GetAll();
+                //foreach (var scheduledFlight in scheduledFlights)
+                //{
+                //    if (scheduledFlight.FlightId == flightId)
+                //    {
+                //        throw new AdminFlightServiceException("Cannot delete the flight because it is scheduled.");
+                //    }
+                //}
 
                 // If not scheduled, then delete
                 Flight flight = await _repository.DeleteByKey(flightId);

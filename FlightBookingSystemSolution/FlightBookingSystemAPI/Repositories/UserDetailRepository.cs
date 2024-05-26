@@ -108,7 +108,7 @@ namespace FlightBookingSystemAPI.Repositories
             try
             {
                 var userDetail = await GetByKey(item.UserId);
-                _context.Update(userDetail);
+                _context.Update(item);
                 await _context.SaveChangesAsync(true);
                 return userDetail;
             }
