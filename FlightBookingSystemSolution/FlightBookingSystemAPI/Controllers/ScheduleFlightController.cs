@@ -142,6 +142,8 @@ namespace FlightBookingSystemAPI.Controllers
             }
         }
 
+
+
         [HttpPost("GetFlightDetailsOnDate")]
         [ProducesResponseType(typeof(List<ScheduleDetailDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
