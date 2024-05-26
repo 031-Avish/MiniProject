@@ -9,5 +9,8 @@ namespace FlightBookingSystemAPI.Interfaces
         Task<ScheduleReturnDTO> DeleteSchedule(int scheduleId);
         Task<List<ScheduleDetailDTO>> GetAllSchedules();
         Task<ScheduleDetailDTO> GetSchedule(int scheduleId);
+        Task<List<ScheduleDetailDTO>> GetFlightDetailsOnDate(ScheduleSearchDTO searchDTO);
+        Task<List<List<ScheduleDetailDTO>>> GetConnectingFlights(ScheduleSearchDTO searchDTO);
     }
+
 }

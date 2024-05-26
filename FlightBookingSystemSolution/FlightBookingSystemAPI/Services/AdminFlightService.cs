@@ -4,16 +4,18 @@ using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
 using FlightBookingSystemAPI.Models.DTOs;
 using FlightBookingSystemAPI.Models.DTOs.FlightDTO;
+using FlightBookingSystemAPI.Repositories;
 
 namespace FlightBookingSystemAPI.Services
 {
     public class AdminFlightService : IAdminFlightService
     {
         private readonly IRepository<int, Flight> _repository;
-
-        public AdminFlightService(IRepository<int, Flight> repository)
+        private readonly IRepository<int, Schedule> _scheduleRepository;
+        public AdminFlightService(IRepository<int, Flight> repository, IRepository<int,Schedule> scheduleRepository)
         {
             _repository = repository;
+            _scheduleRepository = scheduleRepository;
         }
         public async Task<FlightReturnDTO> AddFlight(FlightDTO flightDTO)
         {
@@ -33,7 +35,6 @@ namespace FlightBookingSystemAPI.Services
                 throw new AdminFlightServiceException("Cannot add Flight this Moment some unwanted error occured :", ex);
             }
         }
-
         private FlightReturnDTO MapFlightWithFlightReturnDTO(Flight addedFlight)
         {
             FlightReturnDTO flightReturnDTO = new FlightReturnDTO();
@@ -42,7 +43,6 @@ namespace FlightBookingSystemAPI.Services
             flightReturnDTO.TotalSeats = addedFlight.TotalSeats;
             return flightReturnDTO;
         }
-
         private Flight MapFlightWithFlightDTO(FlightDTO flightDTO)
         {
             Flight flight = new Flight();
@@ -50,11 +50,21 @@ namespace FlightBookingSystemAPI.Services
             flight.TotalSeats = flightDTO.TotalSeats;
             return flight;
         }
-
         public async Task<FlightReturnDTO> DeleteFlight(int flightId)
         {
             try
             {
+                // Check if the flight is scheduled
+                var scheduledFlights = await _scheduleRepository.GetAll();
+                foreach (var scheduledFlight in scheduledFlights)
+                {
+                    if (scheduledFlight.FlightId == flightId)
+                    {
+                        throw new AdminFlightServiceException("Cannot delete the flight because it is scheduled.");
+                    }
+                }
+
+                // If not scheduled, then delete
                 Flight flight = await _repository.DeleteByKey(flightId);
                 FlightReturnDTO flightReturnDTO = MapFlightWithFlightReturnDTO(flight);
                 return flightReturnDTO;
@@ -63,9 +73,13 @@ namespace FlightBookingSystemAPI.Services
             {
                 throw;
             }
+            catch (AdminFlightServiceException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
-                throw new AdminFlightServiceException("Error Occured While Deleting User " + ex.Message, ex);
+                throw new AdminFlightServiceException("Error occurred while deleting the flight: " + ex.Message, ex);
             }
         }
 
@@ -90,7 +104,6 @@ namespace FlightBookingSystemAPI.Services
                 throw new AdminFlightServiceException("Error Occured While Getting All the Flight" + ex.Message, ex);
             }
         }
-
         public async Task<FlightReturnDTO> GetFlight(int flightId)
         {
             try

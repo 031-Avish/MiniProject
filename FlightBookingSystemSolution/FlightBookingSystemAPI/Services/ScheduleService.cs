@@ -232,5 +232,92 @@ namespace FlightBookingSystemAPI.Services
                 }
             };
         }
+
+        public async Task<List<ScheduleDetailDTO>> GetFlightDetailsOnDate(ScheduleSearchDTO searchDTO)
+        {
+            try
+            {
+                var schedules = await _scheduleRepository.GetAll();
+                List<ScheduleDetailDTO> upcomingSchedules = schedules
+                    .Where(s => s.DepartureTime.Date == searchDTO.Date.Date &&
+                                s.RouteInfo.StartCity == searchDTO.StartCity &&
+                                s.RouteInfo.EndCity == searchDTO.EndCity)
+                    .Select(s => MapScheduleWithScheduleDetailDTO(s))
+                    .ToList();
+
+                if (upcomingSchedules.Count <= 0 )
+                {
+                    throw new NotPresentException("No upcoming schedules found for the specified criteria.");
+                }
+
+                return upcomingSchedules;
+            }
+            catch (NotPresentException ex)
+            {
+                throw new ScheduleServiceException("No schedules found for the provided criteria: " + ex.Message, ex);
+            }
+            catch(ScheduleRepositoryException ex)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new ScheduleServiceException("Error occurred while getting flight details on the specified date.", ex);
+            }
+        }
+
+        public async Task<List<List<ScheduleDetailDTO>>> GetConnectingFlights(ScheduleSearchDTO searchDTO)
+        {
+            try
+            {
+                var schedules = await _scheduleRepository.GetAll();
+                List<ScheduleDetailDTO> connectingSchedules = new List<ScheduleDetailDTO>();
+                List<List<ScheduleDetailDTO>> returnDTO= new List<List<ScheduleDetailDTO>>();   
+                var departingFlights = schedules
+                    .Where(s => s.RouteInfo.StartCity == searchDTO.StartCity && s.DepartureTime.Date == searchDTO.Date.Date)
+                    .ToList();
+
+                var arrivingFlights = schedules
+                    .Where(s => s.RouteInfo.EndCity == searchDTO.EndCity)
+                    .ToList();
+        
+                foreach (var departingFlight in departingFlights)
+                {
+                    var potentialConnections = arrivingFlights
+                        .Where(a => a.RouteInfo.StartCity == departingFlight.RouteInfo.EndCity &&
+                                    a.DepartureTime >= departingFlight.ReachingTime.AddHours(1))
+                        .ToList();
+
+                    if (potentialConnections.Any())
+                    {
+                        foreach (var connection in potentialConnections)
+                        {
+                            connectingSchedules.Add(MapScheduleWithScheduleDetailDTO(departingFlight));
+                            connectingSchedules.Add(MapScheduleWithScheduleDetailDTO(connection));
+                        }
+                        returnDTO.Add(connectingSchedules);
+                    }
+                }
+
+                if (returnDTO.Count <=0 )
+                {
+                    throw new NotPresentException("No connecting schedules found for the specified criteria.");
+                }
+
+                return returnDTO;
+            }
+            catch (NotPresentException ex)
+            {
+                throw new ScheduleServiceException("No connecting flights found for the provided criteria: " + ex.Message, ex);
+            }
+            catch(ScheduleRepositoryException )
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new ScheduleServiceException("Error occurred while getting connecting flights.", ex);
+            }
+        }
     }
 }

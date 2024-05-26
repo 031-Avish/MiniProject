@@ -19,6 +19,5 @@ namespace FlightBookingSystemAPI.Models
         [ForeignKey("ScheduleId")]
         public Schedule FlightDetails { get; set; }
 
-
     }
 }

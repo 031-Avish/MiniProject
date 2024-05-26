@@ -3,12 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|c:\\users\\vc\\desktop\\presidio\\mini_project\\miniproject\\flightbookingsystemsolution\\flightbookingsystemapi\\services\\scheduleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|solutionrelative:flightbookingsystemapi\\services\\scheduleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|c:\\users\\vc\\desktop\\presidio\\mini_project\\miniproject\\flightbookingsystemsolution\\flightbookingsystemapi\\interfaces\\ischeduleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|solutionrelative:flightbookingsystemapi\\interfaces\\ischeduleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|c:\\users\\vc\\desktop\\presidio\\mini_project\\miniproject\\flightbookingsystemsolution\\flightbookingsystemapi\\repositories\\schedulerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|solutionrelative:flightbookingsystemapi\\repositories\\schedulerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|c:\\users\\vc\\desktop\\presidio\\mini_project\\miniproject\\flightbookingsystemsolution\\flightbookingsystemapi\\services\\scheduleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|solutionrelative:flightbookingsystemapi\\services\\scheduleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|c:\\users\\vc\\desktop\\presidio\\mini_project\\miniproject\\flightbookingsystemsolution\\flightbookingsystemapi\\models\\dtos\\scheduledto\\schedulesearchdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|solutionrelative:flightbookingsystemapi\\models\\dtos\\scheduledto\\schedulesearchdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|c:\\users\\vc\\desktop\\presidio\\mini_project\\miniproject\\flightbookingsystemsolution\\flightbookingsystemapi\\services\\adminflightservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|solutionrelative:flightbookingsystemapi\\services\\adminflightservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,19 +30,45 @@
       "DocumentGroups": [
         {
           "DockedHeight": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "ScheduleRepository.cs",
-              "DocumentMoniker": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\FlightBookingSystemAPI\\Repositories\\ScheduleRepository.cs",
-              "RelativeDocumentMoniker": "FlightBookingSystemAPI\\Repositories\\ScheduleRepository.cs",
-              "ToolTip": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\FlightBookingSystemAPI\\Repositories\\ScheduleRepository.cs",
-              "RelativeToolTip": "FlightBookingSystemAPI\\Repositories\\ScheduleRepository.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAABAAAA",
+              "DocumentIndex": 3,
+              "Title": "ScheduleSearchDTO.cs",
+              "DocumentMoniker": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\FlightBookingSystemAPI\\Models\\DTOs\\ScheduleDTO\\ScheduleSearchDTO.cs",
+              "RelativeDocumentMoniker": "FlightBookingSystemAPI\\Models\\DTOs\\ScheduleDTO\\ScheduleSearchDTO.cs",
+              "ToolTip": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\FlightBookingSystemAPI\\Models\\DTOs\\ScheduleDTO\\ScheduleSearchDTO.cs",
+              "RelativeToolTip": "FlightBookingSystemAPI\\Models\\DTOs\\ScheduleDTO\\ScheduleSearchDTO.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAqAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-26T10:40:39.78Z",
+              "WhenOpened": "2024-05-26T14:51:34.047Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "IScheduleService.cs",
+              "DocumentMoniker": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\FlightBookingSystemAPI\\Interfaces\\IScheduleService.cs",
+              "RelativeDocumentMoniker": "FlightBookingSystemAPI\\Interfaces\\IScheduleService.cs",
+              "ToolTip": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\FlightBookingSystemAPI\\Interfaces\\IScheduleService.cs",
+              "RelativeToolTip": "FlightBookingSystemAPI\\Interfaces\\IScheduleService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAArAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-26T14:50:08.248Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AdminFlightService.cs",
+              "DocumentMoniker": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\FlightBookingSystemAPI\\Services\\AdminFlightService.cs",
+              "RelativeDocumentMoniker": "FlightBookingSystemAPI\\Services\\AdminFlightService.cs",
+              "ToolTip": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\FlightBookingSystemAPI\\Services\\AdminFlightService.cs",
+              "RelativeToolTip": "FlightBookingSystemAPI\\Services\\AdminFlightService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-26T11:11:27.187Z",
               "EditorCaption": ""
             },
             {
@@ -43,13 +81,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
+              "Title": "ScheduleRepository.cs",
+              "DocumentMoniker": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\FlightBookingSystemAPI\\Repositories\\ScheduleRepository.cs",
+              "RelativeDocumentMoniker": "FlightBookingSystemAPI\\Repositories\\ScheduleRepository.cs",
+              "ToolTip": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\FlightBookingSystemAPI\\Repositories\\ScheduleRepository.cs",
+              "RelativeToolTip": "FlightBookingSystemAPI\\Repositories\\ScheduleRepository.cs",
+              "ViewState": "AQIAAA4AAAAAAAAAAAAQwEUAAAANAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-26T10:40:39.78Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "ScheduleService.cs",
               "DocumentMoniker": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\FlightBookingSystemAPI\\Services\\ScheduleService.cs",
               "RelativeDocumentMoniker": "FlightBookingSystemAPI\\Services\\ScheduleService.cs",
               "ToolTip": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\FlightBookingSystemAPI\\Services\\ScheduleService.cs",
               "RelativeToolTip": "FlightBookingSystemAPI\\Services\\ScheduleService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAJUAAAAAAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAdAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-26T10:37:18.836Z",
               "EditorCaption": ""
