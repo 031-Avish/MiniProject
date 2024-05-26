@@ -56,11 +56,16 @@ namespace FlightBookingSystemAPI.Repositories
         {
             try
             {
-                var schedules = await _context.Schedules.ToListAsync();
+                var schedules = await _context.Schedules
+                    .Include(s => s.RouteInfo)
+                    .Include(s => s.FlightInfo)
+                    .ToListAsync();
+
                 if (schedules.Count <= 0)
                 {
                     throw new NotPresentException("No schedules present.");
                 }
+
                 return schedules;
             }
             catch (NotPresentException ex)
@@ -77,9 +82,16 @@ namespace FlightBookingSystemAPI.Repositories
         {
             try
             {
-                var schedule = await _context.Schedules.FirstOrDefaultAsync(s => s.ScheduleId == key);
+                var schedule = await _context.Schedules
+                    .Include(s => s.RouteInfo)
+                    .Include(s => s.FlightInfo)
+                    .FirstOrDefaultAsync(s => s.ScheduleId == key);
+
                 if (schedule == null)
+                {
                     throw new NotPresentException("No such schedule is present.");
+                }
+
                 return schedule;
             }
             catch (NotPresentException ex)
