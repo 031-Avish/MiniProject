@@ -13,7 +13,6 @@ namespace FlightBookingSystemAPI.Models
         public float TotalPrice { get; set; }
         public int UserId { get; set; }
         [ForeignKey("UserId")]
-        public User BookedBy { get; set; }
 
         public int ScheduleId { get; set; }
         [ForeignKey("ScheduleId")]

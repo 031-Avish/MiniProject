@@ -12,11 +12,10 @@ namespace FlightBookingSystemAPI.Controllers
     public class UserLoginRegisterController : ControllerBase
     {
         public readonly IUserService _userService;
-        public readonly IAdminService _adminService;
-        public UserLoginRegisterController(IUserService userService, IAdminService adminService)
+        public UserLoginRegisterController(IUserService userService)
         {
             _userService = userService;
-            _adminService = adminService;
+           
         }
         
 

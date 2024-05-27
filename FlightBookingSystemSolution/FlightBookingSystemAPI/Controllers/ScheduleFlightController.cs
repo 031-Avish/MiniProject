@@ -8,6 +8,7 @@ using FlightBookingSystemAPI.Models.DTOs.ScheduleDTO;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Models.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FlightBookingSystemAPI.Controllers
 {
@@ -21,7 +22,7 @@ namespace FlightBookingSystemAPI.Controllers
         {
             _scheduleService = scheduleService;
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("AddSchedule")]
         [ProducesResponseType(typeof(ScheduleReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -54,7 +55,7 @@ namespace FlightBookingSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateSchedule")]
         [ProducesResponseType(typeof(ScheduleReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -87,7 +88,7 @@ namespace FlightBookingSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteSchedule/{scheduleId}")]
         [ProducesResponseType(typeof(ScheduleReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -116,7 +117,7 @@ namespace FlightBookingSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetAllSchedules")]
         [ProducesResponseType(typeof(List<ScheduleDetailDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
@@ -142,7 +143,7 @@ namespace FlightBookingSystemAPI.Controllers
         }
 
 
-
+        [Authorize(Roles = "User")]
         [HttpPost("GetFlightDetailsOnDate")]
         [ProducesResponseType(typeof(List<ScheduleDetailDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -171,7 +172,7 @@ namespace FlightBookingSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
+        [Authorize(Roles = "User")]
         [HttpPost("GetConnectingFlights")]
         [ProducesResponseType(typeof(List<List<ScheduleDetailDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]

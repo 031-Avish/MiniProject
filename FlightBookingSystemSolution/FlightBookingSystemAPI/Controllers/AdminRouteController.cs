@@ -3,6 +3,7 @@ using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models.DTOs;
 using FlightBookingSystemAPI.Models.DTOs.RouteInfoDTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -21,7 +22,7 @@ namespace FlightBookingSystemAPI.Controllers
         {
             _adminRouteInfoService = adminRouteInfoService;
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("AddRouteInfo")]
         [ProducesResponseType(typeof(RouteInfoReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -46,7 +47,7 @@ namespace FlightBookingSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateRouteInfo")]
         [ProducesResponseType(typeof(RouteInfoReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -71,7 +72,7 @@ namespace FlightBookingSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteRouteInfo/{routeInfoId}")]
         [ProducesResponseType(typeof(RouteInfoReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -101,7 +102,7 @@ namespace FlightBookingSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetRouteInfo/{routeInfoId}")]
         [ProducesResponseType(typeof(RouteInfoReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
@@ -126,7 +127,7 @@ namespace FlightBookingSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetAllRouteInfos")]
         [ProducesResponseType(typeof(List<RouteInfoReturnDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
