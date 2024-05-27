@@ -47,7 +47,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new FlightRepositoryException("Error occurred while deleting flight.", ex);
+                throw new FlightRepositoryException("Error occurred while deleting flight." + ex.Message, ex);
             }
         }
 
@@ -68,7 +68,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new FlightRepositoryException("Error occurred while retrieving flights.", ex);
+                throw new FlightRepositoryException("Error occurred while retrieving flights." + ex.Message, ex);
             }
         }
 
@@ -87,7 +87,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new FlightRepositoryException("Error occurred while retrieving flight.", ex);
+                throw new FlightRepositoryException("Error occurred while retrieving flight." + ex.Message, ex);
             }
         }
 
@@ -109,7 +109,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new FlightRepositoryException("Error occurred while updating flight.", ex);
+                throw new FlightRepositoryException("Error occurred while updating flight."+ex.Message, ex);
             }
         }
     }

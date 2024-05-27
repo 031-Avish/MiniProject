@@ -8,7 +8,6 @@ using FlightBookingSystemAPI.Models.DTOs.ScheduleDTO;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Models.DTOs;
-using FlightBookingSystemAPI.Services;
 
 namespace FlightBookingSystemAPI.Controllers
 {

@@ -48,7 +48,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new PaymentRepositoryException("Error occurred while deleting payment.", ex);
+                throw new PaymentRepositoryException("Error occurred while deleting payment." + ex.Message, ex);
             }
         }
 
@@ -69,7 +69,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new PaymentRepositoryException("Error occurred while retrieving payments.", ex);
+                throw new PaymentRepositoryException("Error occurred while retrieving payments." + ex.Message, ex);
             }
         }
 
@@ -88,7 +88,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new PaymentRepositoryException("Error occurred while retrieving payment.", ex);
+                throw new PaymentRepositoryException("Error occurred while retrieving payment." + ex.Message, ex);
             }
         }
 
@@ -97,9 +97,10 @@ namespace FlightBookingSystemAPI.Repositories
             try
             {
                 var payment = await GetByKey(item.PaymentId);
+                _context.Entry(payment).State = EntityState.Detached;
                 _context.Update(item);
                 await _context.SaveChangesAsync(true);
-                return payment;
+                return item;
             }
             catch (NotPresentException ex)
             {
@@ -107,7 +108,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new PaymentRepositoryException("Error occurred while updating payment.", ex);
+                throw new PaymentRepositoryException("Error occurred while updating payment." + ex.Message, ex);
             }
         }
     }

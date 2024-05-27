@@ -48,7 +48,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new PassengerRepositoryException("Error occurred while deleting passenger.", ex);
+                throw new PassengerRepositoryException("Error occurred while deleting passenger." + ex.Message, ex);
             }
         }
 
@@ -69,7 +69,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new PassengerRepositoryException("Error occurred while retrieving passengers.", ex);
+                throw new PassengerRepositoryException("Error occurred while retrieving passengers." + ex.Message, ex);
             }
         }
 
@@ -88,7 +88,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new PassengerRepositoryException("Error occurred while retrieving passenger.", ex);
+                throw new PassengerRepositoryException("Error occurred while retrieving passenger." + ex.Message, ex);
             }
         }
 
@@ -97,9 +97,10 @@ namespace FlightBookingSystemAPI.Repositories
             try
             {
                 var passenger = await GetByKey(item.PassengerId);
+                _context.Entry(passenger).State = EntityState.Detached;
                 _context.Update(item);
                 await _context.SaveChangesAsync(true);
-                return passenger;
+                return item;
             }
             catch (NotPresentException ex)
             {
@@ -107,7 +108,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new PassengerRepositoryException("Error occurred while updating passenger.", ex);
+                throw new PassengerRepositoryException("Error occurred while updating passenger." + ex.Message, ex);
             }
         }
     }

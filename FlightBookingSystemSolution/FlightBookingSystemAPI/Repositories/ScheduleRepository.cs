@@ -29,7 +29,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new ScheduleRepositoryException("Error occurred while adding schedule.", ex);
+                throw new ScheduleRepositoryException("Error occurred while adding schedule." + ex.Message, ex);
             }
         }
 
@@ -48,7 +48,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new ScheduleRepositoryException("Error occurred while deleting schedule.", ex);
+                throw new ScheduleRepositoryException("Error occurred while deleting schedule." + ex.Message, ex);
             }
         }
 
@@ -74,7 +74,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new ScheduleRepositoryException("Error occurred while retrieving schedules.", ex);
+                throw new ScheduleRepositoryException("Error occurred while retrieving schedules." + ex.Message, ex);
             }
         }
 
@@ -100,7 +100,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new ScheduleRepositoryException("Error occurred while retrieving schedule.", ex);
+                throw new ScheduleRepositoryException("Error occurred while retrieving schedule."+ex.Message, ex);
             }
         }
 
@@ -109,9 +109,10 @@ namespace FlightBookingSystemAPI.Repositories
             try
             {
                 var schedule = await GetByKey(item.ScheduleId);
+                _context.Entry(schedule).State = EntityState.Detached;
                 _context.Update(item);
                 await _context.SaveChangesAsync(true);
-                return schedule;
+                return item;
             }
             catch (NotPresentException ex)
             {
@@ -119,7 +120,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new ScheduleRepositoryException("Error occurred while updating schedule.", ex);
+                throw new ScheduleRepositoryException("Error occurred while updating schedule." + ex.Message, ex);
             }
         }
     }

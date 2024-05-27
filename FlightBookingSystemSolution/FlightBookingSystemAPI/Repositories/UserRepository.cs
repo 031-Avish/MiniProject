@@ -43,7 +43,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new UserRepositoryException("Error occurred while adding user.", ex);
+                throw new UserRepositoryException("Error occurred while adding user." + ex.Message, ex);
             }
         }
 
@@ -63,7 +63,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new UserRepositoryException("Error occurred while deleting user.", ex);
+                throw new UserRepositoryException("Error occurred while deleting user." + ex.Message, ex);
             }
         }
 
@@ -84,7 +84,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new UserRepositoryException("Error occurred while retrieving users." , ex);
+                throw new UserRepositoryException("Error occurred while retrieving users." + ex.Message , ex);
             }
         }
 
@@ -103,7 +103,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new UserRepositoryException("Error occurred while retrieving user." , ex );
+                throw new UserRepositoryException("Error occurred while retrieving user." + ex.Message, ex );
             }
         }
 
@@ -112,9 +112,10 @@ namespace FlightBookingSystemAPI.Repositories
             try
             {
                 var user = await GetByKey(item.UserId);
+                _context.Entry(user).State = EntityState.Detached;
                 _context.Update(item);
                 await _context.SaveChangesAsync(true);
-                return user;
+                return item;
             }
             catch (NotPresentException ex)
             {
@@ -122,7 +123,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new UserRepositoryException("Error occurred while updating user.", ex);
+                throw new UserRepositoryException("Error occurred while updating user."+ex.Message, ex);
             }
         }
     }

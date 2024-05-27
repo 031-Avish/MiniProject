@@ -29,7 +29,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new BookingDetailRepositoryException("Error occurred while adding booking detail.", ex);
+                throw new BookingDetailRepositoryException("Error occurred while adding booking detail." + ex.Message, ex);
             }
         }
 
@@ -48,7 +48,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new BookingDetailRepositoryException("Error occurred while deleting booking detail.", ex);
+                throw new BookingDetailRepositoryException("Error occurred while deleting booking detail." + ex.Message, ex);
             }
         }
 
@@ -69,7 +69,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new BookingDetailRepositoryException("Error occurred while retrieving booking details.", ex);
+                throw new BookingDetailRepositoryException("Error occurred while retrieving booking details." + ex.Message, ex);
             }
         }
 
@@ -88,7 +88,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new BookingDetailRepositoryException("Error occurred while retrieving booking detail.", ex);
+                throw new BookingDetailRepositoryException("Error occurred while retrieving booking detail." + ex.Message, ex);
             }
         }
 
@@ -97,9 +97,10 @@ namespace FlightBookingSystemAPI.Repositories
             try
             {
                 var bookingDetail = await GetByKey(item.BookingDetailId);
+                _context.Entry(bookingDetail).State = EntityState.Detached;
                 _context.Update(item);
                 await _context.SaveChangesAsync(true);
-                return bookingDetail;
+                return item;
             }
             catch (NotPresentException ex)
             {
@@ -107,7 +108,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new BookingDetailRepositoryException("Error occurred while updating booking detail.", ex);
+                throw new BookingDetailRepositoryException("Error occurred while updating booking detail." + ex.Message, ex);
             }
         }
     }

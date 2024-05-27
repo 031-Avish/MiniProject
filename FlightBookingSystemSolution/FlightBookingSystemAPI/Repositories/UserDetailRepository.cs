@@ -40,7 +40,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new UserDetailRepositoryException("Error occurred while adding user detail.", ex);
+                throw new UserDetailRepositoryException("Error occurred while adding user detail." + ex.Message, ex);
             }
         }
 
@@ -59,7 +59,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new UserDetailRepositoryException("Error occurred while deleting user detail.", ex);
+                throw new UserDetailRepositoryException("Error occurred while deleting user detail." + ex.Message, ex);
             }
         }
 
@@ -80,7 +80,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new UserDetailRepositoryException("Error occurred while retrieving user details.", ex);
+                throw new UserDetailRepositoryException("Error occurred while retrieving user details." + ex.Message, ex);
             }
         }
 
@@ -99,7 +99,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new UserDetailRepositoryException("Error occurred while retrieving user detail.", ex);
+                throw new UserDetailRepositoryException("Error occurred while retrieving user detail." + ex.Message, ex);
             }
         }
 
@@ -108,9 +108,10 @@ namespace FlightBookingSystemAPI.Repositories
             try
             {
                 var userDetail = await GetByKey(item.UserId);
+                _context.Entry(userDetail).State = EntityState.Detached;
                 _context.Update(item);
                 await _context.SaveChangesAsync(true);
-                return userDetail;
+                return item;
             }
             catch (NotPresentException ex)
             {
@@ -118,7 +119,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new UserDetailRepositoryException("Error occurred while updating user detail.", ex);
+                throw new UserDetailRepositoryException("Error occurred while updating user detail." + ex.Message, ex);
             }
         }
     }

@@ -48,7 +48,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new RouteInfoRepositoryException("Error occurred while deleting route info.", ex);
+                throw new RouteInfoRepositoryException("Error occurred while deleting route info." + ex.Message, ex);
             }
         }
 
@@ -69,7 +69,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new RouteInfoRepositoryException("Error occurred while retrieving routes.", ex);
+                throw new RouteInfoRepositoryException("Error occurred while retrieving routes." + ex.Message, ex);
             }
         }
 
@@ -88,7 +88,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new RouteInfoRepositoryException("Error occurred while retrieving route info.", ex);
+                throw new RouteInfoRepositoryException("Error occurred while retrieving route info." + ex.Message, ex);
             }
         }
 
@@ -97,9 +97,10 @@ namespace FlightBookingSystemAPI.Repositories
             try
             {
                 var routeInfo = await GetByKey(item.RouteId);
+                _context.Entry(routeInfo).State = EntityState.Detached;
                 _context.Update(item);
                 await _context.SaveChangesAsync(true);
-                return routeInfo;
+                return item;
             }
             catch (NotPresentException ex)
             {
@@ -107,7 +108,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (Exception ex)
             {
-                throw new RouteInfoRepositoryException("Error occurred while updating route info.", ex);
+                throw new RouteInfoRepositoryException("Error occurred while updating route info." + ex.Message, ex);
             }
         }
     }
