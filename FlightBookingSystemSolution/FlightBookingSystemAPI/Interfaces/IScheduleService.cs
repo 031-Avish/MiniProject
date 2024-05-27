@@ -5,7 +5,7 @@ namespace FlightBookingSystemAPI.Interfaces
     public interface IScheduleService
     {
         Task<ScheduleReturnDTO> AddSchedule(ScheduleDTO scheduleDTO);
-        Task<ScheduleReturnDTO> UpdateSchedule(ScheduleReturnDTO scheduleReturnDTO);
+        Task<ScheduleReturnDTO> UpdateSchedule(ScheduleUpdateDTO ScheduleUpdateDTO);
         Task<ScheduleReturnDTO> DeleteSchedule(int scheduleId);
         Task<List<ScheduleDetailDTO>> GetAllSchedules();
         Task<ScheduleDetailDTO> GetSchedule(int scheduleId);

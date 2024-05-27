@@ -1,7 +1,8 @@
 ﻿namespace FlightBookingSystemAPI.Models.DTOs.ScheduleDTO
 {
-    public class ScheduleDTO
+    public class ScheduleUpdateDTO
     {
+        public int ScheduleId { get; set; }
         public DateTime DepartureTime { get; set; }
         public DateTime ReachingTime { get; set; }
         //public int AvailableSeat { get; set; }

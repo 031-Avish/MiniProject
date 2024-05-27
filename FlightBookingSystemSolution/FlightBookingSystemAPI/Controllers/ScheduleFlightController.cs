@@ -59,11 +59,11 @@ namespace FlightBookingSystemAPI.Controllers
         [ProducesResponseType(typeof(ScheduleReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ScheduleReturnDTO>> UpdateSchedule(ScheduleReturnDTO scheduleReturnDTO)
+        public async Task<ActionResult<ScheduleReturnDTO>> UpdateSchedule(ScheduleUpdateDTO scheduleUpdateDTO)
         {
             try
             {
-                ScheduleReturnDTO updatedSchedule = await _scheduleService.UpdateSchedule(scheduleReturnDTO);
+                ScheduleReturnDTO updatedSchedule = await _scheduleService.UpdateSchedule(scheduleUpdateDTO);
                 return Ok(updatedSchedule);
             }
             catch (RouteInfoRepositoryException ex)

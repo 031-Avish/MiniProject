@@ -39,7 +39,9 @@ namespace FlightBookingSystemAPI.Services
                 var routeExists = await _routeRepository.GetByKey(scheduleDTO.RouteId);
                 // Check if FlightId exists
                 var flightExists = await _flightRepository.GetByKey(scheduleDTO.FlightId);
+
                 Schedule schedule = MapScheduleWithScheduleDTO(scheduleDTO);
+                schedule.AvailableSeat= flightExists.TotalSeats;
                 Schedule addedSchedule = await _scheduleRepository.Add(schedule);
                 ScheduleReturnDTO scheduleReturnDTO = MapScheduleWithScheduleReturnDTO(addedSchedule);
                 return scheduleReturnDTO;
@@ -62,19 +64,19 @@ namespace FlightBookingSystemAPI.Services
             }
         }
 
-        public async Task<ScheduleReturnDTO> UpdateSchedule(ScheduleReturnDTO scheduleReturnDTO)
+        public async Task<ScheduleReturnDTO> UpdateSchedule(ScheduleUpdateDTO ScheduleUpdateDTO)
         {
             try
             {
                 // Check if RouteId exists
-                var routeExists = await _routeRepository.GetByKey(scheduleReturnDTO.RouteId);
+                var routeExists = await _routeRepository.GetByKey(ScheduleUpdateDTO.RouteId);
                 
-
                 // Check if FlightId exists
-                var flightExists = await _flightRepository.GetByKey(scheduleReturnDTO.FlightId);
+                var flightExists = await _flightRepository.GetByKey(ScheduleUpdateDTO.FlightId);
                 
-
-                Schedule schedule = MapScheduleReturnDTOWithSchedule(scheduleReturnDTO);
+                Schedule schedule = MapScheduleUpdateDTOWithSchedule(ScheduleUpdateDTO);
+                Schedule existingSchedule =await _scheduleRepository.GetByKey(schedule.ScheduleId);
+                schedule.AvailableSeat=existingSchedule.AvailableSeat;
                 Schedule updatedSchedule = await _scheduleRepository.Update(schedule);
                 ScheduleReturnDTO updatedScheduleReturnDTO = MapScheduleWithScheduleReturnDTO(updatedSchedule);
                 return updatedScheduleReturnDTO;
@@ -172,7 +174,7 @@ namespace FlightBookingSystemAPI.Services
             {
                 DepartureTime = scheduleDTO.DepartureTime,
                 ReachingTime = scheduleDTO.ReachingTime,
-                AvailableSeat = scheduleDTO.AvailableSeat,
+                //AvailableSeat = scheduleDTO.AvailableSeat,
                 Price = scheduleDTO.Price,
                 RouteId = scheduleDTO.RouteId,
                 FlightId = scheduleDTO.FlightId
@@ -204,6 +206,18 @@ namespace FlightBookingSystemAPI.Services
                 Price = scheduleReturnDTO.Price,
                 RouteId = scheduleReturnDTO.RouteId,
                 FlightId = scheduleReturnDTO.FlightId
+            };
+        }
+        private Schedule MapScheduleUpdateDTOWithSchedule(ScheduleUpdateDTO scheduleUpdateDTO)
+        {
+            return new Schedule
+            {
+                ScheduleId = scheduleUpdateDTO.ScheduleId,
+                DepartureTime = scheduleUpdateDTO.DepartureTime,
+                ReachingTime = scheduleUpdateDTO.ReachingTime,
+                Price = scheduleUpdateDTO.Price,
+                RouteId = scheduleUpdateDTO.RouteId,
+                FlightId = scheduleUpdateDTO.FlightId
             };
         }
 
@@ -239,7 +253,7 @@ namespace FlightBookingSystemAPI.Services
             {
                 var schedules = await _scheduleRepository.GetAll();
                 List<ScheduleDetailDTO> upcomingSchedules = schedules
-                    .Where(s => s.DepartureTime.Date == searchDTO.Date.Date &&
+                    .Where(s => DateOnly.FromDateTime(s.DepartureTime) == searchDTO.Date &&
                                 s.RouteInfo.StartCity == searchDTO.StartCity &&
                                 s.RouteInfo.EndCity == searchDTO.EndCity)
                     .Select(s => MapScheduleWithScheduleDetailDTO(s))
@@ -274,7 +288,7 @@ namespace FlightBookingSystemAPI.Services
                 List<ScheduleDetailDTO> connectingSchedules = new List<ScheduleDetailDTO>();
                 List<List<ScheduleDetailDTO>> returnDTO= new List<List<ScheduleDetailDTO>>();   
                 var departingFlights = schedules
-                    .Where(s => s.RouteInfo.StartCity == searchDTO.StartCity && s.DepartureTime.Date == searchDTO.Date.Date)
+                    .Where(s => s.RouteInfo.StartCity == searchDTO.StartCity && DateOnly.FromDateTime(s.DepartureTime) == searchDTO.Date)
                     .ToList();
 
                 var arrivingFlights = schedules
@@ -316,7 +330,7 @@ namespace FlightBookingSystemAPI.Services
             }
             catch (Exception ex)
             {
-                throw new ScheduleServiceException("Error occurred while getting connecting flights.", ex);
+                throw new ScheduleServiceException("Error occurred while getting connecting flights."+ex.Message, ex);
             }
         }
     }
