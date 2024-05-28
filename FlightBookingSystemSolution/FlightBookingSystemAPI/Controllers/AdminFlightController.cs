@@ -1,5 +1,5 @@
-﻿using FlightBookingSystemAPI.Exceptions;
-using FlightBookingSystemAPI.Exceptions.RepositoryException;
+﻿using FlightBookingSystemAPI.Exceptions.RepositoryException;
+using FlightBookingSystemAPI.Exceptions.ServiceExceptions;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models.DTOs;
 using FlightBookingSystemAPI.Models.DTOs.FlightDTO;
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace FlightBookingSystemAPI.Controllers
 {
-    
+
     [Route("api/[controller]")]
     [ApiController]
     public class AdminFlightController : ControllerBase

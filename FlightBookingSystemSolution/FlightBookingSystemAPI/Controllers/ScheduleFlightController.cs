@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FlightBookingSystemAPI.Exceptions;
 using FlightBookingSystemAPI.Models.DTOs.ScheduleDTO;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using FlightBookingSystemAPI.Models;
+using FlightBookingSystemAPI.Exceptions.ServiceExceptions;
 
 namespace FlightBookingSystemAPI.Controllers
 {

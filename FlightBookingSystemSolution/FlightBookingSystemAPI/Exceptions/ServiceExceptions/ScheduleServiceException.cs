@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace FlightBookingSystemAPI.Exceptions
+namespace FlightBookingSystemAPI.Exceptions.ServiceExceptions
 {
     [Serializable]
     internal class ScheduleServiceException : Exception
