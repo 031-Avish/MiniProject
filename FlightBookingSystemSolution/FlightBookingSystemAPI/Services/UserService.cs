@@ -4,25 +4,40 @@ using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
 using FlightBookingSystemAPI.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace FlightBookingSystemAPI.Services
 {
+    /// <summary>
+    /// Service class responsible for user authentication and registration.
+    /// </summary>
     public class UserService : IUserService
     {
         private readonly IRepository<int, User> _userRepo;
         private readonly IRepository<int, UserDetail> _userDetailRepo;
         private readonly ITokenService _tokenService;
 
-        
-        public UserService(IRepository<int,User> userRepo, IRepository<int, UserDetail> userDetailRepo, ITokenService tokenService)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserService"/> class.
+        /// </summary>
+        /// <param name="userRepo">The user repository.</param>
+        /// <param name="userDetailRepo">The user detail repository.</param>
+        /// <param name="tokenService">The token service.</param>
+        public UserService(IRepository<int, User> userRepo, IRepository<int, UserDetail> userDetailRepo, ITokenService tokenService)
         {
             _userRepo = userRepo;
-            _userDetailRepo= userDetailRepo;
+            _userDetailRepo = userDetailRepo;
             _tokenService = tokenService;
         }
-        
+
+        #region Login
+        /// <summary>
+        /// Authenticates a user based on the provided credentials.
+        /// </summary>
+        /// <param name="loginDTO">The login credentials.</param>
+        /// <returns>The login response.</returns>
         public async Task<LoginReturnDTO> Login(UserLoginDTO loginDTO)
         {
             try
@@ -38,14 +53,16 @@ namespace FlightBookingSystemAPI.Services
                     return loginReturnDTO;
                 }
                 throw new UnauthorizedUserException("Invalid UserName or Password");
-            } catch (UnauthorizedUserException) {
-                throw;
             }
-            catch(UserDetailRepositoryException)
+            catch (UnauthorizedUserException)
             {
                 throw;
             }
-            catch(UserRepositoryException)
+            catch (UserDetailRepositoryException)
+            {
+                throw;
+            }
+            catch (UserRepositoryException)
             {
                 throw;
             }
@@ -54,10 +71,54 @@ namespace FlightBookingSystemAPI.Services
                 throw new UnableToLoginException("Not Able to Register User at this moment", ex);
             }
         }
+        #endregion
+
+        #region Register
+        /// <summary>
+        /// Registers a new user.
+        /// </summary>
+        /// <param name="userRegisterDTO">The user registration details.</param>
+        /// <returns>The registered user details.</returns>
+        public async Task<UserRegisterReturnDTO> Register(UserRegisterDTO userRegisterDTO)
+        {
+            User user = null;
+            UserDetail userDetail = null;
+            try
+            {
+                User user1 = GenerateUser(userRegisterDTO);
+                UserDetail userDetail1 = MapUserRegisterDTOToUserDetail(userRegisterDTO);
+                user = await _userRepo.Add(user1);
+                userDetail1.UserId = user.UserId;
+                userDetail = await _userDetailRepo.Add(userDetail1);
+                UserRegisterReturnDTO userRegisterReturnDTO = MapUserToReturnDTO(user);
+                return userRegisterReturnDTO;
+            }
+            catch (UserRepositoryException)
+            {
+                throw;
+            }
+            catch (Exception)
+            {
+
+            }
+            if (user != null)
+            {
+                await RevertUserInsert(user);
+            }
+            if (userDetail != null)
+            {
+                await RevertUserDetailInsert(userDetail);
+            }
+            throw new UnableToRegisterException("Not Able to Register User at this moment");
+        }
+        #endregion
+
+        #region Helper Methods
+        // Helper methods can go here...
 
         private LoginReturnDTO MapUserToLoginReturnDTO(User user)
         {
-            LoginReturnDTO returnDTO = new LoginReturnDTO();    
+            LoginReturnDTO returnDTO = new LoginReturnDTO();
             returnDTO.UserId = user.UserId;
             returnDTO.Role = user.Role;
             returnDTO.Email = user.Email;
@@ -77,42 +138,9 @@ namespace FlightBookingSystemAPI.Services
             return true;
         }
 
-        public async Task<UserRegisterReturnDTO> Register(UserRegisterDTO userRegisterDTO)
-        {
-            User user = null ;
-            UserDetail userDetail=null ;
-            try
-            {
-                User user1 = GenerateUser(userRegisterDTO);
-                UserDetail userDetail1 = MapUserRegisterDTOToUserDetail(userRegisterDTO);
-                user= await _userRepo.Add(user1);
-                userDetail1.UserId = user.UserId;
-                userDetail = await _userDetailRepo.Add(userDetail1);
-                UserRegisterReturnDTO userRegisterReturnDTO = MapUserToReturnDTO(user);
-                return userRegisterReturnDTO;
-            }
-            catch(UserRepositoryException)
-            {
-                throw;
-            }
-            catch (Exception)
-            {
-
-            }
-            if(user!=null)
-            {
-                await RevertUserInsert(user);
-            }
-            if(userDetail!=null)
-            {
-                await RevertUserDetailInsert(userDetail);
-            }
-            throw new UnableToRegisterException("Not Able to Register User at this moment");
-        }
-
         private UserRegisterReturnDTO MapUserToReturnDTO(User user)
         {
-            UserRegisterReturnDTO returnDTO = new UserRegisterReturnDTO();  
+            UserRegisterReturnDTO returnDTO = new UserRegisterReturnDTO();
             returnDTO.UserId = user.UserId;
             returnDTO.Email = user.Email;
             returnDTO.Name = user.Name;
@@ -144,9 +172,10 @@ namespace FlightBookingSystemAPI.Services
         {
             User user = new User();
             user.Name = userRegisterDTO.Name;
-            user.Email = userRegisterDTO.Email; 
+            user.Email = userRegisterDTO.Email;
             user.Phone = userRegisterDTO.Phone;
             return user;
         }
+        #endregion
     }
 }

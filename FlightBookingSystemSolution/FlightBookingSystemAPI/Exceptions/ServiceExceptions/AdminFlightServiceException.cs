@@ -3,7 +3,7 @@
 namespace FlightBookingSystemAPI.Exceptions.ServiceExceptions
 {
     [Serializable]
-    internal class AdminFlightServiceException : Exception
+    public class AdminFlightServiceException : Exception
     {
         public AdminFlightServiceException()
         {

@@ -3,6 +3,8 @@ using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Models;
 using FlightBookingSystemAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -27,9 +29,17 @@ namespace FlightBookingSystemTest.RepositoryTests
                 .UseInMemoryDatabase(databaseName: "dummyDB")
                 .Options;
             _context = new FlightBookingContext(options);
-            _bookingRepository = new BookingRepository(_context);
-            _userRepository = new UserRepository(_context);
-            _scheduleRepository = new ScheduleRepository(_context);
+
+            //_bookingRepository = new BookingRepository(_context);
+            //_userRepository = new UserRepository(_context);
+            //_scheduleRepository = new ScheduleRepository(_context);
+            // Create a mock logger for BookingRepository
+            var bookingLoggerMock = new Mock<ILogger<BookingRepository>>();
+            _bookingRepository = new BookingRepository(_context, bookingLoggerMock.Object);
+            var userLoggerMock = new Mock<ILogger<UserRepository>>();
+            _userRepository = new UserRepository(_context, userLoggerMock.Object);
+            var scheduleLoggerMock = new Mock<ILogger<ScheduleRepository>>();
+            _scheduleRepository = new ScheduleRepository(_context, scheduleLoggerMock.Object);
 
             // Initialize User
 
