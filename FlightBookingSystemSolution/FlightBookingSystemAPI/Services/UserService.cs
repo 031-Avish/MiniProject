@@ -15,6 +15,7 @@ namespace FlightBookingSystemAPI.Services
         private readonly IRepository<int, UserDetail> _userDetailRepo;
         private readonly ITokenService _tokenService;
 
+        
         public UserService(IRepository<int,User> userRepo, IRepository<int, UserDetail> userDetailRepo, ITokenService tokenService)
         {
             _userRepo = userRepo;

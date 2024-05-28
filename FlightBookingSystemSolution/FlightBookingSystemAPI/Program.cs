@@ -74,6 +74,8 @@ namespace FlightBookingSystemAPI
             builder.Services.AddScoped<IRepository<int, Flight>, FlightRepository>();
             builder.Services.AddScoped<IRepository<int, Schedule>, ScheduleRepository>();
             builder.Services.AddScoped<IRepository<int, Booking>, BookingRepository>();
+            builder.Services.AddScoped<IRepository<int, Payment>,  PaymentRepository>();
+            builder.Services.AddScoped<IRepository<int, Passenger>, PassengerRepository>();
 
             #endregion
 
@@ -83,6 +85,7 @@ namespace FlightBookingSystemAPI
             builder.Services.AddScoped<IAdminFlightService, AdminFlightService>();
             builder.Services.AddScoped<IAdminRouteInfoService, AdminRouteInfoService>();
             builder.Services.AddScoped<IScheduleService, ScheduleService>();
+            //builder.Services.AddScoped<IUserBookingService, UserBookingService>(); 
             #endregion
 
             

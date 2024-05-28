@@ -9,6 +9,7 @@ using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using FlightBookingSystemAPI.Models;
 
 namespace FlightBookingSystemAPI.Controllers
 {
@@ -17,12 +18,13 @@ namespace FlightBookingSystemAPI.Controllers
     public class ScheduleFlightController : ControllerBase
     {
         private readonly IScheduleService _scheduleService;
-
-        public ScheduleFlightController(IScheduleService scheduleService)
+        private readonly IRepository<int, Schedule> _scheduleRepository;
+        public ScheduleFlightController(IScheduleService scheduleService,IRepository<int,Schedule> sr)
         {
             _scheduleService = scheduleService;
+            _scheduleRepository= sr;
         }
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost("AddSchedule")]
         [ProducesResponseType(typeof(ScheduleReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -31,8 +33,9 @@ namespace FlightBookingSystemAPI.Controllers
         {
             try
             {
-                ScheduleReturnDTO returnDTO = await _scheduleService.AddSchedule(scheduleDTO);
-                return Ok(returnDTO);
+                var schedule = _scheduleRepository.Add(new Schedule());
+                //ScheduleReturnDTO returnDTO = await _scheduleService.AddSchedule(scheduleDTO);
+                return Ok(new ScheduleReturnDTO());
             }
             catch (RouteInfoRepositoryException ex)
             {

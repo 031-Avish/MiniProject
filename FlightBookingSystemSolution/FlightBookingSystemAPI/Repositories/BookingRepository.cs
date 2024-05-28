@@ -43,7 +43,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (NotPresentException ex)
             {
-                throw new BookingRepositoryException("Error occurred while deleting booking. Booking not found. " + ex.Message, ex);
+                throw new BookingRepositoryException(" Booking not found. " + ex.Message, ex);
             }
             catch (Exception ex)
             {
@@ -55,11 +55,15 @@ namespace FlightBookingSystemAPI.Repositories
         {
             try
             {
-                var bookings = await _context.Bookings.ToListAsync();
+                var bookings = await _context.Bookings
+                    .Include(b => b.FlightDetails) // Include related Schedule entity
+                    .ToListAsync();
+
                 if (bookings.Count <= 0)
                 {
                     throw new NotPresentException("No bookings present.");
                 }
+
                 return bookings;
             }
             catch (NotPresentException ex)
@@ -76,9 +80,13 @@ namespace FlightBookingSystemAPI.Repositories
         {
             try
             {
-                var booking = await _context.Bookings.FirstOrDefaultAsync(b => b.BookingId == key);
+                var booking = await _context.Bookings
+                    .Include(b => b.FlightDetails) // Include related Schedule entity
+                    .FirstOrDefaultAsync(b => b.BookingId == key);
+
                 if (booking == null)
                     throw new NotPresentException("No such booking is present.");
+
                 return booking;
             }
             catch (NotPresentException ex)
@@ -103,7 +111,7 @@ namespace FlightBookingSystemAPI.Repositories
             }
             catch (NotPresentException ex)
             {
-                throw new BookingRepositoryException("Error occurred while updating booking. Booking not found. " + ex.Message, ex);
+                throw new BookingRepositoryException(" Booking not found. " + ex.Message, ex);
             }
             catch (Exception ex)
             {

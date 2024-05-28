@@ -19,6 +19,7 @@ namespace FlightBookingSystemAPI.Repositories
             _context = context;
         }
 
+
         public async Task<BookingDetail> Add(BookingDetail item)
         {
             try
@@ -56,11 +57,16 @@ namespace FlightBookingSystemAPI.Repositories
         {
             try
             {
-                var bookingDetails = await _context.BookingDetails.ToListAsync();
+                var bookingDetails = await _context.BookingDetails
+                    .Include(bd => bd.PassengerDetail) // Include related Passenger entity
+                    .Include(bd => bd.Bookings) // Include related Booking entity
+                    .ToListAsync();
+
                 if (bookingDetails.Count <= 0)
                 {
                     throw new NotPresentException("No booking details present.");
                 }
+
                 return bookingDetails;
             }
             catch (NotPresentException ex)
@@ -77,9 +83,14 @@ namespace FlightBookingSystemAPI.Repositories
         {
             try
             {
-                var bookingDetail = await _context.BookingDetails.FirstOrDefaultAsync(bd => bd.BookingDetailId == key);
+                var bookingDetail = await _context.BookingDetails
+                    .Include(bd => bd.PassengerDetail) // Include related Passenger entity
+                    .Include(bd => bd.Bookings) // Include related Booking entity
+                    .FirstOrDefaultAsync(bd => bd.BookingDetailId == key);
+
                 if (bookingDetail == null)
                     throw new NotPresentException("No such booking detail is present.");
+
                 return bookingDetail;
             }
             catch (NotPresentException ex)

@@ -263,7 +263,7 @@ namespace FlightBookingSystemAPI.Migrations
                     b.HasOne("FlightBookingSystemAPI.Models.Schedule", "FlightDetails")
                         .WithMany()
                         .HasForeignKey("ScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("FlightDetails");
@@ -293,7 +293,7 @@ namespace FlightBookingSystemAPI.Migrations
                     b.HasOne("FlightBookingSystemAPI.Models.Booking", "BookingInfo")
                         .WithMany()
                         .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("BookingInfo");
@@ -304,13 +304,13 @@ namespace FlightBookingSystemAPI.Migrations
                     b.HasOne("FlightBookingSystemAPI.Models.Flight", "FlightInfo")
                         .WithMany()
                         .HasForeignKey("FlightId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("FlightBookingSystemAPI.Models.RouteInfo", "RouteInfo")
                         .WithMany()
                         .HasForeignKey("RouteId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("FlightInfo");
@@ -321,9 +321,9 @@ namespace FlightBookingSystemAPI.Migrations
             modelBuilder.Entity("FlightBookingSystemAPI.Models.UserDetail", b =>
                 {
                     b.HasOne("FlightBookingSystemAPI.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithOne()
+                        .HasForeignKey("FlightBookingSystemAPI.Models.UserDetail", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");

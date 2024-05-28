@@ -3,7 +3,7 @@
 namespace FlightBookingSystemAPI.Exceptions.RepositoryException
 {
     [Serializable]
-    internal class UserDetailRepositoryException : Exception
+    public class UserDetailRepositoryException : Exception
     {
         public UserDetailRepositoryException()
         {

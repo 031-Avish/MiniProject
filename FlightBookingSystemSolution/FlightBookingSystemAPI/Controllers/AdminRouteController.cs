@@ -22,7 +22,7 @@ namespace FlightBookingSystemAPI.Controllers
         {
             _adminRouteInfoService = adminRouteInfoService;
         }
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost("AddRouteInfo")]
         [ProducesResponseType(typeof(RouteInfoReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
