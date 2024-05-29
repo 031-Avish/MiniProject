@@ -6,6 +6,7 @@ using FlightBookingSystemAPI.Models.DTOs;
 using FlightBookingSystemAPI.Models.DTOs.FlightDTO;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -69,13 +70,43 @@ namespace FlightBookingSystemAPI.Services
         /// </summary>
         /// <param name="flightId">The ID of the flight to delete.</param>
         /// <returns>The deleted flight as a data transfer object.</returns>
-        public async Task<FlightReturnDTO> DeleteFlight(int flightId)
+        public async Task<FlightDeleteReturnDTO> DeleteFlight(int flightId)
         {
             try
             {
+                IEnumerable<Schedule> schedules = null;
+                try
+                {
+                    schedules = await _scheduleRepository.GetAll();
+                } // if there is no schedule then we can delete the  flight 
+                catch(ScheduleRepositoryException ex ) when (ex.Message.Contains("No schedules present"))
+                {
+                    _logger.LogInformation("Deleting flight with ID: {FlightId}", flightId);
+                    Flight flight1 = await _repository.DeleteByKey(flightId);
+                    FlightDeleteReturnDTO flightReturnDTO1 = MapFlightWithFlightDeleteReturnDTO(flight1);
+                    _logger.LogInformation("Flight deleted successfully.");
+                    return flightReturnDTO1;
+                }
+                // if there is schedule then check flight id is present or not 
+                if(schedules.Any(schedule => schedule.FlightId == flightId))
+                {// if present then check if there is any upcoming flight  if upcoming schedule 
+                    var updateFlight = await _repository.GetByKey(flightId);
+                    if(schedules.Any(schedule => schedule.FlightId == flightId && schedule.ScheduleStatus == "Enable" && schedule.DepartureTime > DateTime.Now ))
+                    {
+                        throw new AdminFlightServiceException("cannot update flight !! Schedule has this flight Update that first");
+                    }
+                    else
+                    {
+                        updateFlight.FlightStatus = "Disabled";
+                        Flight flight2= await _repository.Update(updateFlight);
+                        FlightDeleteReturnDTO flightReturnDTO2 = MapFlightWithFlightDeleteReturnDTO(flight2);
+                        _logger.LogInformation("Flight Updated successfully.");
+                        return flightReturnDTO2;
+                    }
+                }
                 _logger.LogInformation("Deleting flight with ID: {FlightId}", flightId);
                 Flight flight = await _repository.DeleteByKey(flightId);
-                FlightReturnDTO flightReturnDTO = MapFlightWithFlightReturnDTO(flight);
+                FlightDeleteReturnDTO flightReturnDTO = MapFlightWithFlightDeleteReturnDTO(flight);
                 _logger.LogInformation("Flight deleted successfully.");
                 return flightReturnDTO;
             }
@@ -94,6 +125,18 @@ namespace FlightBookingSystemAPI.Services
                 _logger.LogError(ex, "Unexpected error occurred while deleting flight.");
                 throw new AdminFlightServiceException("Error occurred while deleting the flight: " + ex.Message, ex);
             }
+        }
+
+        private FlightDeleteReturnDTO MapFlightWithFlightDeleteReturnDTO(Flight addedFlight)
+        {
+            FlightDeleteReturnDTO flightReturnDTO = new FlightDeleteReturnDTO
+            {
+                FlightId = addedFlight.FlightId,
+                Name = addedFlight.Name,
+                TotalSeats = addedFlight.TotalSeats,
+                FlightStatus= addedFlight.FlightStatus
+            };
+            return flightReturnDTO;
         }
         #endregion
 

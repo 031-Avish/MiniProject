@@ -13,16 +13,19 @@ namespace FlightBookingSystemAPI.Services
     {
         private readonly IRepository<int, Booking> _bookingRepository;
         private readonly IRepository<int, Payment> _paymentRepository;
+        private readonly IRepository<int,Schedule> _scheduleRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PaymentService"/> class.
         /// </summary>
         /// <param name="bookingRepository">The booking repository.</param>
         /// <param name="paymentRepository">The payment repository.</param>
-        public PaymentService(IRepository<int, Booking> bookingRepository, IRepository<int, Payment> paymentRepository)
+        public PaymentService(IRepository<int, Booking> bookingRepository, IRepository<int, Payment> paymentRepository
+            , IRepository<int, Schedule> scheduleRepo)
         {
             _bookingRepository = bookingRepository;
             _paymentRepository = paymentRepository;
+            _scheduleRepository = scheduleRepo;
         }
 
         #region GetAllPayments
@@ -107,6 +110,7 @@ namespace FlightBookingSystemAPI.Services
         {
             Booking booking = null;
             Payment payment = null;
+            Schedule schedule = null;
             try
             {
                 booking = await _bookingRepository.GetByKey(paymentDTO.BookingId);
@@ -136,19 +140,20 @@ namespace FlightBookingSystemAPI.Services
                 }
                 else
                 {
+                    schedule = await _scheduleRepository.GetByKey(booking.ScheduleId);
+                    schedule.AvailableSeat += booking.PassengerCount;
                     payment.PaymentStatus = "Failed";
                     booking.BookingStatus = "Failed";
                     booking.PaymentStatus = "Failed";
                 }
-
+                await _scheduleRepository.Update(schedule);
                 await _paymentRepository.Update(payment);
                 await _bookingRepository.Update(booking);
 
                 return MapPaymentToReturnDTO(payment);
             }
             catch (PaymentRepositoryException)
-            {
-
+            { 
                 await MakeChangesWhenException(booking, payment);
                 throw;
             }
@@ -200,8 +205,12 @@ namespace FlightBookingSystemAPI.Services
         /// <param name="payment">The payment entity.</param>
         private async Task MakeChangesWhenException(Booking booking, Payment payment)
         {
+            var schedule = await _scheduleRepository.GetByKey(booking.ScheduleId);
+            schedule.AvailableSeat += booking.PassengerCount;
+            await _scheduleRepository.Update(schedule);
             if (booking != null)
             {
+               
                 booking.BookingStatus = "Failed";
                 booking.PaymentStatus = "Failed";
                 await _bookingRepository.Update(booking);

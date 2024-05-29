@@ -13,6 +13,7 @@ namespace FlightBookingSystemAPI.Models
         public DateTime ReachingTime { get; set; }
         [Required]
         public int AvailableSeat {  get; set; }
+        public string ScheduleStatus { get; set; } = "Enable";
         [Required]
         public float Price { get; set; }
         [Required]

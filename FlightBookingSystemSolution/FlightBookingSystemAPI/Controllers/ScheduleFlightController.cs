@@ -18,11 +18,11 @@ namespace FlightBookingSystemAPI.Controllers
     public class ScheduleFlightController : ControllerBase
     {
         private readonly IScheduleService _scheduleService;
-        private readonly IRepository<int, Schedule> _scheduleRepository;
-        public ScheduleFlightController(IScheduleService scheduleService,IRepository<int,Schedule> sr)
+        
+        public ScheduleFlightController(IScheduleService scheduleService)
         {
             _scheduleService = scheduleService;
-            _scheduleRepository= sr;
+            
         }
         //[Authorize(Roles = "Admin")]
         [HttpPost("AddSchedule")]
@@ -33,9 +33,9 @@ namespace FlightBookingSystemAPI.Controllers
         {
             try
             {
-                var schedule = _scheduleRepository.Add(new Schedule());
-                //ScheduleReturnDTO returnDTO = await _scheduleService.AddSchedule(scheduleDTO);
-                return Ok(new ScheduleReturnDTO());
+                //var schedule = _scheduleRepository.Add(new Schedule());
+                ScheduleReturnDTO returnDTO = await _scheduleService.AddSchedule(scheduleDTO);
+                return Ok(returnDTO);
             }
             catch (RouteInfoRepositoryException ex)
             {
@@ -58,7 +58,7 @@ namespace FlightBookingSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPut("UpdateSchedule")]
         [ProducesResponseType(typeof(ScheduleReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -91,7 +91,7 @@ namespace FlightBookingSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpDelete("DeleteSchedule/{scheduleId}")]
         [ProducesResponseType(typeof(ScheduleReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -120,7 +120,7 @@ namespace FlightBookingSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpGet("GetAllSchedules")]
         [ProducesResponseType(typeof(List<ScheduleDetailDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
@@ -146,7 +146,7 @@ namespace FlightBookingSystemAPI.Controllers
         }
 
 
-        [Authorize(Roles = "User")]
+        //[Authorize(Roles = "User")]
         [HttpPost("GetFlightDetailsOnDate")]
         [ProducesResponseType(typeof(List<ScheduleDetailDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -175,7 +175,7 @@ namespace FlightBookingSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-        [Authorize(Roles = "User")]
+        //[Authorize(Roles = "User")]
         [HttpPost("GetConnectingFlights")]
         [ProducesResponseType(typeof(List<List<ScheduleDetailDTO>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]

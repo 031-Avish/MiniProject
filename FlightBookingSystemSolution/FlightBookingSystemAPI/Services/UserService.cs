@@ -164,7 +164,7 @@ namespace FlightBookingSystemAPI.Services
             HMACSHA512 hMACSHA512 = new HMACSHA512();
             userDetail.PasswordHashKey = hMACSHA512.Key;
             userDetail.Email = userRegisterDTO.Email;
-            userDetail.Password = hMACSHA512.ComputeHash(Encoding.UTF8.GetBytes(userRegisterDTO.password));
+            userDetail.Password = hMACSHA512.ComputeHash(Encoding.UTF8.GetBytes(userRegisterDTO.Password));
             return userDetail;
         }
 

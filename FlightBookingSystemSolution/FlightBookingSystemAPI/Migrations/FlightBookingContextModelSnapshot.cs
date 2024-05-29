@@ -88,6 +88,10 @@ namespace FlightBookingSystemAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FlightId"), 1L, 1);
 
+                    b.Property<string>("FlightStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -138,6 +142,9 @@ namespace FlightBookingSystemAPI.Migrations
                     b.Property<int>("BookingId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("PaymentStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -161,6 +168,10 @@ namespace FlightBookingSystemAPI.Migrations
                         .HasColumnType("real");
 
                     b.Property<string>("EndCity")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RouteStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -198,6 +209,10 @@ namespace FlightBookingSystemAPI.Migrations
 
                     b.Property<int>("RouteId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ScheduleStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ScheduleId");
 

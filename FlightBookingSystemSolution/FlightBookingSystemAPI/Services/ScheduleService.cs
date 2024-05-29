@@ -52,10 +52,15 @@ namespace FlightBookingSystemAPI.Services
         {
             try
             {
+
                 // Check if RouteId exists
                 var routeExists = await _routeRepository.GetByKey(scheduleDTO.RouteId);
+                if (routeExists.RouteStatus != "Enable")
+                    throw new Exception("Cannot add Schedule Route is Not Enable");
                 // Check if FlightId exists
                 var flightExists = await _flightRepository.GetByKey(scheduleDTO.FlightId);
+                if (flightExists.FlightStatus != "Enable")
+                    throw new Exception("Cannot add Schedule Flight is Not Enable");
 
                 Schedule schedule = MapScheduleWithScheduleDTO(scheduleDTO);
                 schedule.AvailableSeat = flightExists.TotalSeats;
@@ -77,7 +82,7 @@ namespace FlightBookingSystemAPI.Services
             }
             catch (Exception ex)
             {
-                throw new ScheduleServiceException("Cannot add Schedule at this moment, some unwanted error occurred: ", ex);
+                throw new ScheduleServiceException("Cannot add Schedule at this moment, some unwanted error occurred: "+ex.Message, ex);
             }
         }
         #endregion
@@ -94,9 +99,12 @@ namespace FlightBookingSystemAPI.Services
             {
                 // Check if RouteId exists
                 var routeExists = await _routeRepository.GetByKey(ScheduleUpdateDTO.RouteId);
-
+                if (routeExists.RouteStatus != "Enable")
+                    throw new Exception("Cannot Update Schedule Route is Not Enable");
                 // Check if FlightId exists
                 var flightExists = await _flightRepository.GetByKey(ScheduleUpdateDTO.FlightId);
+                if (flightExists.FlightStatus != "Enable")
+                    throw new Exception("Cannot add Schedule Flight is Not Enable");
 
                 Schedule schedule = MapScheduleUpdateDTOWithSchedule(ScheduleUpdateDTO);
                 Schedule existingSchedule = await _scheduleRepository.GetByKey(schedule.ScheduleId);
@@ -134,13 +142,33 @@ namespace FlightBookingSystemAPI.Services
         {
             try
             {
+                IEnumerable<Booking> existingBooking = null;
                 // Check if any booking exists with the given ScheduleId
-                var existingBooking = await _bookingRepository.GetAll();
+                try
+                {
+                    existingBooking = await _bookingRepository.GetAll();
+                }
+                catch (BookingRepositoryException ex) when (ex.Message.Contains("No bookings present"))
+                {
+                    Schedule schedule1 = await _scheduleRepository.DeleteByKey(scheduleId);
+                    ScheduleReturnDTO scheduleReturnDTO1 = MapScheduleWithScheduleReturnDTO(schedule1);
+                    return scheduleReturnDTO1;
+                }
                 if (existingBooking.Any(b => b.ScheduleId == scheduleId))
                 {
-                    throw new ScheduleServiceException("Cannot delete the schedule as there are existing bookings with this schedule.");
+                    var updateSchedule = await _scheduleRepository.GetByKey(scheduleId);
+                    if (existingBooking.Any(booking => booking.ScheduleId == scheduleId &&( booking.BookingStatus == "Processing" || booking.BookingStatus == "Completed" )&& booking.FlightDetails.DepartureTime > DateTime.Now))
+                    {
+                        throw new ScheduleServiceException("cannot update Schedule !! Booking has this Schedule Update that first");
+                    }
+                    else
+                    {
+                        updateSchedule.ScheduleStatus = "Disabled";
+                        Schedule schedule2 = await _scheduleRepository.Update(updateSchedule);
+                        ScheduleReturnDTO scheduleReturnDTO2 = MapScheduleWithScheduleReturnDTO(schedule2);
+                        return scheduleReturnDTO2;
+                    }
                 }
-
                 Schedule schedule = await _scheduleRepository.DeleteByKey(scheduleId);
                 ScheduleReturnDTO scheduleReturnDTO = MapScheduleWithScheduleReturnDTO(schedule);
                 return scheduleReturnDTO;
@@ -155,7 +183,7 @@ namespace FlightBookingSystemAPI.Services
             }
             catch (Exception ex)
             {
-                throw new ScheduleServiceException("Error occurred while deleting the schedule.", ex);
+                throw new ScheduleServiceException("Error occurred while deleting the schedule."+ex.Message, ex);
             }
         }
         #endregion
@@ -227,7 +255,8 @@ namespace FlightBookingSystemAPI.Services
                 List<ScheduleDetailDTO> upcomingSchedules = schedules
                     .Where(s => DateOnly.FromDateTime(s.DepartureTime) == searchDTO.Date &&
                                 s.RouteInfo.StartCity == searchDTO.StartCity &&
-                                s.RouteInfo.EndCity == searchDTO.EndCity)
+                                s.RouteInfo.EndCity == searchDTO.EndCity 
+                                && s.ScheduleStatus == "Enable")
                     .Select(s => MapScheduleWithScheduleDetailDTO(s))
                     .ToList();
 
@@ -267,11 +296,13 @@ namespace FlightBookingSystemAPI.Services
                 List<ScheduleDetailDTO> connectingSchedules = new List<ScheduleDetailDTO>();
                 List<List<ScheduleDetailDTO>> returnDTO = new List<List<ScheduleDetailDTO>>();
                 var departingFlights = schedules
-                    .Where(s => s.RouteInfo.StartCity == searchDTO.StartCity && DateOnly.FromDateTime(s.DepartureTime) == searchDTO.Date)
+                    .Where(s => s.RouteInfo.StartCity == searchDTO.StartCity && 
+                    DateOnly.FromDateTime(s.DepartureTime) == searchDTO.Date 
+                    && s.ScheduleStatus == "Enable")
                     .ToList();
 
                 var arrivingFlights = schedules
-                    .Where(s => s.RouteInfo.EndCity == searchDTO.EndCity)
+                    .Where(s => s.RouteInfo.EndCity == searchDTO.EndCity && s.ScheduleStatus == "Enable")
                     .ToList();
 
                 foreach (var departingFlight in departingFlights)

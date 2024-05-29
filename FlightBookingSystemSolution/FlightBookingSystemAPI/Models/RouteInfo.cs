@@ -9,5 +9,6 @@ namespace FlightBookingSystemAPI.Models
         public string StartCity { get; set; }
         public string EndCity { get; set; } 
         public float Distance { get; set; }
+        public String RouteStatus { get; set; } = "Enable";
     }
 }

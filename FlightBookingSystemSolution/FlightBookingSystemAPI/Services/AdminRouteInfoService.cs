@@ -2,7 +2,9 @@
 using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Exceptions.ServiceExceptions;
 using FlightBookingSystemAPI.Interfaces;
+using FlightBookingSystemAPI.Migrations;
 using FlightBookingSystemAPI.Models;
+using FlightBookingSystemAPI.Models.DTOs.FlightDTO;
 using FlightBookingSystemAPI.Models.DTOs.RouteInfoDTO;
 using Microsoft.Extensions.Logging;
 using System;
@@ -69,13 +71,43 @@ namespace FlightBookingSystemAPI.Services
         /// </summary>
         /// <param name="routeInfoId">The ID of the route information to delete.</param>
         /// <returns>The deleted route information as a data transfer object.</returns>
-        public async Task<RouteInfoReturnDTO> DeleteRouteInfo(int routeInfoId)
+        public async Task<RouteInfoDeleteReturnDTO> DeleteRouteInfo(int routeInfoId)
         {
             try
             {
+                IEnumerable<Schedule> schedules = null;
+                try
+                {
+                    schedules = await _scheduleRepository.GetAll();
+                } // if there is no schedule then we can delete the  flight 
+                catch (ScheduleRepositoryException ex) when (ex.Message.Contains("No schedules present"))
+                {
+                    _logger.LogInformation("Deleting flight with ID: {FlightId}", routeInfoId);
+                    RouteInfo routeInfo1 = await _repository.DeleteByKey(routeInfoId);
+                    RouteInfoDeleteReturnDTO routeInfoReturnDTO1 = MapFlightWithRouteInfoDeleteReturnDTO(routeInfo1);
+                    _logger.LogInformation("Route deleted successfully.");
+                    return routeInfoReturnDTO1;
+                }
+                // if there is schedule then check flight id is present or not 
+                if (schedules.Any(schedule => schedule.RouteId == routeInfoId))
+                {// if present then check if there is any upcoming flight  if upcoming schedule 
+                    var undateRoute = await _repository.GetByKey(routeInfoId);
+                    if (schedules.Any(schedule => schedule.RouteId == routeInfoId && schedule.ScheduleStatus == "Enable" && schedule.DepartureTime > DateTime.Now))
+                    {
+                        throw new AdminRouteInfoServiceException("cannot update RouteInfo !! Schedule has this Route Update that first");
+                    }
+                    else
+                    {
+                        undateRoute.RouteStatus = "Disabled";
+                        RouteInfo rf = await _repository.Update(undateRoute);
+                        RouteInfoDeleteReturnDTO routeInfoReturn = MapFlightWithRouteInfoDeleteReturnDTO(rf);
+                        _logger.LogInformation("Route Updated successfully.");
+                        return routeInfoReturn;
+                    }
+                }
                 _logger.LogInformation("Deleting route information with ID: {RouteInfoId}", routeInfoId);
                 RouteInfo routeInfo = await _repository.DeleteByKey(routeInfoId);
-                RouteInfoReturnDTO routeInfoReturnDTO = MapRouteInfoWithRouteInfoReturnDTO(routeInfo);
+                RouteInfoDeleteReturnDTO routeInfoReturnDTO = MapFlightWithRouteInfoDeleteReturnDTO(routeInfo);
                 _logger.LogInformation("Route information deleted successfully.");
                 return routeInfoReturnDTO;
             }
@@ -94,6 +126,18 @@ namespace FlightBookingSystemAPI.Services
                 _logger.LogError(ex, "Unexpected error occurred while deleting route information.");
                 throw new AdminRouteInfoServiceException("Error occurred while deleting RouteInfo: " + ex.Message, ex);
             }
+        }
+
+        private RouteInfoDeleteReturnDTO MapFlightWithRouteInfoDeleteReturnDTO(RouteInfo routeInfo)
+        {
+            return new RouteInfoDeleteReturnDTO
+            {
+                RouteId = routeInfo.RouteId,
+                StartCity = routeInfo.StartCity,
+                EndCity = routeInfo.EndCity,
+                Distance = routeInfo.Distance,
+                RouteStatus = routeInfo.RouteStatus,
+            };
         }
         #endregion
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FlightBookingSystemAPI.Models.DTOs.BookingDTO;
+using System.ComponentModel.DataAnnotations;
 
 namespace FlightBookingSystemAPI.Models.DTOs.ScheduleDTO
 {

@@ -67,7 +67,6 @@ namespace FlightBookingSystemAPI
             #endregion
 
             #region Repositories
-
             builder.Services.AddScoped<IRepository<int, User>, UserRepository>();
             builder.Services.AddScoped<IRepository<int, UserDetail>, UserDetailRepository>();
             builder.Services.AddScoped<IRepository<int, RouteInfo>, RouteInfoRepository>();
@@ -76,20 +75,24 @@ namespace FlightBookingSystemAPI
             builder.Services.AddScoped<IRepository<int, Booking>, BookingRepository>();
             builder.Services.AddScoped<IRepository<int, Payment>,  PaymentRepository>();
             builder.Services.AddScoped<IRepository<int, Passenger>, PassengerRepository>();
+            builder.Services.AddScoped<IRepository<int, BookingDetail>, BookingDetailRepository>();
 
             #endregion
 
             #region Services
+            builder.Services.AddScoped<FlightBookingContext, FlightBookingContext>();
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IAdminFlightService, AdminFlightService>();
             builder.Services.AddScoped<IAdminRouteInfoService, AdminRouteInfoService>();
             builder.Services.AddScoped<IScheduleService, ScheduleService>();
-            //builder.Services.AddScoped<IUserBookingService, UserBookingService>(); 
+            builder.Services.AddScoped<IUserBookingService, UserBookingService>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
+
             #endregion
 
-            
-            
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

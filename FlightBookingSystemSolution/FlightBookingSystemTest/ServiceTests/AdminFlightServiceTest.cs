@@ -38,7 +38,8 @@ namespace FlightBookingSystemAPI.Tests.Services
             var scheduleLoggerMock = new Mock<ILogger<ScheduleRepository>>();
             _scheduleRepository = new ScheduleRepository(_context, scheduleLoggerMock.Object);
             
-            _adminFlightService = new AdminFlightService(_flightRepository, _scheduleRepository);
+            var _adminLoggerMock = new Mock<ILogger<AdminFlightService>>();
+            _adminFlightService = new AdminFlightService(_flightRepository, _scheduleRepository,_adminLoggerMock.Object);
         }
 
         [Test]

@@ -56,7 +56,7 @@ namespace FlightBookingSystemAPI.Contexts
                 .HasForeignKey(s => s.FlightId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Other entity configurations
+           
 
             // BookingDetail to Passenger
             modelBuilder.Entity<BookingDetail>()
@@ -72,9 +72,7 @@ namespace FlightBookingSystemAPI.Contexts
                 .HasForeignKey<UserDetail>(ud => ud.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Add similar configurations for other entities...
-
-
+           
         }
     }
     

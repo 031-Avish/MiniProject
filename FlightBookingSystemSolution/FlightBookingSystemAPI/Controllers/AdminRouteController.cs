@@ -75,15 +75,15 @@ namespace FlightBookingSystemAPI.Controllers
         }
         [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteRouteInfo/{routeInfoId}")]
-        [ProducesResponseType(typeof(RouteInfoReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(RouteInfoDeleteReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<RouteInfoReturnDTO>> DeleteRouteInfo(int routeInfoId)
+        public async Task<ActionResult<RouteInfoDeleteReturnDTO>> DeleteRouteInfo(int routeInfoId)
         {
             try
             {
-                RouteInfoReturnDTO deletedRouteInfo = await _adminRouteInfoService.DeleteRouteInfo(routeInfoId);
+                RouteInfoDeleteReturnDTO deletedRouteInfo = await _adminRouteInfoService.DeleteRouteInfo(routeInfoId);
                 return Ok(deletedRouteInfo);
             }
             catch (UnableToDeleteRouteInfoException ex)

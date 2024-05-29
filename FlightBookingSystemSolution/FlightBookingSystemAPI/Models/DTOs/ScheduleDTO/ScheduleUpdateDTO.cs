@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FlightBookingSystemAPI.Models.DTOs.BookingDTO;
+using System.ComponentModel.DataAnnotations;
 
 namespace FlightBookingSystemAPI.Models.DTOs.ScheduleDTO
 {
@@ -8,9 +9,11 @@ namespace FlightBookingSystemAPI.Models.DTOs.ScheduleDTO
         public int ScheduleId { get; set; }
 
         [Required(ErrorMessage = "Departure time is required")]
+        [DateNotInPast]
         public DateTime DepartureTime { get; set; }
 
         [Required(ErrorMessage = "Reaching time is required")]
+        [DateNotInPast]
         public DateTime ReachingTime { get; set; }
 
         [Required(ErrorMessage = "Price is required")]

@@ -1,4 +1,5 @@
-﻿using FlightBookingSystemAPI.Models.DTOs.FlightDTO;
+﻿using FlightBookingSystemAPI.Models.DTOs.BookingDTO;
+using FlightBookingSystemAPI.Models.DTOs.FlightDTO;
 using FlightBookingSystemAPI.Models.DTOs.RouteInfoDTO;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,9 +11,11 @@ namespace FlightBookingSystemAPI.Models.DTOs.ScheduleDTO
         public int ScheduleId { get; set; }
 
         [Required(ErrorMessage = "Departure time is required")]
+        [DateNotInPast]
         public DateTime DepartureTime { get; set; }
 
         [Required(ErrorMessage = "Reaching time is required")]
+        [DateNotInPast]
         public DateTime ReachingTime { get; set; }
 
         [Required(ErrorMessage = "Available seat count is required")]

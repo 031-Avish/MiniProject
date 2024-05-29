@@ -49,7 +49,7 @@ namespace FlightBookingSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPut("UpdateFlight")]
         [ProducesResponseType(typeof(FlightReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -74,17 +74,17 @@ namespace FlightBookingSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpDelete("DeleteFlight/{flightId}")]
-        [ProducesResponseType(typeof(FlightReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FlightDeleteReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<FlightReturnDTO>> DeleteFlight(int flightId)
+        public async Task<ActionResult<FlightDeleteReturnDTO>> DeleteFlight(int flightId)
         {
             try
             {
-                FlightReturnDTO deletedFlight = await _adminFlightService.DeleteFlight(flightId);
+                FlightDeleteReturnDTO deletedFlight = await _adminFlightService.DeleteFlight(flightId);
                 return Ok(deletedFlight);
             }
             catch (FlightRepositoryException ex)
@@ -100,7 +100,7 @@ namespace FlightBookingSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpGet("GetFlight/{flightId}")]
         [ProducesResponseType(typeof(FlightReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
@@ -125,7 +125,7 @@ namespace FlightBookingSystemAPI.Controllers
                 return StatusCode(500, new ErrorModel(500, ex.Message));
             }
         }
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpGet("GetAllFlights")]
         [ProducesResponseType(typeof(List<FlightReturnDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]

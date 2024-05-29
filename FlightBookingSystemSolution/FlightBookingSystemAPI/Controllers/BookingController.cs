@@ -47,10 +47,10 @@ namespace FlightBookingSystemAPI.Controllers
         }
 
         [HttpDelete("CancelBooking/{bookingId}")]
-        [ProducesResponseType(typeof(BookingReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BookingCancelReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<BookingReturnDTO>> CancelBooking(int bookingId)
+        public async Task<ActionResult<BookingCancelReturnDTO>> CancelBooking(int bookingId)
         {
             try
             {

@@ -9,9 +9,11 @@ using FlightBookingSystemAPI.Models.DTOs.PassengerDTO;
 using FlightBookingSystemAPI.Models.DTOs.ScheduleDTO;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace FlightBookingSystemAPI.Services
 {
@@ -24,7 +26,6 @@ namespace FlightBookingSystemAPI.Services
         private readonly IRepository<int, BookingDetail> _bookingDetailRepository;
         private readonly IRepository<int, Passenger> _passengerRepository;
         private readonly IRepository<int, Schedule> _scheduleRepository;
-        private readonly IRepository<int, User> _userRepository;
         private readonly FlightBookingContext _dbContext;
 
         /// <summary>
@@ -48,7 +49,6 @@ namespace FlightBookingSystemAPI.Services
             _bookingDetailRepository = bookingDetailRepository;
             _passengerRepository = passengerRepository;
             _scheduleRepository = scheduleRepository;
-            _userRepository = userRepository;
             _dbContext = dbContext;
         }
 
@@ -63,9 +63,13 @@ namespace FlightBookingSystemAPI.Services
             using var transaction = await _dbContext.Database.BeginTransactionAsync();
             try
             {
+                
                 // Get the schedule details
                 var schedule = await _scheduleRepository.GetByKey(bookingDTO.ScheduleId);
-
+                if (schedule.DepartureTime < DateTime.Now)
+                {
+                    throw new BookingServiceException("Cannot book For Old Schedule");
+                }
                 // Check seat availability and reduce available seats immediately
                 int totalPassengers = bookingDTO.Passengers.Count(p => p.Age > 2);
                 if (!CheckSeatAvailability(schedule, totalPassengers))
@@ -86,7 +90,8 @@ namespace FlightBookingSystemAPI.Services
                     BookingStatus = "Processing",
                     TotalPrice = totalPrice,
                     UserId = bookingDTO.UserId,
-                    ScheduleId = bookingDTO.ScheduleId
+                    ScheduleId = bookingDTO.ScheduleId,
+                    PassengerCount = bookingDTO.Passengers.Count
                 };
 
                 var addedBooking = await _bookingRepository.Add(booking);
@@ -121,6 +126,8 @@ namespace FlightBookingSystemAPI.Services
                 throw new BookingServiceException("Error occurred while booking the flight." + ex.Message, ex);
             }
         }
+
+
         #endregion
 
         #region CancelBooking
@@ -129,9 +136,83 @@ namespace FlightBookingSystemAPI.Services
         /// </summary>
         /// <param name="bookingId">The ID of the booking.</param>
         /// <returns>The canceled booking details.</returns>
-        public Task<BookingReturnDTO> CancelBooking(int bookingId)
+        public async Task<BookingCancelReturnDTO> CancelBooking(int bookingId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+                {
+                    // Retrieve the booking entity from the database
+                    var booking = await _bookingRepository.GetByKey(bookingId);
+
+                    // Check if the booking exists
+                    if (booking == null)
+                    {
+                        throw new BookingServiceException($"Booking with ID {bookingId} not found.");
+                    }
+
+                    // Check if the booking status is "Completed" and the payment status is "Success"
+                    if (booking.BookingStatus != "Completed" || booking.PaymentStatus != "Success")
+                    {
+                        throw new BookingServiceException("Cannot cancel the booking. Invalid booking state.");
+                    }
+
+                    // Calculate refund amount based on total price
+                    var refundAmount = CalculateRefundAmount(booking.TotalPrice, booking.FlightDetails.DepartureTime);
+
+                    // Release the booked seats and increase available seats
+                    var schedule = await _scheduleRepository.GetByKey(booking.ScheduleId);
+                    schedule.AvailableSeat += booking.PassengerCount;
+                    await _scheduleRepository.Update(schedule);
+
+                    // Update the booking status to "Canceled"
+                    booking.BookingStatus = "Canceled";
+
+                    // Update the booking entity in the database
+                    await _bookingRepository.Update(booking);
+
+                    // Perform any other necessary actions here
+
+                    // Commit the transaction
+                    transactionScope.Complete();
+
+                    // Return the canceled booking details with refund amount
+                    return new BookingCancelReturnDTO
+                    {
+                        BookingId = booking.BookingId,
+                        RefundAmount = refundAmount,
+                        Message = "Cancellation successful. Refund will be credited in the next 3 days."
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new BookingServiceException("Error occurred while canceling the booking.", ex);
+            }
+        }
+
+        private float CalculateRefundAmount(float totalPrice, DateTime departureTime)
+        {
+            // Get the difference in hours between the current time and the departure time
+            TimeSpan timeDifference = departureTime - DateTime.Now;
+            double hoursDifference = timeDifference.TotalHours;
+
+            // Define the refund policy based on the time difference and total price
+            if (hoursDifference >= 48)
+            {
+                // Refund 75% of the total price if canceled before 48 hours
+                return 0.75f * totalPrice;
+            }
+            else if (hoursDifference >= 12 && hoursDifference < 48)
+            {
+                // Refund 50% of the total price if canceled between 12 and 48 hours
+                return 0.5f * totalPrice;
+            }
+            else
+            {
+                // No refund if canceled within 12 hours
+                return 0;
+            }
         }
         #endregion
 
@@ -317,14 +398,27 @@ namespace FlightBookingSystemAPI.Services
         /// <returns>The total price after discount.</returns>
         private async Task<float> ApplyFirstTimeUserDiscount(int userId, float totalPrice)
         {
-            var userBookings = await _bookingRepository.GetAll();
+            IEnumerable<Booking> userBookings = null;
+            try
+            {
+                userBookings = await _bookingRepository.GetAll();
+            }
+            catch (BookingRepositoryException ex) when (ex.Message.Contains("No bookings present"))
+            {
+                
+                totalPrice *= 0.95f; // Apply 5% discount
+                return totalPrice;
+            }
+            catch(BookingRepositoryException )
+            {
+                throw;
+            }
             bool isFirstBooking = !userBookings.Any(b => b.UserId == userId);
-
             if (isFirstBooking)
             {
                 totalPrice *= 0.95f; // Apply 5% discount
+                return totalPrice;
             }
-
             return totalPrice;
         }
 

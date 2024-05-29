@@ -8,5 +8,6 @@ namespace FlightBookingSystemAPI.Models
         public int FlightId { get; set; }
         public string Name {  get; set; }
         public int TotalSeats { get; set; }
+        public String FlightStatus { get; set; } = "Enable";
     }
 }

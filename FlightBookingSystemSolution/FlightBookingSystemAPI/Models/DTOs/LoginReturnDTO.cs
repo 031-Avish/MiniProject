@@ -5,7 +5,7 @@ namespace FlightBookingSystemAPI.Models.DTOs
     public class LoginReturnDTO
     {
         [Required(ErrorMessage = "User id is required")]
-        [Range(1,1000, ErrorMessage = "Invalid entry for user ID. User ID must be between 1 and 1000." ]
+        [Range(1,1000, ErrorMessage = "Invalid entry for user ID. User ID must be between 1 and 1000.") ]
         public int UserId { get; set; }
 
         [Required(ErrorMessage = "Email is required")]
