@@ -234,7 +234,7 @@ namespace FlightBookingSystemAPI.Services
                 var filteredBookings = oldBookings
                     .Where(b => b.UserId == userId &&
                                 b.FlightDetails.DepartureTime < currentDateTime &&
-                                b.BookingStatus == "Success")
+                                b.BookingStatus == "Completed")
                     .ToList();
 
                 // Map the filtered bookings to DTOs
@@ -267,7 +267,7 @@ namespace FlightBookingSystemAPI.Services
                 var filteredBookings = upcomingBookings
                     .Where(b => b.UserId == userId &&
                                 b.FlightDetails.DepartureTime > currentDateTime &&
-                                b.BookingStatus == "Success")
+                                b.BookingStatus == "Completed")
                     .ToList();
 
                 // Map the filtered bookings to DTOs

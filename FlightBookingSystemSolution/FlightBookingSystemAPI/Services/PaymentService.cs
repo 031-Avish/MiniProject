@@ -142,11 +142,12 @@ namespace FlightBookingSystemAPI.Services
                 {
                     schedule = await _scheduleRepository.GetByKey(booking.ScheduleId);
                     schedule.AvailableSeat += booking.PassengerCount;
+                    await _scheduleRepository.Update(schedule);
                     payment.PaymentStatus = "Failed";
                     booking.BookingStatus = "Failed";
                     booking.PaymentStatus = "Failed";
                 }
-                await _scheduleRepository.Update(schedule);
+                
                 await _paymentRepository.Update(payment);
                 await _bookingRepository.Update(booking);
 

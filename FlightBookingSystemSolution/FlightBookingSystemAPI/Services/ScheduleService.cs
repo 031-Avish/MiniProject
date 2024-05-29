@@ -253,7 +253,7 @@ namespace FlightBookingSystemAPI.Services
             {
                 var schedules = await _scheduleRepository.GetAll();
                 List<ScheduleDetailDTO> upcomingSchedules = schedules
-                    .Where(s => DateOnly.FromDateTime(s.DepartureTime) == searchDTO.Date &&
+                    .Where(s => s.DepartureTime.Date == searchDTO.Date.Date &&
                                 s.RouteInfo.StartCity == searchDTO.StartCity &&
                                 s.RouteInfo.EndCity == searchDTO.EndCity 
                                 && s.ScheduleStatus == "Enable")
@@ -297,7 +297,7 @@ namespace FlightBookingSystemAPI.Services
                 List<List<ScheduleDetailDTO>> returnDTO = new List<List<ScheduleDetailDTO>>();
                 var departingFlights = schedules
                     .Where(s => s.RouteInfo.StartCity == searchDTO.StartCity && 
-                    DateOnly.FromDateTime(s.DepartureTime) == searchDTO.Date 
+                        s.DepartureTime.Date == searchDTO.Date.Date
                     && s.ScheduleStatus == "Enable")
                     .ToList();
 

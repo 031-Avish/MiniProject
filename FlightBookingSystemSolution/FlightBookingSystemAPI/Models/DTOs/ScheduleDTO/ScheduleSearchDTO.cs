@@ -12,6 +12,6 @@ namespace FlightBookingSystemAPI.Models.DTOs.ScheduleDTO
         public string EndCity { get; set; }
 
         [Required(ErrorMessage = "Date is required")]
-        public DateOnly Date { get; set; }
+        public DateTime Date { get; set; }
     }
 }
