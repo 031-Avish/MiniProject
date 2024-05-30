@@ -2,13 +2,8 @@
 using FlightBookingSystemAPI.Exceptions.ServiceExceptions;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
-using FlightBookingSystemAPI.Models.DTOs;
 using FlightBookingSystemAPI.Models.DTOs.FlightDTO;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using
 
 namespace FlightBookingSystemAPI.Services
 {
@@ -34,16 +29,17 @@ namespace FlightBookingSystemAPI.Services
             _logger = logger;
         }
 
-        #region AddFlight
         /// <summary>
         /// Adds a new flight.
         /// </summary>
         /// <param name="flightDTO">The flight data transfer object.</param>
         /// <returns>The added flight as a data transfer object.</returns>
+        #region AddFlight
         public async Task<FlightReturnDTO> AddFlight(FlightDTO flightDTO)
         {
             try
             {
+                // Add FLight and map it 
                 _logger.LogInformation("Adding a new flight.");
                 Flight flight = MapFlightWithFlightDTO(flightDTO);
                 Flight addedFlight = await _repository.Add(flight);
@@ -64,12 +60,12 @@ namespace FlightBookingSystemAPI.Services
         }
         #endregion
 
-        #region DeleteFlight
         /// <summary>
         /// Deletes a flight by its ID.
         /// </summary>
         /// <param name="flightId">The ID of the flight to delete.</param>
         /// <returns>The deleted flight as a data transfer object.</returns>
+        #region DeleteFlight
         public async Task<FlightDeleteReturnDTO> DeleteFlight(int flightId)
         {
             try
@@ -89,12 +85,14 @@ namespace FlightBookingSystemAPI.Services
                 }
                 // if there is schedule then check flight id is present or not 
                 if(schedules.Any(schedule => schedule.FlightId == flightId))
-                {// if present then check if there is any upcoming flight  if upcoming schedule 
+                {// if present then check if there is any upcoming flight  
                     var updateFlight = await _repository.GetByKey(flightId);
-                    if(schedules.Any(schedule => schedule.FlightId == flightId && schedule.ScheduleStatus == "Enable" && schedule.DepartureTime > DateTime.Now ))
+                    //if upcoming schedule then cant delete 
+                    if (schedules.Any(schedule => schedule.FlightId == flightId && schedule.ScheduleStatus == "Enable" && schedule.DepartureTime > DateTime.Now ))
                     {
                         throw new AdminFlightServiceException("cannot update flight !! Schedule has this flight Update that first");
                     }
+                    // if old schedule then update status 
                     else
                     {
                         updateFlight.FlightStatus = "Disabled";
@@ -140,15 +138,16 @@ namespace FlightBookingSystemAPI.Services
         }
         #endregion
 
-        #region GetAllFlights
         /// <summary>
         /// Gets all flights.
         /// </summary>
         /// <returns>A list of all flights as data transfer objects.</returns>
+        #region GetAllFlights
         public async Task<List<FlightReturnDTO>> GetAllFlight()
         {
             try
             {
+                // get all flight and Map to DTO
                 _logger.LogInformation("Retrieving all flights.");
                 var flights = await _repository.GetAll();
                 List<FlightReturnDTO> flightReturnDTOs = new List<FlightReturnDTO>();
@@ -172,16 +171,17 @@ namespace FlightBookingSystemAPI.Services
         }
         #endregion
 
-        #region GetFlight
         /// <summary>
         /// Gets a flight by its ID.
         /// </summary>
         /// <param name="flightId">The ID of the flight to retrieve.</param>
         /// <returns>The flight as a data transfer object.</returns>
+        #region GetFlight
         public async Task<FlightReturnDTO> GetFlight(int flightId)
         {
             try
             {
+                // get all flights with Flight Id 
                 _logger.LogInformation("Retrieving flight with ID: {FlightId}", flightId);
                 Flight flight = await _repository.GetByKey(flightId);
                 FlightReturnDTO flightReturnDTO = MapFlightWithFlightReturnDTO(flight);
@@ -231,7 +231,7 @@ namespace FlightBookingSystemAPI.Services
         }
         #endregion
 
-        #region Private Methods
+        #region Helper Methods
         /// <summary>
         /// Maps a <see cref="FlightDTO"/> to a <see cref="Flight"/>.
         /// </summary>

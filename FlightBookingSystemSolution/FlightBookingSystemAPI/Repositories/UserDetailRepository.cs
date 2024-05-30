@@ -1,21 +1,24 @@
 ﻿using FlightBookingSystemAPI.Contexts;
-using FlightBookingSystemAPI.Exceptions;
 using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace FlightBookingSystemAPI.Repositories
 {
+    /// <summary>
+    /// Repository for managing user details.
+    /// </summary>
     public class UserDetailRepository : IRepository<int, UserDetail>
     {
         private readonly FlightBookingContext _context;
         private readonly ILogger<UserDetailRepository> _logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserDetailRepository"/> class.
+        /// </summary>
+        /// <param name="context">The database context.</param>
+        /// <param name="logger">The logger.</param>
         public UserDetailRepository(FlightBookingContext context, ILogger<UserDetailRepository> logger)
         {
             _context = context;
@@ -23,6 +26,11 @@ namespace FlightBookingSystemAPI.Repositories
         }
 
         #region Add User Detail
+        /// <summary>
+        /// Adds a new user detail to the database.
+        /// </summary>
+        /// <param name="item">The user detail to add.</param>
+        /// <returns>The added user detail.</returns>
         public async Task<UserDetail> Add(UserDetail item)
         {
             try
@@ -57,6 +65,11 @@ namespace FlightBookingSystemAPI.Repositories
         #endregion
 
         #region Delete User Detail By Key
+        /// <summary>
+        /// Deletes a user detail from the database by its key.
+        /// </summary>
+        /// <param name="key">The key of the user detail to delete.</param>
+        /// <returns>The deleted user detail.</returns>
         public async Task<UserDetail> DeleteByKey(int key)
         {
             try
@@ -82,6 +95,10 @@ namespace FlightBookingSystemAPI.Repositories
         #endregion
 
         #region Get All User Details
+        /// <summary>
+        /// Retrieves all user details from the database.
+        /// </summary>
+        /// <returns>A list of all user details.</returns>
         public async Task<IEnumerable<UserDetail>> GetAll()
         {
             try
@@ -110,6 +127,11 @@ namespace FlightBookingSystemAPI.Repositories
         #endregion
 
         #region Get User Detail By Key
+        /// <summary>
+        /// Retrieves a user detail from the database by its key.
+        /// </summary>
+        /// <param name="key">The key of the user detail to retrieve.</param>
+        /// <returns>The retrieved user detail.</returns>
         public async Task<UserDetail> GetByKey(int key)
         {
             try
@@ -138,6 +160,11 @@ namespace FlightBookingSystemAPI.Repositories
         #endregion
 
         #region Update User Detail
+        /// <summary>
+        /// Updates a user detail in the database.
+        /// </summary>
+        /// <param name="item">The user detail to update.</param>
+        /// <returns>The updated user detail.</returns>
         public async Task<UserDetail> Update(UserDetail item)
         {
             try
@@ -161,6 +188,8 @@ namespace FlightBookingSystemAPI.Repositories
                 throw new UserDetailRepositoryException("Error occurred while updating user detail." + ex.Message, ex);
             }
         }
+
+
         #endregion
     }
 }

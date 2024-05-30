@@ -1,13 +1,9 @@
 ﻿using FlightBookingSystemAPI.Contexts;
-using FlightBookingSystemAPI.Exceptions;
 using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 
 namespace FlightBookingSystemAPI.Repositories
 {

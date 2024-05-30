@@ -2,15 +2,8 @@
 using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Exceptions.ServiceExceptions;
 using FlightBookingSystemAPI.Interfaces;
-using FlightBookingSystemAPI.Migrations;
 using FlightBookingSystemAPI.Models;
-using FlightBookingSystemAPI.Models.DTOs.FlightDTO;
 using FlightBookingSystemAPI.Models.DTOs.RouteInfoDTO;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 namespace FlightBookingSystemAPI.Services
 {
     /// <summary>
@@ -28,13 +21,14 @@ namespace FlightBookingSystemAPI.Services
         /// <param name="routeInfoRepository">The route information repository.</param>
         /// <param name="scheduleRepository">The schedule repository.</param>
         /// <param name="logger">The logger instance.</param>
+        #region Construtor 
         public AdminRouteInfoService(IRepository<int, RouteInfo> routeInfoRepository, IRepository<int, Schedule> scheduleRepository, ILogger<AdminRouteInfoService> logger)
         {
             _repository = routeInfoRepository;
             _scheduleRepository = scheduleRepository;
             _logger = logger;
         }
-
+        #endregion
         #region AddRouteInfo
         /// <summary>
         /// Adds new route information.
@@ -45,6 +39,7 @@ namespace FlightBookingSystemAPI.Services
         {
             try
             {
+                // Map to object and add 
                 _logger.LogInformation("Adding new route information.");
                 RouteInfo routeInfo = MapRouteInfoWithRouteInfoDTO(routeInfoDTO);
                 RouteInfo addedRouteInfo = await _repository.Add(routeInfo);
@@ -90,12 +85,14 @@ namespace FlightBookingSystemAPI.Services
                 }
                 // if there is schedule then check flight id is present or not 
                 if (schedules.Any(schedule => schedule.RouteId == routeInfoId))
-                {// if present then check if there is any upcoming flight  if upcoming schedule 
+                {// if present then check if there is any upcoming flight 
                     var undateRoute = await _repository.GetByKey(routeInfoId);
+                    //  if upcoming schedule  then cannot Delete  
                     if (schedules.Any(schedule => schedule.RouteId == routeInfoId && schedule.ScheduleStatus == "Enable" && schedule.DepartureTime > DateTime.Now))
                     {
                         throw new AdminRouteInfoServiceException("cannot update RouteInfo !! Schedule has this Route Update that first");
                     }
+                    // Can not delete but update status to Disabled 
                     else
                     {
                         undateRoute.RouteStatus = "Disabled";
@@ -141,15 +138,16 @@ namespace FlightBookingSystemAPI.Services
         }
         #endregion
 
-        #region GetAllRouteInfos
         /// <summary>
         /// Gets all route information.
         /// </summary>
         /// <returns>A list of all route information as data transfer objects.</returns>
+        #region GetAllRouteInfos
         public async Task<List<RouteInfoReturnDTO>> GetAllRouteInfos()
         {
             try
             {
+                // get all route and Map them 
                 _logger.LogInformation("Retrieving all route information.");
                 var routeInfos = await _repository.GetAll();
                 List<RouteInfoReturnDTO> routeInfoReturnDTOs = new List<RouteInfoReturnDTO>();
@@ -173,16 +171,17 @@ namespace FlightBookingSystemAPI.Services
         }
         #endregion
 
-        #region GetRouteInfo
         /// <summary>
         /// Gets route information by its ID.
         /// </summary>
         /// <param name="routeInfoId">The ID of the route information to retrieve.</param>
         /// <returns>The route information as a data transfer object.</returns>
+        #region GetRouteInfo
         public async Task<RouteInfoReturnDTO> GetRouteInfo(int routeInfoId)
         {
             try
             {
+                // get route by given Id and map them 
                 _logger.LogInformation("Retrieving route information with ID: {RouteInfoId}", routeInfoId);
                 RouteInfo routeInfo = await _repository.GetByKey(routeInfoId);
                 RouteInfoReturnDTO routeInfoReturnDTO = MapRouteInfoWithRouteInfoReturnDTO(routeInfo);
@@ -202,16 +201,39 @@ namespace FlightBookingSystemAPI.Services
         }
         #endregion
 
-        #region UpdateRouteInfo
         /// <summary>
         /// Updates route information.
         /// </summary>
         /// <param name="routeInfoReturnDTO">The route information data transfer object containing the updated information.</param>
         /// <returns>The updated route information as a data transfer object.</returns>
+        #region UpdateRouteInfo
         public async Task<RouteInfoReturnDTO> UpdateRouteInfo(RouteInfoReturnDTO routeInfoReturnDTO)
         {
             try
             {
+                //cant update if upcoming schedule is there 
+                IEnumerable<Schedule> schedules = null;
+                try
+                {
+                    schedules = await _scheduleRepository.GetAll();
+                } // if there is no schedule then we can delete the  flight 
+                catch (ScheduleRepositoryException ex) when (ex.Message.Contains("No schedules present"))
+                {
+                    _logger.LogInformation("Updating route information with ID: {RouteInfoId}", routeInfoReturnDTO.RouteId);
+                    RouteInfo routeInfo1 = MapRouteInfoReturnDTOWithRouteInfo(routeInfoReturnDTO);
+                    RouteInfo updatedRouteInfo1 = await _repository.Update(routeInfo1);
+                    RouteInfoReturnDTO updatedRouteInfoReturnDTO1 = MapRouteInfoWithRouteInfoReturnDTO(updatedRouteInfo1);
+                    _logger.LogInformation("Route information updated successfully.");
+                    return updatedRouteInfoReturnDTO1;
+                }
+                // if there is schedule then check Route id is present or not 
+                if (schedules.Any(schedule => schedule.RouteId == routeInfoReturnDTO.RouteId))
+                {
+                    if (schedules.Any(schedule => schedule.RouteId == routeInfoReturnDTO.RouteId && schedule.ScheduleStatus == "Enable" && schedule.DepartureTime > DateTime.Now))
+                    {
+                        throw new AdminRouteInfoServiceException("cannot update RouteInfo !! Schedule has this Route Update that first");
+                    }
+                }
                 _logger.LogInformation("Updating route information with ID: {RouteInfoId}", routeInfoReturnDTO.RouteId);
                 RouteInfo routeInfo = MapRouteInfoReturnDTOWithRouteInfo(routeInfoReturnDTO);
                 RouteInfo updatedRouteInfo = await _repository.Update(routeInfo);
@@ -232,7 +254,7 @@ namespace FlightBookingSystemAPI.Services
         }
         #endregion
 
-        #region Private Methods
+        #region Helper Methods
         /// <summary>
         /// Maps a <see cref="RouteInfoDTO"/> to a <see cref="RouteInfo"/>.
         /// </summary>

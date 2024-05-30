@@ -12,6 +12,10 @@ namespace FlightBookingSystemAPI.Services
         private readonly string _secretKey;  //secret key 
         private readonly SymmetricSecurityKey _key; // Two types symmetric and asymmetric
 
+        /// <summary>
+        ///  Constructor To give initial values to secret key and Hashed Key 
+        /// </summary>
+        /// <param name="configuration"></param>
         public TokenService(IConfiguration configuration)
         {
             // initial value of key from json file 
@@ -19,6 +23,11 @@ namespace FlightBookingSystemAPI.Services
             // encrypt the key 
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
         }
+        /// <summary>
+        /// Generate The Token for user
+        /// </summary>
+        /// <param name="user">User Object </param>
+        /// <returns>Token as a string </returns>
         public string GenerateToken(User user)
         {
             string token = string.Empty;

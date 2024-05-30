@@ -1,21 +1,24 @@
 ﻿using FlightBookingSystemAPI.Contexts;
-using FlightBookingSystemAPI.Exceptions;
 using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace FlightBookingSystemAPI.Repositories
 {
+    /// <summary>
+    /// Repository for managing user entities.
+    /// </summary>
     public class UserRepository : IRepository<int, User>
     {
         private readonly FlightBookingContext _context;
         private readonly ILogger<UserRepository> _logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserRepository"/> class.
+        /// </summary>
+        /// <param name="context">The database context.</param>
+        /// <param name="logger">The logger.</param>
         public UserRepository(FlightBookingContext context, ILogger<UserRepository> logger)
         {
             _context = context;
@@ -23,6 +26,11 @@ namespace FlightBookingSystemAPI.Repositories
         }
 
         #region Add User
+        /// <summary>
+        /// Adds a new user to the database.
+        /// </summary>
+        /// <param name="item">The user to add.</param>
+        /// <returns>The added user.</returns>
         public async Task<User> Add(User item)
         {
             try
@@ -63,6 +71,11 @@ namespace FlightBookingSystemAPI.Repositories
         #endregion
 
         #region Delete User By Key
+        /// <summary>
+        /// Deletes a user from the database by its key.
+        /// </summary>
+        /// <param name="key">The key of the user to delete.</param>
+        /// <returns>The deleted user.</returns>
         public async Task<User> DeleteByKey(int key)
         {
             try
@@ -88,6 +101,10 @@ namespace FlightBookingSystemAPI.Repositories
         #endregion
 
         #region Get All Users
+        /// <summary>
+        /// Retrieves all users from the database.
+        /// </summary>
+        /// <returns>A list of all users.</returns>
         public async Task<IEnumerable<User>> GetAll()
         {
             try
@@ -116,6 +133,11 @@ namespace FlightBookingSystemAPI.Repositories
         #endregion
 
         #region Get User By Key
+        /// <summary>
+        /// Retrieves a user from the database by its key.
+        /// </summary>
+        /// <param name="key">The key of the user to retrieve.</param>
+        /// <returns>The retrieved user.</returns>
         public async Task<User> GetByKey(int key)
         {
             try
@@ -143,6 +165,11 @@ namespace FlightBookingSystemAPI.Repositories
         }
         #endregion
 
+        /// <summary>
+        /// Updates a user in the database.
+        /// </summary>
+        /// <param name="item">The user to update.</param>
+        /// <returns>The updated user.</returns>
         #region Update User
         public async Task<User> Update(User item)
         {

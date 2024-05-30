@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using FlightBookingSystemAPI.Models.DTOs;
-using FlightBookingSystemAPI.Services;
+using FlightBookingSystemAPI.Exceptions.ServiceExceptions;
 
 namespace FlightBookingSystemAPI.Controllers
 {

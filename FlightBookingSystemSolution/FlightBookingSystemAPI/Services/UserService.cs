@@ -3,10 +3,9 @@ using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
 using FlightBookingSystemAPI.Models.DTOs;
-using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Security.Cryptography;
 using System.Text;
+
 
 namespace FlightBookingSystemAPI.Services
 {
@@ -18,6 +17,7 @@ namespace FlightBookingSystemAPI.Services
         private readonly IRepository<int, User> _userRepo;
         private readonly IRepository<int, UserDetail> _userDetailRepo;
         private readonly ITokenService _tokenService;
+        private readonly ILogger<UserService> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserService"/> class.
@@ -25,12 +25,20 @@ namespace FlightBookingSystemAPI.Services
         /// <param name="userRepo">The user repository.</param>
         /// <param name="userDetailRepo">The user detail repository.</param>
         /// <param name="tokenService">The token service.</param>
-        public UserService(IRepository<int, User> userRepo, IRepository<int, UserDetail> userDetailRepo, ITokenService tokenService)
+        /// <param name="logger">The logger.</param>
+        #region UserService Constructor 
+        public UserService(
+            IRepository<int, User> userRepo,
+            IRepository<int, UserDetail> userDetailRepo,
+            ITokenService tokenService,
+            ILogger<UserService> logger)
         {
             _userRepo = userRepo;
             _userDetailRepo = userDetailRepo;
             _tokenService = tokenService;
+            _logger = logger;
         }
+        #endregion
 
         #region Login
         /// <summary>
@@ -42,33 +50,50 @@ namespace FlightBookingSystemAPI.Services
         {
             try
             {
+                _logger.LogInformation("Attempting to log in user with ID {UserId}.", loginDTO.UserId);
+
+                // Get the user detail by ID
                 var userDb = await _userDetailRepo.GetByKey(loginDTO.UserId);
-                HMACSHA512 hMACSHA = new HMACSHA512(userDb.PasswordHashKey);
-                var encrypterPass = hMACSHA.ComputeHash(Encoding.UTF8.GetBytes(loginDTO.Password));
-                bool isPasswordSame = ComparePassword(encrypterPass, userDb.Password);
-                if (isPasswordSame)
+
+                // Hash the key
+                using (HMACSHA512 hMACSHA = new HMACSHA512(userDb.PasswordHashKey))
                 {
-                    var user = await _userRepo.GetByKey(loginDTO.UserId);
-                    LoginReturnDTO loginReturnDTO = MapUserToLoginReturnDTO(user);
-                    return loginReturnDTO;
+                    var encrypterPass = hMACSHA.ComputeHash(Encoding.UTF8.GetBytes(loginDTO.Password));
+
+                    // Compare the password
+                    bool isPasswordSame = ComparePassword(encrypterPass, userDb.Password);
+                    if (isPasswordSame)
+                    {
+                        // Get User If Id password are correct and Map to return DTO 
+                        var user = await _userRepo.GetByKey(loginDTO.UserId);
+                        LoginReturnDTO loginReturnDTO = MapUserToLoginReturnDTO(user);
+                        _logger.LogInformation("User with ID {UserId} logged in successfully.", loginDTO.UserId);
+                        return loginReturnDTO;
+                    }
                 }
-                throw new UnauthorizedUserException("Invalid UserName or Password");
+
+                _logger.LogWarning("Invalid username or password for user ID {UserId}.", loginDTO.UserId);
+                throw new UnauthorizedUserException("Invalid username or password.");
             }
-            catch (UnauthorizedUserException)
+            catch (UnauthorizedUserException ex)
             {
+                _logger.LogError(ex, "UnauthorizedUserException for user ID {UserId}.", loginDTO.UserId);
                 throw;
             }
-            catch (UserDetailRepositoryException)
+            catch (UserDetailRepositoryException ex)
             {
+                _logger.LogError(ex, "UserDetailRepositoryException for user ID {UserId}.", loginDTO.UserId);
                 throw;
             }
-            catch (UserRepositoryException)
+            catch (UserRepositoryException ex)
             {
+                _logger.LogError(ex, "UserRepositoryException for user ID {UserId}.", loginDTO.UserId);
                 throw;
             }
             catch (Exception ex)
             {
-                throw new UnableToLoginException("Not Able to Register User at this moment", ex);
+                _logger.LogError(ex, "An unexpected error occurred while logging in user ID {UserId}.", loginDTO.UserId);
+                throw new UnableToLoginException("Not able to log in user at this moment.", ex);
             }
         }
         #endregion
@@ -83,49 +108,77 @@ namespace FlightBookingSystemAPI.Services
         {
             User user = null;
             UserDetail userDetail = null;
+
             try
             {
-                User user1 = GenerateUser(userRegisterDTO);
-                UserDetail userDetail1 = MapUserRegisterDTOToUserDetail(userRegisterDTO);
-                user = await _userRepo.Add(user1);
-                userDetail1.UserId = user.UserId;
-                userDetail = await _userDetailRepo.Add(userDetail1);
+                _logger.LogInformation("Attempting to register user with email {Email}.", userRegisterDTO.Email);
+                //Gemereate User and User Detail object 
+                user = GenerateUser(userRegisterDTO);
+                userDetail = MapUserRegisterDTOToUserDetail(userRegisterDTO);
+
+                // add user and user Detail with hashed password 
+                user = await _userRepo.Add(user);
+                userDetail.UserId = user.UserId;
+                userDetail = await _userDetailRepo.Add(userDetail);
+                // Map to return DTO 
                 UserRegisterReturnDTO userRegisterReturnDTO = MapUserToReturnDTO(user);
+
+                _logger.LogInformation("User with email {Email} registered successfully.", userRegisterDTO.Email);
                 return userRegisterReturnDTO;
-            }
-            catch (UserRepositoryException)
-            {
-                throw;
-            }
-            catch (Exception)
-            {
+
 
             }
-            if (user != null)
+            catch (UserRepositoryException ex)
             {
-                await RevertUserInsert(user);
+                _logger.LogError(ex, "UserRepositoryException for email {Email}.", userRegisterDTO.Email);
+                throw;
             }
-            if (userDetail != null)
+            catch (Exception ex)
             {
-                await RevertUserDetailInsert(userDetail);
+                _logger.LogError(ex, "An unexpected error occurred while registering user with email {Email}.", userRegisterDTO.Email);
+                // revert in case of any exception 
+                if (user != null)
+                {
+                    await RevertUserInsert(user);
+                }
+
+                if (userDetail != null)
+                {
+                    await RevertUserDetailInsert(userDetail);
+                }
+
+                throw new UnableToRegisterException("Not able to register user at this moment.", ex);
             }
-            throw new UnableToRegisterException("Not Able to Register User at this moment");
         }
         #endregion
 
-        #region Helper Methods
-        // Helper methods can go here...
-
+        /// <summary>
+        /// Map User To Login Return DTO 
+        /// </summary>
+        /// <param name="user">User Object</param>
+        /// <returns>Login Return DTO object </returns>
+        #region MapUserToLoginReturnDTO
         private LoginReturnDTO MapUserToLoginReturnDTO(User user)
         {
-            LoginReturnDTO returnDTO = new LoginReturnDTO();
-            returnDTO.UserId = user.UserId;
-            returnDTO.Role = user.Role;
-            returnDTO.Email = user.Email;
-            returnDTO.Token = _tokenService.GenerateToken(user);
+            var returnDTO = new LoginReturnDTO
+            {
+                UserId = user.UserId,
+                Role = user.Role,
+                Email = user.Email,
+                Token = _tokenService.GenerateToken(user)
+            };
             return returnDTO;
         }
 
+        #endregion
+
+        /// <summary>
+        /// Compare the Hashed Passwords
+        /// </summary>
+        /// <param name="encrypterPass">Encrypted password From Db </param>
+        /// <param name="password">User Given Password </param>
+        /// <returns></returns>
+        #region Compare Password
         private bool ComparePassword(byte[] encrypterPass, byte[] password)
         {
             for (int i = 0; i < encrypterPass.Length; i++)
@@ -137,43 +190,86 @@ namespace FlightBookingSystemAPI.Services
             }
             return true;
         }
+        #endregion
 
+        /// <summary>
+        /// Map User To Return DTO 
+        /// </summary>
+        /// <param name="user">User Object</param>
+        /// <returns>RUser Register Return DTO</returns>
+
+        #region Map User To Return DTO 
         private UserRegisterReturnDTO MapUserToReturnDTO(User user)
         {
-            UserRegisterReturnDTO returnDTO = new UserRegisterReturnDTO();
-            returnDTO.UserId = user.UserId;
-            returnDTO.Email = user.Email;
-            returnDTO.Name = user.Name;
-            returnDTO.Phone = user.Phone;
+            var returnDTO = new UserRegisterReturnDTO
+            {
+                UserId = user.UserId,
+                Email = user.Email,
+                Name = user.Name,
+                Phone = user.Phone
+            };
             return returnDTO;
         }
+        #endregion
 
+        #region Revert Changes 
+        /// <summary>
+        /// Revert the User Insert 
+        /// </summary>
+        /// <param name="userDetail"> UserDetail Object </param>
+        /// <returns>Void </returns>
         private async Task RevertUserDetailInsert(UserDetail userDetail)
         {
+            _logger.LogWarning("Reverting user detail insert for user ID {UserId}.", userDetail.UserId);
             await _userDetailRepo.DeleteByKey(userDetail.UserId);
         }
-
+        /// <summary>
+        /// Revert the User Insert 
+        /// </summary>
+        /// <param name="user"> User Object </param>
+        /// <returns>Void </returns>
         private async Task RevertUserInsert(User user)
         {
+            _logger.LogWarning("Reverting user insert for user ID {UserId}.", user.UserId);
             await _userRepo.DeleteByKey(user.UserId);
         }
+        #endregion
 
+        /// <summary>
+        /// Make A User Detail Object with Hashed Password 
+        /// </summary>
+        /// <param name="userRegisterDTO"> User Register DTO object</param>
+        /// <returns>User Detail Object </returns>
+        #region Map User Register DTO to User Detail 
         private UserDetail MapUserRegisterDTOToUserDetail(UserRegisterDTO userRegisterDTO)
         {
-            UserDetail userDetail = new UserDetail();
-            HMACSHA512 hMACSHA512 = new HMACSHA512();
-            userDetail.PasswordHashKey = hMACSHA512.Key;
-            userDetail.Email = userRegisterDTO.Email;
-            userDetail.Password = hMACSHA512.ComputeHash(Encoding.UTF8.GetBytes(userRegisterDTO.Password));
-            return userDetail;
+            using (HMACSHA512 hMACSHA512 = new HMACSHA512())
+            {
+                var userDetail = new UserDetail
+                {
+                    PasswordHashKey = hMACSHA512.Key,
+                    Email = userRegisterDTO.Email,
+                    Password = hMACSHA512.ComputeHash(Encoding.UTF8.GetBytes(userRegisterDTO.Password))
+                };
+                return userDetail;
+            }
         }
+        #endregion
 
+        /// <summary>
+        /// Generate user From User Register DTO 
+        /// </summary>
+        /// <param name="userRegisterDTO">User Register Dto object </param>
+        /// <returns>User Object </returns>
+        #region GenerateUser 
         private User GenerateUser(UserRegisterDTO userRegisterDTO)
         {
-            User user = new User();
-            user.Name = userRegisterDTO.Name;
-            user.Email = userRegisterDTO.Email;
-            user.Phone = userRegisterDTO.Phone;
+            var user = new User
+            {
+                Name = userRegisterDTO.Name,
+                Email = userRegisterDTO.Email,
+                Phone = userRegisterDTO.Phone
+            };
             return user;
         }
         #endregion
