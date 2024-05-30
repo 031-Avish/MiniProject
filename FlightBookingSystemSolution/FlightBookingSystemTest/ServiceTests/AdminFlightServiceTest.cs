@@ -3,18 +3,13 @@ using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Exceptions.ServiceExceptions;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
-using FlightBookingSystemAPI.Models.DTOs;
 using FlightBookingSystemAPI.Models.DTOs.FlightDTO;
 using FlightBookingSystemAPI.Repositories;
 using FlightBookingSystemAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+
 
 namespace FlightBookingSystemAPI.Tests.Services
 {
@@ -244,6 +239,7 @@ namespace FlightBookingSystemAPI.Tests.Services
             Assert.NotNull(result);
             Assert.AreEqual(flight.FlightId, result.FlightId);
             Assert.AreEqual(flight.Name, result.Name);
+
             Assert.AreEqual(flight.TotalSeats, result.TotalSeats);
         }
 

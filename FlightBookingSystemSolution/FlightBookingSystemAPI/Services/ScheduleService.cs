@@ -1,15 +1,11 @@
-﻿using FlightBookingSystemAPI.Exceptions;
-using FlightBookingSystemAPI.Exceptions.RepositoryException;
+﻿using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Exceptions.ServiceExceptions;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
 using FlightBookingSystemAPI.Models.DTOs.FlightDTO;
 using FlightBookingSystemAPI.Models.DTOs.RouteInfoDTO;
 using FlightBookingSystemAPI.Models.DTOs.ScheduleDTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace FlightBookingSystemAPI.Services
 {
@@ -52,19 +48,59 @@ namespace FlightBookingSystemAPI.Services
         {
             try
             {
-
                 // Check if RouteId exists
                 var routeExists = await _routeRepository.GetByKey(scheduleDTO.RouteId);
                 if (routeExists.RouteStatus != "Enable")
-                    throw new Exception("Cannot add Schedule Route is Not Enable");
+                    throw new Exception("Cannot add Schedule, Route is Not Enabled");
+
                 // Check if FlightId exists
                 var flightExists = await _flightRepository.GetByKey(scheduleDTO.FlightId);
                 if (flightExists.FlightStatus != "Enable")
-                    throw new Exception("Cannot add Schedule Flight is Not Enable");
+                    throw new Exception("Cannot add Schedule, Flight is Not Enabled");
 
-                Schedule schedule = MapScheduleWithScheduleDTO(scheduleDTO);
-                schedule.AvailableSeat = flightExists.TotalSeats;
-                Schedule addedSchedule = await _scheduleRepository.Add(schedule);
+                // Get all schedules for the given flight
+                IEnumerable<Schedule> existingSchedules = null;
+                try
+                {
+                    existingSchedules = await _scheduleRepository.GetAll();
+                }
+                catch (ScheduleRepositoryException)
+                {
+
+                }
+                if (existingSchedules != null)
+                {
+                    var flightSchedules = existingSchedules
+                                .Where(s => s.FlightId == scheduleDTO.FlightId 
+                                && s.DepartureTime.Date == scheduleDTO.DepartureTime.Date)
+                                .ToList();
+
+                    // Find the schedule with the highest reaching time
+                    var maxReachingTimeSchedule = flightSchedules.OrderByDescending(s => s.ReachingTime).FirstOrDefault();
+
+                    // Check if the flight can be scheduled
+                    if (maxReachingTimeSchedule != null)
+                    {
+                        // Check if the new schedule starts within the existing schedule's time range
+                        if (scheduleDTO.DepartureTime <= maxReachingTimeSchedule.ReachingTime)
+                        {
+                            throw new Exception("Cannot add Schedule, Flight is already scheduled to depart on the same date within the same time range");
+                        }
+
+                        // Check if the new schedule starts at least 2 hours after the existing schedule ends, and from the same end city
+                        if (maxReachingTimeSchedule.ReachingTime.AddHours(2) > scheduleDTO.DepartureTime &&
+                            routeExists.EndCity != maxReachingTimeSchedule.RouteInfo.EndCity)
+                        {
+                            throw new Exception("Cannot add Schedule, Flight can only be scheduled from the end city of the previous schedule after 2 hours");
+                        }
+                    }
+
+                }
+
+                // Create new Schedule
+                Schedule newSchedule = MapScheduleWithScheduleDTO(scheduleDTO);
+                newSchedule.AvailableSeat = flightExists.TotalSeats;
+                Schedule addedSchedule = await _scheduleRepository.Add(newSchedule);
                 ScheduleReturnDTO scheduleReturnDTO = MapScheduleWithScheduleReturnDTO(addedSchedule);
                 return scheduleReturnDTO;
             }
@@ -82,18 +118,19 @@ namespace FlightBookingSystemAPI.Services
             }
             catch (Exception ex)
             {
-                throw new ScheduleServiceException("Cannot add Schedule at this moment, some unwanted error occurred: "+ex.Message, ex);
+                throw new ScheduleServiceException("Cannot add Schedule at this moment, some unwanted error occurred: " + ex.Message, ex);
             }
         }
-        #endregion
+    
+    #endregion
 
-        #region UpdateSchedule
-        /// <summary>
-        /// Updates an existing schedule.
-        /// </summary>
-        /// <param name="ScheduleUpdateDTO">The schedule update data transfer object.</param>
-        /// <returns>The updated schedule data transfer object.</returns>
-        public async Task<ScheduleReturnDTO> UpdateSchedule(ScheduleUpdateDTO ScheduleUpdateDTO)
+    #region UpdateSchedule
+    /// <summary>
+    /// Updates an existing schedule.
+    /// </summary>
+    /// <param name="ScheduleUpdateDTO">The schedule update data transfer object.</param>
+    /// <returns>The updated schedule data transfer object.</returns>
+    public async Task<ScheduleReturnDTO> UpdateSchedule(ScheduleUpdateDTO ScheduleUpdateDTO)
         {
             try
             {
@@ -104,7 +141,9 @@ namespace FlightBookingSystemAPI.Services
                 // Check if FlightId exists
                 var flightExists = await _flightRepository.GetByKey(ScheduleUpdateDTO.FlightId);
                 if (flightExists.FlightStatus != "Enable")
-                    throw new Exception("Cannot add Schedule Flight is Not Enable");
+                    throw new Exception("Cannot Update Schedule Flight is Not Enable");
+
+
 
                 Schedule schedule = MapScheduleUpdateDTOWithSchedule(ScheduleUpdateDTO);
                 Schedule existingSchedule = await _scheduleRepository.GetByKey(schedule.ScheduleId);
