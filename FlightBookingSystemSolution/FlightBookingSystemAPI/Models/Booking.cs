@@ -7,10 +7,10 @@ namespace FlightBookingSystemAPI.Models
     {
         [Key]
         public int BookingId { get; set; }
-        public string BookingStatus { get; set; }
+        public string BookingStatus { get; set; } 
         public DateTime BookingDate { get; set;} = DateTime.Now;
         public string PaymentStatus { get; set; } = "Pending";
-        public float TotalPrice { get; set; }
+        public float TotalPrice { get; set; } 
         public int UserId { get; set; }
         [ForeignKey("UserId")]
         public int PassengerCount { get; set; }

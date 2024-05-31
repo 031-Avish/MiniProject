@@ -7,6 +7,7 @@ using FlightBookingSystemAPI.Models.DTOs.BookingDTO;
 using FlightBookingSystemAPI.Models.DTOs.PassengerDTO;
 using FlightBookingSystemAPI.Models.DTOs.ScheduleDTO;
 using System.Transactions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace FlightBookingSystemAPI.Services
 {
@@ -111,24 +112,7 @@ namespace FlightBookingSystemAPI.Services
                 _logger.LogInformation("Adding passenger details and booking details for booking with ID {BookingId}.", addedBooking.BookingId);
 
                 // Add passenger details and booking details for each passenger
-                foreach (var passengerDTO in bookingDTO.Passengers)
-                {
-                    Passenger passenger = new Passenger
-                    {
-                        Name = passengerDTO.Name,
-                        Age = passengerDTO.Age,
-                        Gender = passengerDTO.Gender
-                    };
-                    var addedPassenger = await _passengerRepository.Add(passenger);
-
-                    BookingDetail bookingDetail = new BookingDetail
-                    {
-                        BookingId = addedBooking.BookingId,
-                        PassengerId = addedPassenger.PassengerId
-                    };
-
-                    await _bookingDetailRepository.Add(bookingDetail);
-                }
+                await AddBookingDetailsAndPassenger(bookingDTO, addedBooking);
 
                 await _dbContext.SaveChangesAsync();
 
@@ -147,6 +131,28 @@ namespace FlightBookingSystemAPI.Services
                 throw new BookingServiceException("Error occurred while booking the flight.", ex);
             }
         }
+
+        private async Task AddBookingDetailsAndPassenger(BookingDTO bookingDTO, Booking addedBooking)
+        {
+            foreach (var passengerDTO in bookingDTO.Passengers)
+            {
+                Passenger passenger = new Passenger
+                {
+                    Name = passengerDTO.Name,
+                    Age = passengerDTO.Age,
+                    Gender = passengerDTO.Gender
+                };
+                var addedPassenger = await _passengerRepository.Add(passenger);
+
+                BookingDetail bookingDetail = new BookingDetail
+                {
+                    BookingId = addedBooking.BookingId,
+                    PassengerId = addedPassenger.PassengerId
+                };
+
+                await _bookingDetailRepository.Add(bookingDetail);
+            }
+        }
         #endregion
 
         /// <summary>
@@ -157,9 +163,9 @@ namespace FlightBookingSystemAPI.Services
         #region CancelBooking
         public async Task<BookingCancelReturnDTO> CancelBooking(int bookingId)
         {
+           using var transaction = await _dbContext.Database.BeginTransactionAsync();
             try
             {
-                using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
                     _logger.LogInformation("Attempting to cancel the booking with ID {BookingId}.", bookingId);
 
@@ -195,7 +201,8 @@ namespace FlightBookingSystemAPI.Services
                     _logger.LogInformation("Committing the cancellation of the booking with ID {BookingId}.", bookingId);
 
                     // Commit the transaction
-                    transactionScope.Complete();
+                 
+                    await transaction.CommitAsync();
 
                     _logger.LogInformation("Cancellation of booking with ID {BookingId} successful.", bookingId);
 
@@ -210,10 +217,14 @@ namespace FlightBookingSystemAPI.Services
             }
             catch (BookingRepositoryException)
             {
+                await transaction.RollbackAsync();
+
                 throw;
             }
             catch (ScheduleRepositoryException)
             {
+                await transaction.RollbackAsync();
+
                 throw;
             }
             catch (Exception ex)

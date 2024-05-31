@@ -3,7 +3,6 @@ using FlightBookingSystemAPI.Exceptions.ServiceExceptions;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
 using FlightBookingSystemAPI.Models.DTOs.FlightDTO;
-using
 
 namespace FlightBookingSystemAPI.Services
 {
@@ -158,7 +157,7 @@ namespace FlightBookingSystemAPI.Services
                 _logger.LogInformation("All flights retrieved successfully.");
                 return flightReturnDTOs;
             }
-            catch (UserRepositoryException ex)
+            catch (FlightRepositoryException ex)
             {
                 _logger.LogError(ex, "Error occurred while retrieving all flights.");
                 throw;
@@ -188,7 +187,7 @@ namespace FlightBookingSystemAPI.Services
                 _logger.LogInformation("Flight retrieved successfully.");
                 return flightReturnDTO;
             }
-            catch (UserRepositoryException ex)
+            catch (FlightRepositoryException ex)
             {
                 _logger.LogError(ex, "Error occurred while retrieving flight.");
                 throw;
@@ -218,7 +217,7 @@ namespace FlightBookingSystemAPI.Services
                 _logger.LogInformation("Flight updated successfully.");
                 return updatedFlightReturnDTO;
             }
-            catch (UserRepositoryException ex)
+            catch (FlightRepositoryException ex)
             {
                 _logger.LogError(ex, "Error occurred while updating flight.");
                 throw;

@@ -3,7 +3,7 @@
 namespace FlightBookingSystemAPI.Exceptions.ServiceExceptions
 {
     [Serializable]
-    internal class ScheduleServiceException : Exception
+    public class ScheduleServiceException : Exception
     {
         public ScheduleServiceException()
         {

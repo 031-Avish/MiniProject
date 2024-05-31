@@ -97,7 +97,7 @@ namespace FlightBookingSystemAPI.Services
 
                         // Check if the new schedule starts at least 2 hours after the existing schedule ends, and from the same end city
                         if (maxReachingTimeSchedule.ReachingTime.AddHours(2) > scheduleDTO.DepartureTime &&
-                            routeExists.EndCity != maxReachingTimeSchedule.RouteInfo.EndCity)
+                            routeExists.EndCity != maxReachingTimeSchedule.RouteInfo.StartCity)
                         {
                             throw new Exception("Cannot add Schedule, Flight can only be scheduled from the end city of the previous schedule after 2 hours");
                         }
@@ -143,6 +143,7 @@ namespace FlightBookingSystemAPI.Services
         {
             try
             {
+
                 _logger.LogInformation("Updating schedule: {@ScheduleUpdateDTO}", ScheduleUpdateDTO);
 
                 // Check if RouteId exists and it is Enable 
@@ -153,7 +154,12 @@ namespace FlightBookingSystemAPI.Services
                 var flightExists = await _flightRepository.GetByKey(ScheduleUpdateDTO.FlightId);
                 if (flightExists.FlightStatus != "Enable")
                     throw new Exception("Cannot Update Schedule Flight is Not Enable");
-                // Get all schedules for the given flight
+                var sc = await _scheduleRepository.GetByKey(ScheduleUpdateDTO.ScheduleId);
+                if (sc.RouteId != ScheduleUpdateDTO.RouteId)
+                {
+                    checkValidRouteOrNot(ScheduleUpdateDTO);
+                }
+                    // Get all schedules for the given flight
                 IEnumerable<Schedule> existingSchedules = null;
                 try
                 {
@@ -163,6 +169,7 @@ namespace FlightBookingSystemAPI.Services
                 {
 
                 }
+
                 if (existingSchedules != null)
                 {
                     var flightSchedules = existingSchedules
@@ -185,7 +192,7 @@ namespace FlightBookingSystemAPI.Services
 
                         // Check if the new schedule starts at least 2 hours after the existing schedule ends, and from the same end city
                         if (maxReachingTimeSchedule.ReachingTime.AddHours(2) > ScheduleUpdateDTO.DepartureTime &&
-                            routeExists.EndCity != maxReachingTimeSchedule.RouteInfo.EndCity)
+                            routeExists.EndCity != maxReachingTimeSchedule.RouteInfo.StartCity)
                         {
                             throw new Exception("Cannot add Schedule, Flight can only be scheduled from the end city of the previous schedule after 2 hours");
                         }
@@ -216,7 +223,30 @@ namespace FlightBookingSystemAPI.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An unexpected error occurred while updating the schedule: {Message}", ex.Message);
-                throw new ScheduleServiceException("Error occurred while updating the schedule.", ex);
+                throw new ScheduleServiceException("Error occurred while updating the schedule."+ex.Message, ex);
+            }
+        }
+
+        private async Task checkValidRouteOrNot(ScheduleUpdateDTO scheduleUpdateDTO)
+        {
+            IEnumerable<Booking> existingBooking = null;
+            // Check if any booking exists with the given ScheduleId
+            try
+            {
+                existingBooking = await _bookingRepository.GetAll();
+            } // if no booking then Directly delete the Schedule 
+            catch (BookingRepositoryException ex) when (ex.Message.Contains("No bookings present"))
+            {
+
+            } // If Schedule Exist then Check if it has any booking 
+            if (existingBooking.Any(b => b.ScheduleId == scheduleUpdateDTO.ScheduleId))
+            {
+                var updateSchedule = await _scheduleRepository.GetByKey(scheduleUpdateDTO.ScheduleId);
+                // if active booking then Cant Update 
+                if (existingBooking.Any(booking => booking.ScheduleId == scheduleUpdateDTO.ScheduleId && (booking.BookingStatus == "Processing" || booking.BookingStatus == "Completed") && booking.FlightDetails.DepartureTime > DateTime.Now))
+                {
+                    throw new ScheduleServiceException("cannot update Schedule !! Booking has this Schedule Update that first");
+                }
             }
         }
         #endregion
