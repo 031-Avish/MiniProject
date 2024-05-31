@@ -73,7 +73,7 @@ namespace FlightBookingSystemTest.RepositoryTests
             };
 
             // Act & Assert
-            Assert.ThrowsAsync<UserRepositoryException>(() => _userRepository.Add(duplicateUser));
+            Assert.ThrowsAsync<UserServiceException>(() => _userRepository.Add(duplicateUser));
         }
 
         [Test]
@@ -98,7 +98,7 @@ namespace FlightBookingSystemTest.RepositoryTests
             };
 
             // Act & Assert
-            Assert.ThrowsAsync<UserRepositoryException>(() => _userRepository.Add(duplicateUser));
+            Assert.ThrowsAsync<UserServiceException>(() => _userRepository.Add(duplicateUser));
         }
 
         [Test]
@@ -108,7 +108,7 @@ namespace FlightBookingSystemTest.RepositoryTests
             var invalidUser = new User();
 
             // Act & Assert
-            Assert.ThrowsAsync<UserRepositoryException>(() => _userRepository.Add(invalidUser));
+            Assert.ThrowsAsync<UserServiceException>(() => _userRepository.Add(invalidUser));
         }
 
         [Test]
@@ -139,7 +139,7 @@ namespace FlightBookingSystemTest.RepositoryTests
             var nonExistentUserId = 999;
 
             // Act & Assert
-            Assert.ThrowsAsync<UserRepositoryException>(() => _userRepository.GetByKey(nonExistentUserId));
+            Assert.ThrowsAsync<UserServiceException>(() => _userRepository.GetByKey(nonExistentUserId));
         }
 
         [Test]
@@ -180,7 +180,7 @@ namespace FlightBookingSystemTest.RepositoryTests
             };
 
             // Act & Assert
-            Assert.ThrowsAsync<UserRepositoryException>(async () => await _userRepository.Update(nonExistentUser));
+            Assert.ThrowsAsync<UserServiceException>(async () => await _userRepository.Update(nonExistentUser));
         }
 
         [Test]
@@ -211,7 +211,7 @@ namespace FlightBookingSystemTest.RepositoryTests
             var nonExistentUserId = 999;
 
             // Act & Assert
-            Assert.ThrowsAsync<UserRepositoryException>(async () => await _userRepository.DeleteByKey(nonExistentUserId));
+            Assert.ThrowsAsync<UserServiceException>(async () => await _userRepository.DeleteByKey(nonExistentUserId));
         }
 
         [Test]
@@ -249,7 +249,7 @@ namespace FlightBookingSystemTest.RepositoryTests
             // Arrange
 
             // Act & Assert
-            Assert.ThrowsAsync<UserRepositoryException>(async () => await _userRepository.GetAll());
+            Assert.ThrowsAsync<UserServiceException>(async () => await _userRepository.GetAll());
         }
     }
 }

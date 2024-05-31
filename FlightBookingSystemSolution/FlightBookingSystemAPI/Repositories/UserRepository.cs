@@ -60,12 +60,12 @@ namespace FlightBookingSystemAPI.Repositories
             catch (DuplicateUserException ex)
             {
                 _logger.LogError(ex, "Error occurred while adding user: " + ex.Message);
-                throw new UserRepositoryException("Error: " + ex.Message, ex);
+                throw new UserServiceException("Error: " + ex.Message, ex);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while adding user.");
-                throw new UserRepositoryException("Error occurred while adding user." + ex.Message, ex);
+                throw new UserServiceException("Error occurred while adding user." + ex.Message, ex);
             }
         }
         #endregion
@@ -90,12 +90,12 @@ namespace FlightBookingSystemAPI.Repositories
             catch (NotPresentException ex)
             {
                 _logger.LogError(ex, "Error occurred while deleting user: " + ex.Message);
-                throw new UserRepositoryException("Error occurred while deleting user: " + ex.Message, ex);
+                throw new UserServiceException("Error occurred while deleting user: " + ex.Message, ex);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while deleting user.");
-                throw new UserRepositoryException("Error occurred while deleting user." + ex.Message, ex);
+                throw new UserServiceException("Error occurred while deleting user." + ex.Message, ex);
             }
         }
         #endregion
@@ -122,12 +122,12 @@ namespace FlightBookingSystemAPI.Repositories
             catch (NotPresentException ex)
             {
                 _logger.LogError(ex, "Error occurred while retrieving users.");
-                throw new UserRepositoryException("Error occurred while retrieving users: " + ex.Message, ex);
+                throw new UserServiceException("Error occurred while retrieving users: " + ex.Message, ex);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while retrieving users.");
-                throw new UserRepositoryException("Error occurred while retrieving users." + ex.Message, ex);
+                throw new UserServiceException("Error occurred while retrieving users." + ex.Message, ex);
             }
         }
         #endregion
@@ -155,12 +155,12 @@ namespace FlightBookingSystemAPI.Repositories
             catch (NotPresentException ex)
             {
                 _logger.LogError(ex, "Error occurred while retrieving user.");
-                throw new UserRepositoryException("Error occurred while retrieving user: " + ex.Message, ex);
+                throw new UserServiceException("Error occurred while retrieving user: " + ex.Message, ex);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while retrieving user.");
-                throw new UserRepositoryException("Error occurred while retrieving user." + ex.Message, ex);
+                throw new UserServiceException("Error occurred while retrieving user." + ex.Message, ex);
             }
         }
         #endregion
@@ -186,12 +186,12 @@ namespace FlightBookingSystemAPI.Repositories
             catch (NotPresentException ex)
             {
                 _logger.LogError(ex, "Error occurred while updating user.");
-                throw new UserRepositoryException("Error occurred while updating user: User not found." + ex.Message, ex);
+                throw new UserServiceException("Error occurred while updating user: User not found." + ex.Message, ex);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while updating user.");
-                throw new UserRepositoryException("Error occurred while updating user." + ex.Message, ex);
+                throw new UserServiceException("Error occurred while updating user." + ex.Message, ex);
             }
         }
         #endregion

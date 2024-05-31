@@ -2,10 +2,10 @@
 
 namespace FlightBookingSystemAPI.Exceptions.RepositoryException
 {
-    public class UserRepositoryException : Exception
+    public class UserServiceException : Exception
     {
         string msg = string.Empty;
-        public UserRepositoryException(string message, Exception innerException) : base(message, innerException)
+        public UserServiceException(string message, Exception innerException) : base(message, innerException)
         {
             msg = message;
         }

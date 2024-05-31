@@ -3,6 +3,7 @@ using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
 using FlightBookingSystemAPI.Models.DTOs;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -85,7 +86,7 @@ namespace FlightBookingSystemAPI.Services
                 _logger.LogError(ex, "UserDetailRepositoryException for user ID {UserId}.", loginDTO.UserId);
                 throw;
             }
-            catch (UserRepositoryException ex)
+            catch (UserServiceException ex)
             {
                 _logger.LogError(ex, "UserRepositoryException for user ID {UserId}.", loginDTO.UserId);
                 throw;
@@ -128,7 +129,7 @@ namespace FlightBookingSystemAPI.Services
 
 
             }
-            catch (UserRepositoryException ex)
+            catch (UserServiceException ex)
             {
                 _logger.LogError(ex, "UserRepositoryException for email {Email}.", userRegisterDTO.Email);
                 throw;
@@ -179,6 +180,7 @@ namespace FlightBookingSystemAPI.Services
         /// <param name="password">User Given Password </param>
         /// <returns></returns>
         #region Compare Password
+        [ExcludeFromCodeCoverage]
         private bool ComparePassword(byte[] encrypterPass, byte[] password)
         {
             for (int i = 0; i < encrypterPass.Length; i++)

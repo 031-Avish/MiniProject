@@ -29,7 +29,7 @@ namespace FlightBookingSystemAPI.Controllers
                 UserRegisterReturnDTO returnDTO = await _userService.Register(userRegisterDTO);
                 return Ok(returnDTO);
             }
-            catch(UserRepositoryException e)
+            catch(UserServiceException e)
             {
                 return BadRequest(new ErrorModel(400, e.Message));
             }
@@ -54,7 +54,7 @@ namespace FlightBookingSystemAPI.Controllers
                 var result = await _userService.Login(userLoginDTO);
                 return Ok(result);
             }
-            catch(UserRepositoryException ex)
+            catch(UserServiceException ex)
             {
                 return NotFound(new ErrorModel(404, ex.Message));
             }
