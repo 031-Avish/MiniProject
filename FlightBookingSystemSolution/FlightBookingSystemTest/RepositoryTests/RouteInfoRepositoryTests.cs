@@ -31,7 +31,12 @@ namespace FlightBookingSystemTest.RepositoryTests
 
 
         }
-
+        [TearDown]
+        public void TearDown()
+        {
+            _context.Database.EnsureDeleted();
+            _context.Dispose();
+        }
         [Test]
         public async Task Add_Success()
         {
@@ -194,6 +199,32 @@ namespace FlightBookingSystemTest.RepositoryTests
 
             // Act & Assert
             Assert.ThrowsAsync<RouteInfoRepositoryException>(() => _routeInfoRepository.GetAll());
+        }
+
+        [Test]
+        public async Task GetAllException()
+        {
+            // Simulate an exception during GetAll
+            _context.RouteInfos = null; // Setting it to null will cause an exception
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<RouteInfoRepositoryException>(async () =>
+            {
+                await _routeInfoRepository.GetAll();
+            });
+
+        }
+        [Test]
+        public async Task GetByKeyException()
+        {
+            // Simulate an exception during GetAll
+            _context.RouteInfos = null; // Setting it to null will cause an exception
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<RouteInfoRepositoryException>(async () =>
+            {
+                await _routeInfoRepository.GetByKey(999);
+            });
         }
     }
 }

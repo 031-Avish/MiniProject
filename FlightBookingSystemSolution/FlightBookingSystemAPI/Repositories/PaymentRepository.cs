@@ -68,11 +68,7 @@ namespace FlightBookingSystemAPI.Repositories
                 _logger.LogInformation("Payment deleted successfully.");
                 return payment;
             }
-            catch (NotPresentException ex)
-            {
-                _logger.LogError(ex, "Error occurred while deleting payment. Payment not found.");
-                throw new PaymentRepositoryException("Error occurred while deleting payment. Payment not found. " + ex.Message, ex);
-            }
+            
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while deleting payment.");
@@ -167,11 +163,7 @@ namespace FlightBookingSystemAPI.Repositories
                 _logger.LogInformation("Payment updated successfully.");
                 return item;
             }
-            catch (NotPresentException ex)
-            {
-                _logger.LogError(ex, "Error occurred while updating payment. Payment not found.");
-                throw new PaymentRepositoryException("Error occurred while updating payment. Payment not found. " + ex.Message, ex);
-            }
+            
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while updating payment.");

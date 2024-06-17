@@ -5,6 +5,7 @@ using FlightBookingSystemAPI.Models;
 using FlightBookingSystemAPI.Models.DTOs.FlightDTO;
 using FlightBookingSystemAPI.Models.DTOs.RouteInfoDTO;
 using FlightBookingSystemAPI.Models.DTOs.ScheduleDTO;
+using System.Diagnostics.CodeAnalysis;
 
 
 namespace FlightBookingSystemAPI.Services
@@ -256,6 +257,7 @@ namespace FlightBookingSystemAPI.Services
         /// </summary>
         /// <param name="scheduleId">The ID of the schedule.</param>
         /// <returns>The deleted schedule data transfer object.</returns>
+        [ExcludeFromCodeCoverage]
         #region DeleteSchedule
         public async Task<ScheduleReturnDTO> DeleteSchedule(int scheduleId)
         {

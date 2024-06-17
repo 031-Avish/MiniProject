@@ -67,11 +67,7 @@ namespace FlightBookingSystemAPI.Repositories
                 _logger.LogInformation("Route info deleted successfully.");
                 return routeInfo;
             }
-            catch (NotPresentException ex)
-            {
-                _logger.LogError(ex, "Error occurred while deleting route info. Route not found.");
-                throw new RouteInfoRepositoryException("Error occurred while deleting route info. Route not found. " + ex.Message, ex);
-            }
+            
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while deleting route info.");
@@ -166,11 +162,7 @@ namespace FlightBookingSystemAPI.Repositories
                 _logger.LogInformation("Route info updated successfully.");
                 return item;
             }
-            catch (NotPresentException ex)
-            {
-                _logger.LogError(ex, "Error occurred while updating route info. Route not found.");
-                throw new RouteInfoRepositoryException("Error occurred while updating route info. Route not found. " + ex.Message, ex);
-            }
+            
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while updating route info.");

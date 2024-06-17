@@ -49,7 +49,12 @@ namespace FlightBookingSystemTest.RepositoryTests
             await _context.SaveChangesAsync();
 
         }
-
+        [TearDown]
+        public void TearDown()
+        {
+            _context.Database.EnsureDeleted();
+            _context.Dispose();
+        }
         [Test]
         public async Task Add_Success()
         {
@@ -73,17 +78,7 @@ namespace FlightBookingSystemTest.RepositoryTests
             Assert.AreEqual(1, result.ScheduleId);
         }
 
-        [Test]
-        public async Task Add_Failure_Exception()
-        {
-            // Arrange
-            var invalidSchedule = new Schedule();
-            var schedule = await _scheduleRepository.Add(invalidSchedule);
-            // Act & Assert
-            var result = await _scheduleRepository.GetByKey(schedule.ScheduleId);
-
-            //Assert.ThrowsAsync<ScheduleRepositoryException>();
-        }
+        
 
         [Test]
         public async Task GetByKey_Success()
@@ -236,6 +231,31 @@ namespace FlightBookingSystemTest.RepositoryTests
 
             // Act & Assert
             Assert.ThrowsAsync<ScheduleRepositoryException>(() => _scheduleRepository.GetAll());
+        }
+        [Test]
+        public async Task GetAllException()
+        {
+            // Simulate an exception during GetAll
+            _context.Schedules = null; // Setting it to null will cause an exception
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<ScheduleRepositoryException>(async () =>
+            {
+                await _scheduleRepository.GetAll();
+            });
+
+        }
+        [Test]
+        public async Task GetByKeyException()
+        {
+            // Simulate an exception during GetAll
+            _context.Schedules = null; // Setting it to null will cause an exception
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<ScheduleRepositoryException>(async () =>
+            {
+                await _scheduleRepository.GetByKey(999);
+            });
         }
     }
 }

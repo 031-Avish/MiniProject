@@ -69,11 +69,7 @@ namespace FlightBookingSystemAPI.Repositories
                 _logger.LogInformation("Schedule deleted successfully.");
                 return schedule;
             }
-            catch (NotPresentException ex)
-            {
-                _logger.LogError(ex, "Error occurred while deleting schedule. Schedule not found.");
-                throw new ScheduleRepositoryException("Error occurred while deleting schedule. Schedule not found. " + ex.Message, ex);
-            }
+            
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while deleting schedule.");
@@ -177,11 +173,6 @@ namespace FlightBookingSystemAPI.Repositories
                 await _context.SaveChangesAsync(true);
                 _logger.LogInformation("Schedule updated successfully.");
                 return item;
-            }
-            catch (NotPresentException ex)
-            {
-                _logger.LogError(ex, "Error occurred while updating schedule. Schedule not found.");
-                throw new ScheduleRepositoryException("Error occurred while updating schedule. Schedule not found. " + ex.Message, ex);
             }
             catch (Exception ex)
             {

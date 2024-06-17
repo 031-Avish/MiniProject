@@ -68,11 +68,7 @@ namespace FlightBookingSystemAPI.Repositories
                 _logger.LogInformation("Passenger deleted successfully.");
                 return passenger;
             }
-            catch (NotPresentException ex)
-            {
-                _logger.LogError(ex, "Error occurred while deleting passenger. Passenger not found.");
-                throw new PassengerRepositoryException("Error occurred while deleting passenger. Passenger not found. " + ex.Message, ex);
-            }
+            
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while deleting passenger.");
@@ -167,11 +163,7 @@ namespace FlightBookingSystemAPI.Repositories
                 _logger.LogInformation("Passenger updated successfully.");
                 return item;
             }
-            catch (NotPresentException ex)
-            {
-                _logger.LogError(ex, "Error occurred while updating passenger. Passenger not found.");
-                throw new PassengerRepositoryException("Error occurred while updating passenger. Passenger not found. " + ex.Message, ex);
-            }
+            
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while updating passenger.");

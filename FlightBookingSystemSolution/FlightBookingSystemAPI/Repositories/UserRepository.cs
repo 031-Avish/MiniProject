@@ -87,11 +87,7 @@ namespace FlightBookingSystemAPI.Repositories
                 _logger.LogInformation("User deleted successfully.");
                 return user;
             }
-            catch (NotPresentException ex)
-            {
-                _logger.LogError(ex, "Error occurred while deleting user: " + ex.Message);
-                throw new UserServiceException("Error occurred while deleting user: " + ex.Message, ex);
-            }
+           
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while deleting user.");
@@ -182,11 +178,6 @@ namespace FlightBookingSystemAPI.Repositories
                 await _context.SaveChangesAsync(true);
                 _logger.LogInformation("User updated successfully.");
                 return item;
-            }
-            catch (NotPresentException ex)
-            {
-                _logger.LogError(ex, "Error occurred while updating user.");
-                throw new UserServiceException("Error occurred while updating user: User not found." + ex.Message, ex);
             }
             catch (Exception ex)
             {

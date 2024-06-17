@@ -43,6 +43,12 @@ namespace FlightBookingSystemTest.RepositoryTests
                 Role = "Customer"
             });
         }
+        [TearDown]
+        public void TearDown()
+        {
+            _context.Database.EnsureDeleted();
+            _context.Dispose();
+        }
 
         [Test]
         public async Task Add_Success()
@@ -237,6 +243,32 @@ namespace FlightBookingSystemTest.RepositoryTests
 
             // Act & Assert
             Assert.ThrowsAsync<UserDetailRepositoryException>(async () => await _userDetailRepository.GetAll());
+        }
+
+        [Test]
+        public async Task GetAllException()
+        {
+            // Simulate an exception during GetAll
+            _context.UserDetails = null; // Setting it to null will cause an exception
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<UserDetailRepositoryException>(async () =>
+            {
+                await _userDetailRepository.GetAll();
+            });
+
+        }
+        [Test]
+        public async Task GetByKeyException()
+        {
+            // Simulate an exception during GetAll
+            _context.UserDetails = null; // Setting it to null will cause an exception
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<UserDetailRepositoryException>(async () =>
+            {
+                await _userDetailRepository.GetByKey(999);
+            });
         }
     }
 }

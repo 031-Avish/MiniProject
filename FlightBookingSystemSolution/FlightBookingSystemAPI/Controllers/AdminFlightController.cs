@@ -3,12 +3,9 @@ using FlightBookingSystemAPI.Exceptions.ServiceExceptions;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models.DTOs;
 using FlightBookingSystemAPI.Models.DTOs.FlightDTO;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 
 namespace FlightBookingSystemAPI.Controllers
 {
@@ -34,12 +31,14 @@ namespace FlightBookingSystemAPI.Controllers
             _logger = logger;
         }
 
-        #region AddFlight
         /// <summary>
         /// Adds a new flight.
         /// </summary>
         /// <param name="flightDTO">Flight details.</param>
         /// <returns>Returns the added flight details.</returns>
+        #region AddFlight
+
+        [Authorize(Roles = "Admin")]
         [HttpPost("AddFlight")]
         [ProducesResponseType(typeof(FlightReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -71,12 +70,14 @@ namespace FlightBookingSystemAPI.Controllers
         }
         #endregion
 
-        #region UpdateFlight
         /// <summary>
         /// Updates an existing flight.
         /// </summary>
         /// <param name="flightReturnDTO">Updated flight details.</param>
         /// <returns>Returns the updated flight details.</returns>
+        #region UpdateFlight
+
+        [Authorize(Roles = "Admin")]
         [HttpPut("UpdateFlight")]
         [ProducesResponseType(typeof(FlightReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -108,12 +109,14 @@ namespace FlightBookingSystemAPI.Controllers
         }
         #endregion
 
-        #region DeleteFlight
         /// <summary>
         /// Deletes a flight.
         /// </summary>
         /// <param name="flightId">ID of the flight to delete.</param>
         /// <returns>Returns details of the deleted flight.</returns>
+        #region DeleteFlight
+
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteFlight/{flightId}")]
         [ProducesResponseType(typeof(FlightDeleteReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -146,12 +149,14 @@ namespace FlightBookingSystemAPI.Controllers
         }
         #endregion
 
-        #region GetFlight
         /// <summary>
         /// Retrieves details of a flight by ID.
         /// </summary>
         /// <param name="flightId">ID of the flight to retrieve.</param>
         /// <returns>Returns the flight details.</returns>
+        #region GetFlight
+        
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetFlight/{flightId}")]
         [ProducesResponseType(typeof(FlightReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
@@ -183,11 +188,13 @@ namespace FlightBookingSystemAPI.Controllers
         }
         #endregion
 
-        #region GetAllFlights
         /// <summary>
         /// Retrieves all flights.
         /// </summary>
         /// <returns>Returns a list of all flights.</returns>
+        #region GetAllFlights
+
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetAllFlights")]
         [ProducesResponseType(typeof(List<FlightReturnDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]

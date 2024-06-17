@@ -9,9 +9,6 @@ using FlightBookingSystemAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NUnit.Framework;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 
 namespace FlightBookingSystemAPI.Tests.Services
 {
@@ -181,8 +178,8 @@ namespace FlightBookingSystemAPI.Tests.Services
 
             var schedule = new Schedule
             {
-                DepartureTime = new DateTime(2024, 6, 10, 1, 29, 46, 798),
-                ReachingTime = new DateTime(2024, 6, 10, 3, 29, 46, 798),
+                DepartureTime = DateTime.Now.AddDays(1),
+                ReachingTime = DateTime.Now.AddDays(1).AddHours(2),
                 AvailableSeat = 150,
                 ScheduleStatus = "Enable",
                 Price = 20000,
@@ -408,6 +405,7 @@ namespace FlightBookingSystemAPI.Tests.Services
             // Act & Assert
             Assert.ThrowsAsync<AdminFlightServiceException>(async () => await adminFlightService.UpdateFlight(flightReturnDTO));
         }
+
 
 
     }

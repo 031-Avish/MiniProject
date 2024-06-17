@@ -5,12 +5,8 @@ using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models.DTOs;
 using FlightBookingSystemAPI.Models.DTOs.RouteInfoDTO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+
 
 namespace FlightBookingSystemAPI.Controllers
 {
@@ -35,12 +31,14 @@ namespace FlightBookingSystemAPI.Controllers
             _logger = logger;
         }
 
-        #region AddRouteInfo
         /// <summary>
         /// Adds a new route information.
         /// </summary>
         /// <param name="routeInfoDTO">Route information details.</param>
         /// <returns>Returns the added route information details.</returns>
+        #region AddRouteInfo
+
+        [Authorize(Roles = "Admin")]
         [HttpPost("AddRouteInfo")]
         [ProducesResponseType(typeof(RouteInfoReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -72,12 +70,13 @@ namespace FlightBookingSystemAPI.Controllers
         }
         #endregion
 
-        #region UpdateRouteInfo
         /// <summary>
         /// Updates existing route information.
         /// </summary>
         /// <param name="routeInfoReturnDTO">Updated route information details.</param>
         /// <returns>Returns the updated route information details.</returns>
+        #region UpdateRouteInfo
+        
         [Authorize(Roles = "Admin")]
         [HttpPut("UpdateRouteInfo")]
         [ProducesResponseType(typeof(RouteInfoReturnDTO), StatusCodes.Status200OK)]
@@ -110,12 +109,13 @@ namespace FlightBookingSystemAPI.Controllers
         }
         #endregion
 
-        #region DeleteRouteInfo
         /// <summary>
         /// Deletes route information.
         /// </summary>
         /// <param name="routeInfoId">ID of the route information to delete.</param>
         /// <returns>Returns details of the deleted route information.</returns>
+        #region DeleteRouteInfo
+        
         [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteRouteInfo/{routeInfoId}")]
         [ProducesResponseType(typeof(RouteInfoDeleteReturnDTO), StatusCodes.Status200OK)]
@@ -154,12 +154,13 @@ namespace FlightBookingSystemAPI.Controllers
         }
         #endregion
 
-        #region GetRouteInfo
         /// <summary>
         /// Retrieves details of route information by ID.
         /// </summary>
         /// <param name="routeInfoId">ID of the route information to retrieve.</param>
         /// <returns>Returns the route information details.</returns>
+        #region GetRouteInfo
+        
         [Authorize(Roles = "Admin")]
         [HttpGet("GetRouteInfo/{routeInfoId}")]
         [ProducesResponseType(typeof(RouteInfoReturnDTO), StatusCodes.Status200OK)]
@@ -192,11 +193,12 @@ namespace FlightBookingSystemAPI.Controllers
         }
         #endregion
 
-        #region GetAllRouteInfos
         /// <summary>
         /// Retrieves all route informations.
         /// </summary>
         /// <returns>Returns a list of all route informations.</returns>
+        #region GetAllRouteInfos
+        
         [Authorize(Roles = "Admin")]
         [HttpGet("GetAllRouteInfos")]
         [ProducesResponseType(typeof(List<RouteInfoReturnDTO>), StatusCodes.Status200OK)]

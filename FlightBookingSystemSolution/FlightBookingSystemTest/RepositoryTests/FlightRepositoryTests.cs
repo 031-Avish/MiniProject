@@ -5,11 +5,7 @@ using FlightBookingSystemAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace FlightBookingSystemTest.RepositoryTests
 {
@@ -28,6 +24,12 @@ namespace FlightBookingSystemTest.RepositoryTests
             var flightLoggerMock = new Mock<ILogger<FlightRepository>>();
             _flightRepository = new FlightRepository(_context, flightLoggerMock.Object);
            
+        }
+        [TearDown]
+        public void TearDown()
+        {
+            _context.Database.EnsureDeleted();
+            _context.Dispose();
         }
 
         [Test]
@@ -192,6 +194,31 @@ namespace FlightBookingSystemTest.RepositoryTests
 
             // Act & Assert
             Assert.ThrowsAsync<FlightRepositoryException>(() => _flightRepository.GetAll());
+        }
+        [Test]
+        public async Task GetAllException()
+        {
+            // Simulate an exception during GetAll
+            _context.Flights = null; // Setting it to null will cause an exception
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<FlightRepositoryException>(async () =>
+            {
+                await _flightRepository.GetAll();
+            });
+
+        }
+        [Test]
+        public async Task GetByKeyException()
+        {
+            // Simulate an exception during GetAll
+            _context.Flights = null; // Setting it to null will cause an exception
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<FlightRepositoryException>(async () =>
+            {
+                await _flightRepository.GetByKey(999);
+            });
         }
     }
 }

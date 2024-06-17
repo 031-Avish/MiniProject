@@ -81,11 +81,7 @@ namespace FlightBookingSystemAPI.Repositories
                 _logger.LogInformation("User detail deleted successfully.");
                 return userDetail;
             }
-            catch (NotPresentException ex)
-            {
-                _logger.LogError(ex, "Error occurred while deleting user detail: " + ex.Message);
-                throw new UserDetailRepositoryException("Error occurred while deleting user detail: " + ex.Message, ex);
-            }
+            
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while deleting user detail.");
@@ -177,11 +173,7 @@ namespace FlightBookingSystemAPI.Repositories
                 _logger.LogInformation("User detail updated successfully.");
                 return item;
             }
-            catch (NotPresentException ex)
-            {
-                _logger.LogError(ex, "Error occurred while updating user detail: " + ex.Message);
-                throw new UserDetailRepositoryException("Error occurred while updating user detail. User detail not found: " + ex.Message, ex);
-            }
+            
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while updating user detail.");

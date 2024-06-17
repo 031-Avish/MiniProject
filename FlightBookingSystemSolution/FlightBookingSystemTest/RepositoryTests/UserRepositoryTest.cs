@@ -31,6 +31,12 @@ namespace FlightBookingSystemTest.RepositoryTests
             _userRepository = new UserRepository(_context, userLoggerMock.Object);
 
         }
+        [TearDown]
+        public void TearDown()
+        {
+            _context.Database.EnsureDeleted();
+            _context.Dispose();
+        }
 
         [Test]
         public async Task Add_Success()
@@ -250,6 +256,32 @@ namespace FlightBookingSystemTest.RepositoryTests
 
             // Act & Assert
             Assert.ThrowsAsync<UserServiceException>(async () => await _userRepository.GetAll());
+        }
+
+        [Test]
+        public async Task GetAllException()
+        {
+            // Simulate an exception during GetAll
+            _context.Users = null; // Setting it to null will cause an exception
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<UserServiceException>(async () =>
+            {
+                await _userRepository.GetAll();
+            });
+
+        }
+        [Test]
+        public async Task GetByKeyException()
+        {
+            // Simulate an exception during GetAll
+            _context.Users = null; // Setting it to null will cause an exception
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<UserServiceException>(async () =>
+            {
+                await _userRepository.GetByKey(999);
+            });
         }
     }
 }

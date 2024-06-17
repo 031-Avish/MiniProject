@@ -105,9 +105,6 @@ namespace FlightBookingSystemAPI.Tests.Services
             // booking service
             var BookingServiceMock = new Mock<ILogger<UserBookingService>>();
             _userBookingService = new UserBookingService(_bookingRepository, _bookingDetailRepository, _passengerRepository, _scheduleRepository, null, _context, BookingServiceMock.Object);
-
-            
-
         }
         [TearDown]
         public void TearDown()

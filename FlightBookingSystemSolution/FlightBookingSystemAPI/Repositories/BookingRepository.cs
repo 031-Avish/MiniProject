@@ -68,11 +68,6 @@ namespace FlightBookingSystemAPI.Repositories
                 _logger.LogInformation("Booking deleted successfully.");
                 return booking;
             }
-            catch (NotPresentException ex)
-            {
-                _logger.LogError(ex, "Error occurred while deleting booking. Booking not found.");
-                throw new BookingRepositoryException("Booking not found. " + ex.Message, ex);
-            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while deleting booking.");
@@ -174,11 +169,6 @@ namespace FlightBookingSystemAPI.Repositories
                 await _context.SaveChangesAsync(true);
                 _logger.LogInformation("Booking updated successfully.");
                 return item;
-            }
-            catch (NotPresentException ex)
-            {
-                _logger.LogError(ex, "Error occurred while updating booking. Booking not found.");
-                throw new BookingRepositoryException("Booking not found. " + ex.Message, ex);
             }
             catch (Exception ex)
             {

@@ -3,7 +3,7 @@
 namespace FlightBookingSystemAPI.Exceptions.ServiceExceptions
 {
     [Serializable]
-    internal class PaymentServiceException : Exception
+    public class PaymentServiceException : Exception
     {
         public PaymentServiceException()
         {

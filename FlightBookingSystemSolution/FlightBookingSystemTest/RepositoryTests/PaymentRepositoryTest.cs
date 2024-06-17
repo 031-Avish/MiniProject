@@ -5,11 +5,7 @@ using FlightBookingSystemAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace FlightBookingSystemTest.RepositoryTests
 {
@@ -44,10 +40,9 @@ namespace FlightBookingSystemTest.RepositoryTests
             _userRepository = new UserRepository(_context, userLoggerMock.Object);
             var scheduleLoggerMock = new Mock<ILogger<ScheduleRepository>>();
             _scheduleRepository = new ScheduleRepository(_context, scheduleLoggerMock.Object);
-
-
-
+            setup();
         }
+
         public async Task setup()
         {
             // Initialize User
@@ -90,10 +85,17 @@ namespace FlightBookingSystemTest.RepositoryTests
                 ScheduleId = _schedule.ScheduleId
             });
         }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _context.Database.EnsureDeleted();
+            _context.Dispose();
+        }
         [Test]
         public async Task Add_Success()
         {
-            setup();
+            
             // Arrange
             var newPayment = new Payment
             {
@@ -113,7 +115,7 @@ namespace FlightBookingSystemTest.RepositoryTests
         [Test]
         public async Task GetByKey_Success()
         {
-            setup();
+            
             // Arrange
             var newPayment = new Payment
             {
@@ -144,7 +146,7 @@ namespace FlightBookingSystemTest.RepositoryTests
         [Test]
         public async Task Update_Success()
         {
-            setup();
+           
             // Arrange
             var newPayment = new Payment
             {
@@ -168,7 +170,7 @@ namespace FlightBookingSystemTest.RepositoryTests
         [Test]
         public void Update_Failure_PaymentNotFound()
         {
-            setup();
+        
             // Arrange
             var nonExistentPayment = new Payment
             {
@@ -185,7 +187,6 @@ namespace FlightBookingSystemTest.RepositoryTests
         [Test]
         public async Task DeleteByKey_Success()
         {
-            setup();
             // Arrange
             var newPayment = new Payment
             {
@@ -217,7 +218,7 @@ namespace FlightBookingSystemTest.RepositoryTests
         [Test]
         public async Task GetAll_Success()
         {
-            setup();
+           
             // Arrange
             var newPayment1 = new Payment
             {
@@ -251,5 +252,32 @@ namespace FlightBookingSystemTest.RepositoryTests
             // Act & Assert
             Assert.ThrowsAsync<PaymentRepositoryException>(() => _paymentRepository.GetAll());
         }
+
+        [Test]
+        public async Task GetAllException()
+        {
+            // Simulate an exception during GetAll
+            _context.Payments = null; // Setting it to null will cause an exception
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<PaymentRepositoryException>(async () =>
+            {
+                await _paymentRepository.GetAll();
+            });
+
+        }
+        [Test]
+        public async Task GetByKeyException()
+        {
+            // Simulate an exception during GetAll
+            _context.Payments = null; // Setting it to null will cause an exception
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<PaymentRepositoryException>(async () =>
+            {
+                await _paymentRepository.GetByKey(999);
+            });
+        }
+       
     }
 }

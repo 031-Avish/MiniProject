@@ -68,11 +68,7 @@ namespace FlightBookingSystemAPI.Repositories
                 _logger.LogInformation("Flight deleted successfully.");
                 return flight;
             }
-            catch (NotPresentException ex)
-            {
-                _logger.LogError(ex, "Error occurred while deleting flight. Flight not found.");
-                throw new FlightRepositoryException("Error occurred while deleting flight. Flight not found. " + ex.Message, ex);
-            }
+            
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while deleting flight.");
@@ -167,11 +163,7 @@ namespace FlightBookingSystemAPI.Repositories
                 _logger.LogInformation("Flight updated successfully.");
                 return item;
             }
-            catch (NotPresentException ex)
-            {
-                _logger.LogError(ex, "Error occurred while updating flight. Flight not found.");
-                throw new FlightRepositoryException("Error occurred while updating flight. Flight not found. " + ex.Message, ex);
-            }
+           
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while updating flight.");

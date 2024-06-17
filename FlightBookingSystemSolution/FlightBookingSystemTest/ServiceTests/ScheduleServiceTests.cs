@@ -3,9 +3,7 @@ using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Exceptions.ServiceExceptions;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
-using FlightBookingSystemAPI.Models.DTOs.BookingDTO;
 using FlightBookingSystemAPI.Models.DTOs.FlightDTO;
-using FlightBookingSystemAPI.Models.DTOs.PassengerDTO;
 using FlightBookingSystemAPI.Models.DTOs.RouteInfoDTO;
 using FlightBookingSystemAPI.Models.DTOs.ScheduleDTO;
 using FlightBookingSystemAPI.Repositories;
@@ -13,10 +11,6 @@ using FlightBookingSystemAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace FlightBookingSystemAPI.Tests.Services
 {
@@ -479,6 +473,12 @@ namespace FlightBookingSystemAPI.Tests.Services
         public async Task UpdateSchedule_Failure_FlightRepositoryException()
         {
             // Arrange
+            var flightDTO = new FlightDTO
+            {
+                Name = "Test Flight",
+                TotalSeats = 150
+            };
+            var flight = await _adminFlightService.AddFlight(flightDTO);
             var routeInfoDTO = new RouteInfoDTO
             {
                 StartCity = "City A",
@@ -493,7 +493,7 @@ namespace FlightBookingSystemAPI.Tests.Services
                 ReachingTime = DateTime.Now.AddHours(2),
                 Price = 20000,
                 RouteId = route.RouteId,
-                FlightId = 1
+                FlightId = flight.FlightId
             };
             var addedSchedule = await _scheduleService.AddSchedule(scheduleDTO);
 
@@ -737,8 +737,8 @@ namespace FlightBookingSystemAPI.Tests.Services
 
             var scheduleDTO1 = new ScheduleDTO
             {
-                DepartureTime = DateTime.Now.AddDays(1).AddHours(8),
-                ReachingTime = DateTime.Now.AddDays(1).AddHours(10),
+                DepartureTime = DateTime.Now.AddDays(1).AddHours(10),
+                ReachingTime = DateTime.Now.AddDays(1).AddHours(12),
                 Price = 15000,
                 RouteId = route1.RouteId,
                 FlightId = flight1.FlightId
@@ -747,8 +747,8 @@ namespace FlightBookingSystemAPI.Tests.Services
 
             var scheduleDTO2 = new ScheduleDTO
             {
-                DepartureTime = DateTime.Now.AddDays(1).AddHours(12),
-                ReachingTime = DateTime.Now.AddDays(1).AddHours(13),
+                DepartureTime = DateTime.Now.AddDays(1).AddHours(14),
+                ReachingTime = DateTime.Now.AddDays(1).AddHours(15),
                 Price = 15000,
                 RouteId = route2.RouteId,
                 FlightId = flight2.FlightId

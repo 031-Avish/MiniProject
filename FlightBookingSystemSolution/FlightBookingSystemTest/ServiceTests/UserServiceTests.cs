@@ -89,7 +89,7 @@ namespace FlightBookingSystemAPI.Tests.Services
             Assert.AreEqual(userRegisterDTO.Name, result.Name);
             Assert.AreEqual(userRegisterDTO.Email, result.Email);
             Assert.AreEqual(userRegisterDTO.Phone, result.Phone);
-            // Add more assertions if needed
+
         }
 
         [Test]
@@ -130,8 +130,6 @@ namespace FlightBookingSystemAPI.Tests.Services
 
             // Act
             await _userService.Register(userRegisterDTO1);
-
-
             // Assert
             Assert.ThrowsAsync<UserServiceException>(async () => await _userService.Register(userRegisterDTO));
         }

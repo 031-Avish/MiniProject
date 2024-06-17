@@ -192,11 +192,12 @@ namespace FlightBookingSystemAPI.Services
                 await MakeChangesWhenException(booking, payment);
                 throw;
             }
+            
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An unexpected error occurred while processing payment for booking ID {BookingId}.", paymentDTO.BookingId);
                 await MakeChangesWhenException(booking, payment);
-                throw new PaymentServiceException("Error occurred while processing the payment.", ex);
+                throw new PaymentServiceException("Error occurred while processing the payment."+ex.Message, ex);
             }
         }
         #endregion
@@ -237,9 +238,13 @@ namespace FlightBookingSystemAPI.Services
         private async Task MakeChangesWhenException(Booking booking, Payment payment)
         {
             _logger.LogWarning("Reverting changes due to an error during payment processing.");
+            if (booking == null) return;
+
             var schedule = await _scheduleRepository.GetByKey(booking.ScheduleId);
             schedule.AvailableSeat += booking.PassengerCount;
             await _scheduleRepository.Update(schedule);
+
+
             if (booking != null)
             {
                 booking.BookingStatus = "Failed";

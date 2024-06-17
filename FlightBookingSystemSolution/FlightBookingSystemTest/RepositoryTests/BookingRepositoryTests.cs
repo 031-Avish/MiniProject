@@ -5,11 +5,6 @@ using FlightBookingSystemAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FlightBookingSystemTest.RepositoryTests
 {
@@ -42,8 +37,16 @@ namespace FlightBookingSystemTest.RepositoryTests
             _scheduleRepository = new ScheduleRepository(_context, scheduleLoggerMock.Object);
 
             // Initialize User
-
+            setup();
         }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _context.Database.EnsureDeleted();
+            _context.Dispose();
+        }
+
         public async Task setup()
         {
             _user = await _userRepository.Add(new User
@@ -77,7 +80,7 @@ namespace FlightBookingSystemTest.RepositoryTests
         [Test]
         public async Task Add_Success()
         {
-            setup();
+           
             // Arrange
             var newBooking = new Booking
             {
@@ -123,11 +126,11 @@ namespace FlightBookingSystemTest.RepositoryTests
             var addedBooking = await _bookingRepository.Add(newBooking);
 
             // Act
-            var result = await _bookingRepository.GetByKey(2);
+            var result = await _bookingRepository.GetByKey(1);
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(2, result.BookingId);
+            Assert.AreEqual(1, result.BookingId);
         }
         [Test]
         public void GetByKey_Failure_NotFoundException()
@@ -188,7 +191,7 @@ namespace FlightBookingSystemTest.RepositoryTests
         [Test]
         public async Task DeleteByKey_Success()
         {
-            setup();
+           
             // Arrange
             var newBooking = new Booking
             {
@@ -215,7 +218,9 @@ namespace FlightBookingSystemTest.RepositoryTests
             var nonExistentBookingId = 999; // Assuming invalid booking ID
 
             // Act & Assert
-            Assert.ThrowsAsync<BookingRepositoryException>(async () => await _bookingRepository.DeleteByKey(nonExistentBookingId));
+            var exception = Assert.ThrowsAsync<BookingRepositoryException>(async () => await _bookingRepository.DeleteByKey(nonExistentBookingId));
+            Assert.NotNull(exception);
+            
         }
 
         [Test]
@@ -248,7 +253,7 @@ namespace FlightBookingSystemTest.RepositoryTests
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(3, result.Count()); // Assuming 2 bookings were added
+            Assert.AreEqual(2, result.Count()); // Assuming 2 bookings were added
         }
         [Test]
         public void GetAll_Failure_NoBookingsPresent()
@@ -258,6 +263,31 @@ namespace FlightBookingSystemTest.RepositoryTests
 
             // Act & Assert
             Assert.ThrowsAsync<BookingRepositoryException>(async () => await _bookingRepository.GetAll());
+        }
+        [Test]
+        public async Task  GetAllException()
+        {
+            // Simulate an exception during GetAll
+            _context.Bookings = null; // Setting it to null will cause an exception
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<BookingRepositoryException>(async () =>
+            {
+                await _bookingRepository.GetAll();
+            });
+
+        }
+        [Test]
+        public async Task GetByKeyException()
+        {
+            // Simulate an exception during GetAll
+            _context.Bookings = null; // Setting it to null will cause an exception
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<BookingRepositoryException>(async () =>
+            {
+                await _bookingRepository.GetByKey(999);
+            });
         }
     }
 
