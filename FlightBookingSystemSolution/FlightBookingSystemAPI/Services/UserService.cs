@@ -51,6 +51,7 @@ namespace FlightBookingSystemAPI.Services
         {
             try
             {
+                //loginDTO.UserId = int.Parse(loginDTO.UserId);
                 _logger.LogInformation("Attempting to log in user with ID {UserId}.", loginDTO.UserId);
 
                 // Get the user detail by ID

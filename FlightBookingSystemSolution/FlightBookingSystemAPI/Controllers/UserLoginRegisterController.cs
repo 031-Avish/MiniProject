@@ -82,6 +82,7 @@ namespace FlightBookingSystemAPI.Controllers
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        
         public async Task<ActionResult<LoginReturnDTO>> Login(UserLoginDTO userLoginDTO)
         {
             try
