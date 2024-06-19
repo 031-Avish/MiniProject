@@ -6,6 +6,7 @@ using FlightBookingSystemAPI.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using FlightBookingSystemAPI.Exceptions.ServiceExceptions;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Cors;
 
 namespace FlightBookingSystemAPI.Controllers
 {
@@ -14,6 +15,7 @@ namespace FlightBookingSystemAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    //[EnableCors("MyCors")]
     public class ScheduleFlightController : ControllerBase
     {
         private readonly IScheduleService _scheduleService;

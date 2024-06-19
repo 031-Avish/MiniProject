@@ -91,6 +91,15 @@ namespace FlightBookingSystemAPI
 
             #endregion
 
+            #region CORS
+            builder.Services.AddCors(opts =>
+            {
+                opts.AddPolicy("MyCors", options =>
+                {
+                    options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+                });
+            });
+            #endregion
 
 
             var app = builder.Build();
@@ -102,11 +111,11 @@ namespace FlightBookingSystemAPI
                 app.UseSwaggerUI();
             }
 
+            app.UseCors("MyCors");
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 

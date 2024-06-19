@@ -2,6 +2,7 @@
 using FlightBookingSystemAPI.Exceptions.RepositoryException;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models.DTOs;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,6 +15,7 @@ namespace FlightBookingSystemAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    //[EnableCors("MyCors")]
     public class UserLoginRegisterController : ControllerBase
     {
         private readonly IUserService _userService;
