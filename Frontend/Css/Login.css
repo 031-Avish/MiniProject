@@ -1,0 +1,59 @@
+/* Full-height container */
+.container {
+    height: 100vh;
+    margin-top: 6%;
+}
+.bg{
+    background: linear-gradient(45deg, #c000ff, #6ca3ad);
+}
+/* Card shadow and rounded edges */
+.card {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Form group spacing */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+/* Input icon */
+.form-group i {
+    margin-right: 10px;
+    color: #007bff;
+}
+
+/* Button styling */
+.btn-primary {
+    color: #fff;
+    background-color: #007bff;
+    border: 2px solid #ce86e1;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Tab nav */
+.nav-tabs .nav-link {
+    color: #007bff;
+}
+
+.nav-tabs .nav-link.active {
+    color: #495057;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+}
+
+.tab-content {
+    padding-top: 20px;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 576px) {
+    .card {
+        width: 100%;
+        padding: 0 1rem;
+    }
+}
