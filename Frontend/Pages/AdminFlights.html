@@ -10,7 +10,10 @@
 <body style="margin-top: 10%;">
     
    
-    <div class="container">
+<div class="container">
+
+    <div id="alert-container" class="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 1050;"></div>
+    
         <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
     Add Flight
@@ -78,7 +81,6 @@
                 return true;
             }
         }
-        document.getElementById('add').addEventListener('click', AddFlight);
         function AddFlight()
         {
             if(validateAddFlight() === false){
@@ -96,32 +98,74 @@
                     totalSeats: totalSeats
                 })
             })
-                .then(response => response.json())
-                .then(data => {
-                    if(data.errorCode){
-                        alert(data.error);
-                    }
-                    else if(data.error){
-                        alert(data.error);
-                    }
-                    else{
-                        console.log(data);
-                        document.getElementById('flightName').value='';
-                        document.getElementById('totalSeats').value='';
-                        $('#exampleModalCenter').modal('hide');
-                        
-                        alert('Flight added successfully');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+            .then(response => response.json())
+            .then(data => {
+                if(data.errorCode){
+                    showAlert(data.errorMessage, "danger");
+                }
+                else if(data.errors){
+                    showAlert("Some Unwanted Error Occured", "danger");
+                }
+                else{
+                    console.log(data);
+                    document.getElementById('flightName').value='';
+                    document.getElementById('totalSeats').value='';
+                    $('#exampleModalCenter').modal('hide');    
+                    showAlert('Flight added successfully', 'success');
+                    getFlights();
+                }
+            })
+            .catch(error => {
+                alert('Error:', error); 
+            });
         }
+        document.getElementById('add').addEventListener('click', AddFlight);
 
+        function deleteFlight(flightId)
+        {
+            fetch(`https://localhost:7067/api/AdminFlight/DeleteFlight/${flightId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.errorCode){
+                    showAlert(data.errorMessage, "danger");
+                }
+                else if(data.errors){
+                    showAlert("Some Unwanted Error Occured", "danger");
+                }
+                else{
+                    console.log(data);
+                    showAlert('Flight deleted successfully', 'success');
+                    getFlights();
+                }
+            })
+            .catch(error => {
+                alert('Error:', error); 
+            });
+        }
+        
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show`;
+            alert.role = 'alert';
+            alert.innerHTML = `
+                ${message}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            `;
+            alertContainer.appendChild(alert);
+            setTimeout(() => {
+                $(alert).alert('close');
+            }, 5000);
+        }
 
         let flights = {};
         function getFlights()
         {
+            document.querySelector('.list-group').innerHTML = '';
             fetch('https://localhost:7067/api/AdminFlight/GetAllFlights')
             .then(response => response.json())
             .then(data => {
@@ -149,7 +193,7 @@
                                 <strong>Total Seats:</strong> ${flight.totalSeats}
                             </div>
                                 <div>
-                                    <button class="btn btn-primary" onclick="updateFlight(${flight.flightId})">Update</button>
+                                    <button class="btn btn-primary"  onclick="updateFlight(${flight.flightId})">Update</button>
                                     <button class="btn btn-danger" onclick="deleteFlight(${flight.flightId})">Delete</button>
                                 </div>
                             
@@ -166,7 +210,6 @@
             });
         }
         getFlights();
-
         </script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
