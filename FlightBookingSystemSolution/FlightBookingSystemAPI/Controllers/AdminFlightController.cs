@@ -38,7 +38,7 @@ namespace FlightBookingSystemAPI.Controllers
         /// <returns>Returns the added flight details.</returns>
         #region AddFlight
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost("AddFlight")]
         [ProducesResponseType(typeof(FlightReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -77,7 +77,7 @@ namespace FlightBookingSystemAPI.Controllers
         /// <returns>Returns the updated flight details.</returns>
         #region UpdateFlight
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPut("UpdateFlight")]
         [ProducesResponseType(typeof(FlightReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -116,7 +116,7 @@ namespace FlightBookingSystemAPI.Controllers
         /// <returns>Returns details of the deleted flight.</returns>
         #region DeleteFlight
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpDelete("DeleteFlight/{flightId}")]
         [ProducesResponseType(typeof(FlightDeleteReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
@@ -156,7 +156,7 @@ namespace FlightBookingSystemAPI.Controllers
         /// <returns>Returns the flight details.</returns>
         #region GetFlight
         
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpGet("GetFlight/{flightId}")]
         [ProducesResponseType(typeof(FlightReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status404NotFound)]
@@ -194,7 +194,7 @@ namespace FlightBookingSystemAPI.Controllers
         /// <returns>Returns a list of all flights.</returns>
         #region GetAllFlights
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpGet("GetAllFlights")]
         [ProducesResponseType(typeof(List<FlightReturnDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
