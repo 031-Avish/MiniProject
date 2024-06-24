@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|c:\\users\\vc\\desktop\\presidio\\mini_project\\miniproject\\flightbookingsystemsolution\\flightbookingsystemapi\\controllers\\userloginregistercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|solutionrelative:flightbookingsystemapi\\controllers\\userloginregistercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|c:\\users\\vc\\desktop\\presidio\\mini_project\\miniproject\\flightbookingsystemsolution\\flightbookingsystemapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|solutionrelative:flightbookingsystemapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|c:\\users\\vc\\desktop\\presidio\\mini_project\\miniproject\\flightbookingsystemsolution\\flightbookingsystemapi\\controllers\\userloginregistercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|solutionrelative:flightbookingsystemapi\\controllers\\userloginregistercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E0317B7A-1DC7-446D-954C-C4594A297836}|FlightBookingSystemAPI\\FlightBookingSystemAPI.csproj|c:\\users\\vc\\desktop\\presidio\\mini_project\\miniproject\\flightbookingsystemsolution\\flightbookingsystemapi\\models\\dtos\\userlogindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -26,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedHeight": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -38,26 +38,25 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "UserLoginRegisterController.cs",
               "DocumentMoniker": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\FlightBookingSystemAPI\\Controllers\\UserLoginRegisterController.cs",
               "RelativeDocumentMoniker": "FlightBookingSystemAPI\\Controllers\\UserLoginRegisterController.cs",
               "ToolTip": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\FlightBookingSystemAPI\\Controllers\\UserLoginRegisterController.cs",
               "RelativeToolTip": "FlightBookingSystemAPI\\Controllers\\UserLoginRegisterController.cs",
-              "ViewState": "AQIAAFEAAAAAAAAAAAAowFkAAAA7AAAA",
+              "ViewState": "AQIAAHwAAAAAAAAAAAAAAFkAAAA7AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-19T10:30:31.049Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-06-19T10:30:31.049Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\FlightBookingSystemAPI\\Program.cs",
               "RelativeDocumentMoniker": "FlightBookingSystemAPI\\Program.cs",
               "ToolTip": "C:\\Users\\VC\\Desktop\\presidio\\Mini_Project\\MiniProject\\FlightBookingSystemSolution\\FlightBookingSystemAPI\\Program.cs",
               "RelativeToolTip": "FlightBookingSystemAPI\\Program.cs",
-              "ViewState": "AQIAAFIAAAAAAAAAAAAgwHYAAAAAAAAA",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAAAHYAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-06-19T10:12:13.307Z",
               "EditorCaption": ""
@@ -72,8 +71,7 @@
               "RelativeToolTip": "FlightBookingSystemAPI\\Services\\UserService.cs",
               "ViewState": "AQIAAEgAAAAAAAAAAAAowDQAAAANAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-19T10:07:58.375Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-06-19T10:07:58.375Z"
             },
             {
               "$type": "Document",
@@ -85,8 +83,7 @@
               "RelativeToolTip": "FlightBookingSystemAPI\\Models\\DTOs\\UserLoginDTO.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAZAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-19T09:57:00.13Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-06-19T09:57:00.13Z"
             }
           ]
         }

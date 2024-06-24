@@ -1,8 +1,11 @@
+
 // function to Register the User
 document.querySelector('#register-user').addEventListener("click", (e)=>{
     e.preventDefault(); 
+    // empty the error message
     document.getElementById('error').innerHTML = "";
     if (validateRegistationForm()) {
+        // get all the input values
         const email = document.getElementById('registerEmail').value;
         const name = document.getElementById('registerName').value;
         const phone = document.getElementById('registerPhone').value;
@@ -15,6 +18,7 @@ document.querySelector('#register-user').addEventListener("click", (e)=>{
             password,
             confirmPassword
         };
+        // make a post request to the server
         fetch('https://localhost:7067/api/UserLoginRegister/Register', {
             method: 'POST',
             headers: {
@@ -24,10 +28,10 @@ document.querySelector('#register-user').addEventListener("click", (e)=>{
         }).then((response) => {
             return response.json();
         }).then((data) => {
-            if (data.errorCode) {
+            if (data.errorCode) { // if there is an error then show the error message to the user
                 document.getElementById('error').innerHTML = data.errorMessage;
                 document.getElementById('error').style.color = 'Red';
-            } else {
+            } else { // if the registration is successful then show the success message to the user and redirect to the login page
                 console.log(data);
                 alert(`${data.name} Your Registration is Successful Please Login to Continue`);
                 window.location.href = "Login.html";
@@ -48,14 +52,18 @@ document.querySelector('#register-user').addEventListener("click", (e)=>{
 // function to Login the User
 document.querySelector('#login-user').addEventListener("click", (e)=>{
     e.preventDefault();
+    // empty the error message
     document.getElementById('loginerror').innerHTML = "";
+    // get the input values
     const id =parseInt(document.getElementById('loginId').value);
     const password = document.getElementById('loginPassword').value;
+    // check if the input values are empty
     if(id === "" || password === ""){
         document.getElementById('loginerror').innerHTML = "Please Enter All the Details Correctly";
         document.getElementById('loginerror').style.color = 'Red';
         return;
     }
+    // make a post request to the server
     const data = {
         UserId: id,
         Password: password
@@ -70,16 +78,25 @@ document.querySelector('#login-user').addEventListener("click", (e)=>{
         return response.json();
     }).then((data) => {
         if (data.errorCode) {
+            // if there is an error then show the error message to the user
             document.getElementById('loginerror').innerHTML = data.errorMessage;
             document.getElementById('loginerror').style.color = 'Red';
         }else if(data.errors){
+            // if there is an error then show the error message to the user
             document.getElementById('loginerror').innerHTML = "Some Unwanted Error Occured Please Try Again";
             document.getElementById('loginerror').style.color = 'Red';
         }else{
+            // if the login is successful then store the token in the local storage and redirect to the home page
             console.log(data);
             localStorage.setItem('token', data.token);
+            
+            if(data.role === "Admin"){
+                alert(`Admin Login is Successful`);
+                window.location.href = "AdminHome.html";
+            }else{
             alert(`Your Login is Successful`);
-            window.location.href = "Home.html";
+            // window.location.href = "Home.html";
+            }
         }
     }).catch((error) => {
         console.log(error);
