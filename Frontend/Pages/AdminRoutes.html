@@ -129,14 +129,23 @@ function getRoutes() {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + token,
         }
-    }
-)
+    })
     .then(response => response.json())
-    .then(data => {
-        routes = data;
-        dummyRoutes = data;
-        console.log(data);
-        displayRoutes();
+    .then(data =>
+    {
+        if(data.errorCode)
+        {
+            showAlert(data.errorMessage, 'danger');
+        }
+        else if(data.errors){
+            showAlert("Something Went Wrong Please Try again", 'danger');
+        }
+        else{
+            routes = data;
+            dummyRoutes = data;
+            console.log(data);
+            displayRoutes();
+        }
     })
     .catch(error => {
         console.error('Error:', error);
