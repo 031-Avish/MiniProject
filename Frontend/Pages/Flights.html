@@ -4,109 +4,169 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flight Search Results</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="../Css/Home.css">
+    <link rel="stylesheet" href="../Css/Navbar.css">
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
-        <a class="navbar-brand" href="#">INDIGO</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Contact Us</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Bookings
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">All Bookings</a>
-                <a class="dropdown-item" href="#">Upcomming Bookings</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#">Disabled</a>
-            </li>
-          </ul>
-          <form class="form-inline my-2 my-lg-0">
-            <!-- <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"> -->
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Login/Register</button>
-          </form>
-        </div>
-      </nav>
-
     <!-- Main Content -->
     <div class="container mt-5 pt-5">
         <div class="row">
             <div class="col-md-12">
                 <h2 class="text-center">Available Flights</h2>
+                <div class="form-row mb-4">
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" id="filter-airline" placeholder="Filter by Airline">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" id="filter-departure" placeholder="Filter by Departure City">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" id="filter-arrival" placeholder="Filter by Arrival City">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" class="form-control" id="filter-date">
+                    </div>
+                </div>
                 <div id="flight-results">
                     <!-- Flight results will be dynamically inserted here -->
                 </div>
             </div>
         </div>
     </div>
-    <button id="connecting-flights-btn" class="btn btn-primary">See Connecting Flights</button>
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" id="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="model-content">
+            Hello
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Custom Script -->
     <script>
+      let flights = [];
+
         document.addEventListener("DOMContentLoaded", function() {
-            const flights = [
-                {id: 1, start: 'City A', end: 'City B', direct: true},
-                {id: 2, start: 'City A', end: 'City C', direct: true}
-            ];
-
-            const flightResults = document.getElementById('flight-results');
-            let hasDirectFlight = false;
-
-            flights.forEach(flight => {
-                if (flight.direct) {
-                    hasDirectFlight = true;
-                    flightResults.innerHTML += `
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">Flight from ${flight.start} to ${flight.end}</h5>
-                                <p class="card-text">This is a direct flight.</p>
-                            </div>
-                        </div>
-                    `;
-                }
+            var vars = {};
+            var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                vars[key] = value;
             });
+            const ISODate = new Date(vars.date).toISOString();
+            // console.log(ISODate);
+            vars = { ...vars, date: ISODate };
+            // console.log(vars);
 
-            if (!hasDirectFlight) {
-                flightResults.innerHTML = `
-                    <div class="alert alert-warning" role="alert">
-                        There is no direct flight available.
-                    </div> 
-                `;
-            }
-
-            document.getElementById('connecting-flights-btn')?.addEventListener('click', function() {
-                // Display connecting flights (for simplicity, hardcoded here)
-                flightResults.innerHTML += `
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title">Flight from City A to City C via City B</h5>
-                            <p class="card-text">This is a connecting flight.</p>
-                        </div>
-                    </div>
-                `;
+            const token = localStorage.getItem('token');
+            fetch('https://localhost:7067/api/ScheduleFlight/GetFlightDetailsOnDateByUser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token,
+                },
+                body: JSON.stringify(vars)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.errorCode) {
+                    showAlert(data.errorMessage, "danger");
+                } else if (data.error) {
+                    showAlert("Some Unwanted Error Occurred", "danger");
+                    // console.log(data.error);
+                } else {
+                    showAlert("Flight Details Fetched Successfully", "success");
+                    flights = data;
+                    // console.log(data);
+                    displayFlights(data);
+                }
+            })
+            .catch(error => {
+                showAlert('Error:', 'danger');
+                // console.error('Error:', error);
             });
         });
+
+        function showAlert(message, type) {
+            document.getElementById('model-content').innerHTML = message;
+            if (type === 'danger') {
+                document.getElementById('exampleModalLabel').innerHTML = 'Error!';
+                document.getElementById('modal-header').classList.remove('bg-success');
+                document.getElementById('modal-header').classList.add('bg-danger');
+            } else {
+                document.getElementById('exampleModalLabel').innerHTML = 'Success!';
+                document.getElementById('modal-header').classList.remove('bg-danger');
+                document.getElementById('modal-header').classList.add('bg-success');
+            }
+            $('.modal').modal('show');
+            setTimeout(() => {
+                $('.modal').modal('hide');
+            }, 3000);
+        }
+
+        function displayFlights(data) {
+            const flightResults = document.getElementById('flight-results');
+            flightResults.innerHTML = '';
+
+            data.forEach(flight => {
+                const flightCard = document.createElement('div');
+                flightCard.classList.add('card', 'mb-3');
+                flightCard.innerHTML = `
+                    <div class="card-body">
+                        <h5 class="card-title">Flight: ${flight.flightInfo.name} - ${flight.routeInfo.startCity} to ${flight.routeInfo.endCity}</h5>
+                        <p class="card-text">Departure: ${new Date(flight.departureTime).toLocaleString()}</p>
+                        <p class="card-text">Arrival: ${new Date(flight.reachingTime).toLocaleString()}</p>
+                        <p class="card-text">Available Seats: ${flight.availableSeat}</p>
+                        <p class="card-text">Price: $${flight.price}</p>
+                        <button class="btn btn-primary" onClick=buttonClicked(${flight.scheduleId})>Book Now</button>
+                    </div>
+                `;
+                flightResults.appendChild(flightCard);
+            });
+        }
+        function buttonClicked(id)
+        {
+            window.location.href = `Booking.html?scheduleId=${id}`;
+        }
+        document.getElementById('filter-airline').addEventListener('input', filterFlights);
+        document.getElementById('filter-departure').addEventListener('input', filterFlights);
+        document.getElementById('filter-arrival').addEventListener('input', filterFlights);
+        document.getElementById('filter-date').addEventListener('input', filterFlights);
+
+        function filterFlights() {
+            const airlineFilter = document.getElementById('filter-airline').value.toLowerCase();
+            const departureFilter = document.getElementById('filter-departure').value.toLowerCase();
+            const arrivalFilter = document.getElementById('filter-arrival').value.toLowerCase();
+            const dateFilter = document.getElementById('filter-date').value;
+
+            // console.log(airlineFilter, departureFilter, arrivalFilter, dateFilter);
+            if(airlineFilter === '' && departureFilter === '' && arrivalFilter === '' && dateFilter === '') return displayFlights(flights);
+
+            const filteredFlights = flights.filter(flight => {
+             
+                return (
+                    (airlineFilter === '' || flight.flightInfo.name.toLowerCase().includes(airlineFilter)) &&
+                    (departureFilter === '' || flight.routeInfo.startCity.toLowerCase().includes(departureFilter)) &&
+                    (arrivalFilter === '' || flight.routeInfo.endCity.toLowerCase().includes(arrivalFilter)) &&
+                    (dateFilter === '' || flight.departureTime.includes(dateFilter))
+                );
+            });
+
+            displayFlights(filteredFlights);
+        }
+
     </script>
+     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+     <script src="../JavaScripts/UserNavbar.js"></script>
+     <script src="../JavaScripts/Home.js"></script>
 </body>
 </html>
