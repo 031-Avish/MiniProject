@@ -34,7 +34,8 @@ namespace FlightBookingSystemAPI.Services
             // What all data we want to pass in its body 
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.Name, user.UserId.ToString()),
+                new Claim("Id", user.UserId.ToString()),
+                new Claim("role", user.Role),
                 new Claim(ClaimTypes.Role,user.Role),
                 new Claim(ClaimTypes.Email,user.Email)
             };

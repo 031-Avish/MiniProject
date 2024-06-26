@@ -89,13 +89,25 @@ document.querySelector('#login-user').addEventListener("click", (e)=>{
             // if the login is successful then store the token in the local storage and redirect to the home page
             console.log(data);
             localStorage.setItem('token', data.token);
-            
+            const tokenData = parseJwt(data.token);
+            function parseJwt (token) {
+                var base64Url = token.split('.')[1];
+                var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+
+                return JSON.parse(jsonPayload);
+            }
+            console.log(tokenData.Id);
+            localStorage.setItem('userId', tokenData.Id);
+            localStorage.setItem('role', tokenData.role);
             if(data.role === "Admin"){
                 alert(`Admin Login is Successful`);
                 window.location.href = "AdminHome.html";
             }else{
             alert(`Your Login is Successful`);
-            // window.location.href = "Home.html";
+            window.location.href = "Home.html";
             }
         }
     }).catch((error) => {
