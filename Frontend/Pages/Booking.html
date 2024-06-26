@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Booking</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="../Css/Home.css">
+    <link rel="stylesheet" href="../Css/Navbar.css">
+</head>
+<body>
+    <!-- Main Content -->
+    <div class="container mt-5 pt-5">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="text-center">Flight Booking</h2>
+                <div id="flight-details">
+                    <!-- Flight details will be dynamically inserted here -->
+                </div>
+                <div id="passenger-section">
+                    <h3 class="text-center">Add Passengers</h3>
+                    <form id="passenger-form">
+                        <div id="passenger-list">
+                            <!-- Passenger input fields will be dynamically inserted here -->
+                        </div>
+                        <button type="button" class="btn btn-primary" id="add-passenger-btn">+ Add Passenger</button>
+                    </form>
+                </div>
+                <button type="button" class="btn btn-success mt-3" id="book-ticket-btn">Book Ticket</button>
+                <div id="booking-preview" class="mt-3" style="display:none;">
+                    <h3 class="text-center">Booking Preview</h3>
+                    <div id="booking-details">
+                        <!-- Booking details will be dynamically inserted here -->
+                    </div>
+                    <button type="button" class="btn btn-success mt-3" id="make-payment-btn">Make Payment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const scheduleId = parseInt(urlParams.get('scheduleId'));
+            const userId = parseInt(localStorage.getItem('userId'));
+            const token = localStorage.getItem('token');
+            let flightData;
+            let passengers = [];
+
+            // // Fetch flight details
+            // fetch(`https://localhost:7067/api/ScheduleFlight/GetFlightDetailsById?scheduleId=${scheduleId}`, {
+            //     method: 'GET',
+            //     headers: {
+            //         'Authorization': 'Bearer ' + token
+            //     }
+            // })
+            // .then(response => response.json())
+            // .then(data => {
+            //     if(data.errorCode) {
+            //         showAlert(data.errorMessage, "danger");
+            //     } else {
+            //         flightData = data;
+            //         displayFlightDetails(flightData);
+            //     }
+            // })
+            // .catch(error => {
+            //     showAlert('Error fetching flight details', 'danger');
+            //     console.error('Error:', error);
+            // });
+
+            // function displayFlightDetails(flight) {
+            //     const flightDetailsDiv = document.getElementById('flight-details');
+            //     flightDetailsDiv.innerHTML = `
+            //         <h3>Flight Details</h3>
+            //         <p><strong>Departure Time:</strong> ${new Date(flight.departureTime).toLocaleString()}</p>
+            //         <p><strong>Reaching Time:</strong> ${new Date(flight.reachingTime).toLocaleString()}</p>
+            //         <p><strong>Available Seats:</strong> ${flight.availableSeat}</p>
+            //         <p><strong>Price:</strong> ${flight.price}</p>
+            //         <p><strong>Route:</strong> ${flight.routeInfo.startCity} to ${flight.routeInfo.endCity}</p>
+            //         <p><strong>Flight:</strong> ${flight.flightInfo.flightNumber} (${flight.flightInfo.airline})</p>
+            //     `;
+            // }
+
+            // Add passenger
+            document.getElementById('add-passenger-btn').addEventListener('click', function() {
+                const passengerList = document.getElementById('passenger-list');
+                const passengerCount = passengerList.children.length + 1;
+                const passengerDiv = document.createElement('div');
+                passengerDiv.classList.add('form-group', 'passenger');
+                passengerDiv.innerHTML = `
+                    <h4>Passenger ${passengerCount}</h4>
+                    <label for="passenger-name-${passengerCount}">Name:</label>
+                    <input type="text" class="form-control" id="passenger-name-${passengerCount}" required>
+                    <label for="passenger-age-${passengerCount}">Age:</label>
+                    <input type="number" class="form-control" id="passenger-age-${passengerCount}" required>
+                    <label for="passenger-gender-${passengerCount}">Gender:</label>
+                    <select class="form-control" id="passenger-gender-${passengerCount}" required>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                    <button type="button" class="btn btn-danger mt-2 remove-passenger-btn">Remove Passenger</button>
+                `;
+                passengerList.appendChild(passengerDiv);
+                updateRemoveButtons();
+            });
+
+            // Remove passenger
+            document.addEventListener('click', function(event) {
+                if (event.target && event.target.classList.contains('remove-passenger-btn')) {
+                    event.target.closest('.passenger').remove();
+                    updateRemoveButtons();
+                }
+            });
+
+            function updateRemoveButtons() {
+                const removeButtons = document.querySelectorAll('.remove-passenger-btn');
+                if (removeButtons.length === 0) {
+                    document.getElementById('add-passenger-btn').disabled = false;
+                } else {
+                    document.getElementById('add-passenger-btn').disabled = false;
+                }
+            }
+
+            // Book ticket
+            document.getElementById('book-ticket-btn').addEventListener('click', function() {
+                const passengerList = document.getElementById('passenger-list');
+                passengers = [];
+                for (let i = 0; i < passengerList.children.length; i++) {
+                    const passengerDiv = passengerList.children[i];
+                    const name = passengerDiv.querySelector(`#passenger-name-${i + 1}`).value;
+                    const age = passengerDiv.querySelector(`#passenger-age-${i + 1}`).value;
+                    const gender = passengerDiv.querySelector(`#passenger-gender-${i + 1}`).value;
+
+                    if (!name || !age || !gender) {
+                        showAlert('All passenger fields are required', 'danger');
+                        return;
+                    }
+
+                    passengers.push({ name, age, gender });
+                }
+
+                if (passengers.length === 0) {
+                    showAlert('At least one passenger is required', 'danger');
+                    return;
+                }
+                console.log(scheduleId, userId, passengers);
+                const bookingDetails = {
+                    scheduleId: scheduleId,
+                    userId: userId,
+                    passengers: passengers
+                };
+
+                fetch('https://localhost:7067/api/Booking/BookFlightByUser', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(bookingDetails)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.errorCode) {
+                        showAlert(data.errorMessage, "danger");
+                    } else {
+                        console.log(data);
+                        showBookingPreview(data);
+                    }
+                })
+                .catch(error => {
+                    showAlert('Error making booking', 'danger');
+                    console.error('Error:', error);
+                });
+            });
+
+            function showBookingPreview(data) {
+                const bookingPreview = document.getElementById('booking-preview');
+                const bookingDetailsDiv = document.getElementById('booking-details');
+                bookingDetailsDiv.innerHTML = `
+                    <p><strong>Booking ID:</strong> ${data.bookingId}</p>
+                    <p><strong>Booking Status:</strong> ${data.bookingStatus}</p>
+                    <p><strong>Booking Date:</strong> ${new Date(data.bookingDate).toLocaleString()}</p>
+                    <p><strong>Payment Status:</strong> ${data.paymentStatus}</p>
+                    <p><strong>Total Price:</strong> ${data.totalPrice}</p>
+                    <h4>Flight Details</h4>
+                    <p><strong>Departure Time:</strong> ${new Date(data.flightDetails.departureTime).toLocaleString()}</p>
+                    <p><strong>Reaching Time:</strong> ${new Date(data.flightDetails.reachingTime).toLocaleString()}</p>
+                    <h4>Passengers</h4>
+                    ${data.passengers.map(passenger => `
+                        <p><strong>Name:</strong> ${passenger.name}</p>
+                        <p><strong>Age:</strong> ${passenger.age}</p>
+                        <p><strong>Gender:</strong> ${passenger.gender}</p>
+                    `).join('')}
+                `;
+                bookingPreview.style.display = 'block';
+                document.getElementById('make-payment-btn').addEventListener('click', function() {
+                    makePayment(data.bookingId, data.totalPrice);
+                });
+            }
+
+            function makePayment(bookingId, totalPrice) {
+                const paymentDetails = {
+                    bookingId: bookingId,
+                    amount: totalPrice
+                };
+
+                fetch('https://localhost:7067/api/Payment/ProcessPaymentByUser', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(paymentDetails)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.errorCode) {
+                        showAlert(data.errorMessage, "danger");
+                        window.location.href = `TicketPage.html?BookingId=${bookingId}`
+                    }
+                    else if (data.errors) {
+                        showAlert('Some unwanted error occurred', 'danger');
+                    } else {
+                        showAlert('Payment Successful', 'success');
+                        window.location.href = `TicketPage.html?BookingId=${bookingId}`
+                    }
+                })
+                .catch(error => {
+                    showAlert('Error making payment !! Try Again', 'danger');
+                    console.error('Error:', error);
+                });
+            }
+
+            function showAlert(message, type) {
+                const alertContainer = document.createElement('div');
+                alertContainer.classList.add('alert', `alert-${type}`, 'alert-dismissible', 'fade', 'show');
+                alertContainer.innerHTML = `
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    ${message}
+                `;
+                document.body.appendChild(alertContainer);
+                setTimeout(() => {
+                    alertContainer.remove();
+                }, 3000);
+            }
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="../JavaScripts/UserNavbar.js"></script>
+    <script src="../JavaScripts/Home.js"></script>
+</body>
+</html>
