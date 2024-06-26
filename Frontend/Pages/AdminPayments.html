@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="../Css/Navbar.css">
+    <title>AdminPayments</title>
+</head>
+<body style="margin-top: 10%;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="searchInput">Search by Payment Status:</label>
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search by Payment Status">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="sortSelect">Sort:</label>
+                    <select class="form-control" id="sortSelect">
+                        <option value="amountAsc">Amount (Low to High)</option>
+                        <option value="amountDesc">Amount (High to Low)</option>
+                        <option value="dateAsc">Date (Earliest First)</option>
+                        <option value="dateDesc">Date (Latest First)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="filterSelect">Filter By:</label>
+                    <select class="form-control" id="filterSelect">
+                        <option value="date">Date</option>
+                        <option value="bookingId">Booking ID</option>
+                        <option value="paymentId">Payment ID</option>
+                        <option value="amountRange">Amount Range</option>
+                    </select>
+                </div>
+                <div class="form-group" id="filterInputContainer">
+                    <!-- Filter input field will be dynamically generated here -->
+                </div>
+            </div>
+        </div>
+
+        <div id="alert-container"></div>
+
+        <div>
+            <h3>Payment Details</h3>
+        </div>
+        <div>
+            <ul class="list-group" id="paymentsList">
+                <!-- Payment details will be displayed here -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let payments = [];
+        let filteredPayments = [];
+
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const value = this.value.toLowerCase();
+            filteredPayments = payments.filter(payment => {
+                return payment.paymentStatus.toLowerCase().includes(value);
+            });
+            displayPayments();
+        });
+
+        document.getElementById('sortSelect').addEventListener('change', function() {
+            const value = this.value;
+            if (value === 'amountAsc') {
+                filteredPayments.sort((a, b) => a.amount - b.amount);
+            } else if (value === 'amountDesc') {
+                filteredPayments.sort((a, b) => b.amount - a.amount);
+            } else if (value === 'dateAsc') {
+                filteredPayments.sort((a, b) => new Date(a.paymentDate) - new Date(b.paymentDate));
+            } else if (value === 'dateDesc') {
+                filteredPayments.sort((a, b) => new Date(b.paymentDate) - new Date(a.paymentDate));
+            }
+            displayPayments();
+        });
+
+        document.getElementById('filterSelect').addEventListener('change', function() {
+            const value = this.value;
+            const filterInputContainer = document.getElementById('filterInputContainer');
+            filterInputContainer.innerHTML = '';
+
+            if (value === 'date') {
+                const input = document.createElement('input');
+                input.type = 'date';
+                input.classList.add('form-control');
+                input.id = 'filterDate';
+                input.addEventListener('change', function() {
+                    const value = this.value;
+                    filteredPayments = payments.filter(payment => payment.paymentDate.includes(value));
+                    displayPayments();
+                });
+                filterInputContainer.appendChild(input);
+            } else if (value === 'bookingId') {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.classList.add('form-control');
+                input.id = 'filterBookingId';
+                input.placeholder = 'Booking ID';
+                input.addEventListener('input', function() {
+                    const value = this.value;
+                    if (value === '') {
+                        filteredPayments = payments;
+                    } else {
+                        filteredPayments = payments.filter(payment => payment.bookingId.toString() === value);
+                    }
+                    displayPayments();
+                });
+                filterInputContainer.appendChild(input);
+            } else if (value === 'paymentId') {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.classList.add('form-control');
+                input.id = 'filterPaymentId';
+                input.placeholder = 'Payment ID';
+                input.addEventListener('input', function() {
+                    const value = this.value;
+                    if (value === '') {
+                        filteredPayments = payments;
+                    } else {
+                        filteredPayments = payments.filter(payment => payment.paymentId.toString() === value);
+                    }
+                    displayPayments();
+                });
+                filterInputContainer.appendChild(input);
+            } else if (value === 'amountRange') {
+                const inputMin = document.createElement('input');
+                inputMin.type = 'number';
+                inputMin.classList.add('form-control');
+                inputMin.id = 'filterAmountMin';
+                inputMin.placeholder = 'Min Amount';
+                inputMin.addEventListener('input', function() {
+                    const min = parseFloat(this.value);
+                    const max = parseFloat(document.getElementById('filterAmountMax').value) || Infinity;
+                    console.log(min, max);
+                    if(isNaN(min) && max==Infinity)
+                    {
+                        filteredPayments = payments;
+                    }
+                    else{
+                    filteredPayments = payments.filter(payment => payment.amount >= min && payment.amount <= max);
+                    }
+                    displayPayments();
+                });
+
+                const inputMax = document.createElement('input');
+                inputMax.type = 'number';
+                inputMax.classList.add('form-control');
+                inputMax.id = 'filterAmountMax';
+                inputMax.placeholder = 'Max Amount';
+                inputMax.addEventListener('input', function() {
+                    const max = parseFloat(this.value);
+                    const min = parseFloat(document.getElementById('filterAmountMin').value) || 0;
+                    if(min==0 && isNaN(max))
+                    {
+                        filteredPayments = payments;
+                    }
+                    else{
+                    filteredPayments = payments.filter(payment => payment.amount >= min && payment.amount <= max);
+                    }
+                    displayPayments();
+                });
+
+                filterInputContainer.appendChild(inputMin);
+                filterInputContainer.appendChild(inputMax);
+            }
+        });
+
+        function fetchPayments() {
+            const token = localStorage.getItem('token');
+            fetch('https://localhost:7067/api/Payment/GetAllPaymentsByAdmin', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.errorCode) {
+                    showAlert(data.message, 'danger');
+                } else if (data.errors) {
+                    showAlert("Something went wrong! Please try again", 'danger');
+                } else {
+                    payments = data;
+                    filteredPayments = data;
+                    displayPayments();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function displayPayments() {
+            const paymentsList = document.getElementById('paymentsList');
+            paymentsList.innerHTML = '';
+            filteredPayments.forEach(payment => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('list-group-item');
+                listItem.innerHTML = `
+                    <div>
+                        <strong>Payment ID:</strong> ${payment.paymentId}
+                    </div>
+                    <div>
+                        <strong>Amount:</strong> ${payment.amount}
+                    </div>
+                    <div>
+                        <strong>Payment Status:</strong> ${payment.paymentStatus}
+                    </div>
+                    <div>
+                        <strong>Payment Date:</strong> ${new Date(payment.paymentDate).toLocaleString()}
+                    </div>
+                    <div>
+                        <strong>Booking ID:</strong> ${payment.bookingId}
+                    </div>
+                `;
+                paymentsList.appendChild(listItem);
+            });
+        }
+
+        fetchPayments();
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alert-container');
+            const alertDiv = document.createElement('div');
+            alertDiv.classList.add('alert', `alert-${type}`, 'alert-dismissible', 'fade', 'show');
+            alertDiv.innerHTML = `
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                ${message}
+            `;
+            alertContainer.appendChild(alertDiv);
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="../JavaScripts/LoadNavbar.js"></script>
+    <script src="../JavaScripts/AuthorizeAdmin.js"></script>
+</body>
+</html>
