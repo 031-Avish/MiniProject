@@ -5,20 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="../Css/Navbar.css">
+    <link rel="stylesheet" href="../Css/AdminFlight.css">
     <title>AdminFlights</title>
 </head>
-<body style="margin-top: 10%;">
-<div class="container">
-    <div class="row">
-        <div class="col-md-6">
+<body>
+    <div class="nav-lite">
+        <div class="search-div">
             <div class="form-group">
-                <label for="searchInput">Search:</label>
+                <label for="searchInput" class="labels">Search:</label>
                 <input type="text" class="form-control" id="searchInput" placeholder="Search by ID or Name">
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="sort-div">
             <div class="form-group">
-                <label for="sortSelect">Sort:</label>
+                <label for="sortSelect" class="labels">Sort:</label>
                 <select class="form-control" id="sortSelect">
                     <option value="idA">Id (Small First)</option>
                     <option value="idD">Id (Large first) </option>
@@ -27,12 +27,14 @@
                 </select>
             </div>
         </div>
+        <div class="button-div">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                Add Flight
+            </button>
+        </div>
     </div>
+<div class="container">
 
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-        Add Flight
-    </button>
 
     <!-- Rest of the code -->
 
@@ -89,14 +91,14 @@
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer ">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="update">Update</button>
             </div>
         </div>
     </div>
 </div>
-        <div>
+        <div class="heading">
             Flights Details
         </div>
         <div>
@@ -370,21 +372,19 @@
             listItem.classList.add('list-group-item');
             listItem.innerHTML = `
                 
-                    <div>
-                        <strong>Flight ID:</strong> ${flight.flightId}
-                    </div>
-                    <div>
+                <div class="item1">
+                    <strong>Flight ID:</strong> ${flight.flightId}
+                </div>
+                <div class="item2" >
                     <strong>Flight Name:</strong> ${flight.name}
                 </div>
-                <div>
+                <div class="item3">
                     <strong>Total Seats:</strong> ${flight.totalSeats}
                 </div>
-                    <div>
-                        <button class="btn btn-primary" onclick="showUpdateModal(${flight.flightId}, '${flight.name}', ${flight.totalSeats})">Update</button> 
-                        <button class="btn btn-danger" onclick="deleteFlight(${flight.flightId})">Delete</button>
-                    </div>
-                
-                
+                <div class="btns-div">
+                    <button class="btn btn-primary" onclick="showUpdateModal(${flight.flightId}, '${flight.name}', ${flight.totalSeats})">Update</button> 
+                    <button class="btn btn-danger" onclick="deleteFlight(${flight.flightId})">Delete</button>
+                </div>  
             `;
             flightsList.appendChild(listItem);
         });

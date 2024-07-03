@@ -75,11 +75,16 @@
                 if (data.bookingStatus === 'Completed') {
                     bookingActionsDiv.innerHTML = `
                         <button class="btn btn-danger" id="cancel-booking-btn">Cancel Booking</button>
+                        <button class="btn btn-primary" id="print-btn">Print Ticket</button>
                     `;
                     document.getElementById('cancel-booking-btn').addEventListener('click', function() {
                         cancelBooking(data.bookingId);
                     });
-                } else {
+                    document.getElementById('print-btn').addEventListener('click', function() {
+                        window.print();
+                    });
+                }
+                 else {
                     bookingActionsDiv.innerHTML = `
                         <button class="btn btn-primary" id="rebook-btn">Rebook Ticket</button>
                     `;
