@@ -5,18 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="../Css/Navbar.css">
+    <link rel="stylesheet" href="../Css/AdminRoute.css">
     <title>AdminRoutes</title>
 </head>
-<body style="margin-top: 10%;">
-<div class="container">
-    <div class="row">
-        <div class="col-md-6">
+<body >
+    <div class="nav-lite">
+        
+        <div class="search-div">
             <div class="form-group">
-                <label for="searchInput">Search:</label>
-                <input type="text" class="form-control" id="searchInput" placeholder="Search by Start or End City">
+                <label for="searchInput">Search by Id:</label>
+                <input type="text" class="form-control" id="searchInput" placeholder="Search by Route Id">
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="search-div-combine">
+            <div class="form-group">
+                <label for="searchInputStart">Start and EndCity</label>
+                <input type="text" class="form-control" id="searchInputStart" placeholder="Start City ">
+            </div>
+            <div class="form-group">
+                <label for="searchInputEnd"></label>
+                <input type="text" class="form-control" id="searchInputEnd" placeholder="End City">
+            </div>
+        </div>
+        
+        <div class="sort-div">
             <div class="form-group">
                 <label for="sortSelect">Sort:</label>
                 <select class="form-control" id="sortSelect">
@@ -27,12 +39,17 @@
                 </select>
             </div>
         </div>
+        <div class="button-div">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addRouteModal">
+                Add Route
+            </button>
+        </div> 
     </div>
+<div class="container">
+    
 
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addRouteModal">
-        Add Route
-    </button>
+    
 
     <!-- Add Route Modal -->
     <div class="modal fade" id="addRouteModal" tabindex="-1" role="dialog" aria-labelledby="addRouteModalTitle" aria-hidden="true">
@@ -107,10 +124,10 @@
 
     <div id="alert-container"></div>
 
-    <div>
+    <div class="heading">
         Routes Details
     </div>
-    <div>
+    <div id="displayResult">
         <ul class="list-group" id="routesList">
             <!-- Loop through the routes array and display each route -->
         </ul>
@@ -156,8 +173,40 @@ getRoutes();
 document.getElementById('searchInput').addEventListener('input', function() {
     const value = this.value;
     routes = dummyRoutes;
+    if (value === '') {
+        displayRoutes();
+        return;
+    }
     const filteredRoutes = routes.filter(route => {
-        return route.startCity.toLowerCase().includes(value.toLowerCase()) || route.endCity.toLowerCase().includes(value.toLowerCase());
+        return route.routeId==value;
+    });
+    routes = filteredRoutes;
+    displayRoutes();
+});
+document.getElementById('searchInputStart').addEventListener('input', function() {
+    const value = this.value;
+    routes = dummyRoutes;
+    const endCityValue=document.getElementById('searchInputEnd').value;
+    if (value === '' && endCityValue==='' ) {
+        displayRoutes();
+        return;
+    }
+    const filteredRoutes = routes.filter(route => {
+        return route.startCity.toLowerCase().includes(value.toLowerCase()) && route.endCity.toLowerCase().includes(endCityValue.toLowerCase() );
+    });
+    routes = filteredRoutes;
+    displayRoutes();
+});
+document.getElementById('searchInputEnd').addEventListener('input', function() {
+    const value = this.value;
+    routes = dummyRoutes;
+    const startCityValue=document.getElementById('searchInputStart').value;
+    if (value === '' && startCityValue==='' ) {
+        displayRoutes();
+        return;
+    }
+    const filteredRoutes = routes.filter(route => {
+        return route.endCity.toLowerCase().includes(value.toLowerCase()) && route.startCity.toLowerCase().includes(startCityValue.toLowerCase() );
     });
     routes = filteredRoutes;
     displayRoutes();
@@ -372,18 +421,29 @@ function editRoute(id) {
 
 function displayRoutes() {
     const routesList = document.getElementById('routesList');
+    if(routes.length<=0)
+    {
+        routesList.innerHTML = '<h3>No Routes Found</h3>';
+        return;
+    }
     routesList.innerHTML = '';
     routes.forEach(route => {
         const listItem = document.createElement('li');
-        listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+        listItem.className = 'list-group-item ';
         listItem.innerHTML = `
-            <div>
+            <div class="item1">
                 <strong>Route ID:</strong> ${route.routeId}<br>
+            </div>
+            <div class="item2">
                 <strong>Start City:</strong> ${route.startCity}<br>
+            </div>
+            <div class="item2">
                 <strong>End City:</strong> ${route.endCity}<br>
+            </div>
+            <div class="item3">
                 <strong>Distance:</strong> ${route.distance} km
             </div>
-            <div>
+            <div class="btns-div">
                 <button class="btn btn-primary btn-sm" onclick="editRoute('${route.routeId}')">Edit</button>
                 <button class="btn btn-danger btn-sm" onclick="deleteRoute('${route.routeId}')">Delete</button>
             </div>
