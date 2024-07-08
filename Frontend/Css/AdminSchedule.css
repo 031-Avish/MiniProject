@@ -68,7 +68,7 @@ body{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-evenly;
+    justify-content: space-around;
     align-items: center;
     margin-top: 59px;
     background: #edf3f5;
@@ -77,14 +77,23 @@ body{
 }
 .search-div{
     margin-left: 30px; 
+    width: 170px;
+    margin: 10px;
+}
+.search-div-combine{
+    display: flex;
+    justify-content: space-around;
+    margin-left: 30px; 
     width: 300px;
     margin: 10px;
 }
+.search-div-combine input{
+    width: 140px;
+}
 .sort-div{
    
-    width: 300px;
+    width: 170px;
     margin: 10px;
-    
 }
 .button-div{
     margin-left: 30px; 
@@ -92,7 +101,7 @@ body{
   
 }
 .button-div button{
-    width: 300px;
+    width: 170px;
 }
 
 
