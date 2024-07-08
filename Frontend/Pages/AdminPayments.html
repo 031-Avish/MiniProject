@@ -41,7 +41,9 @@
             </div>
                 <div class="form-group" id="filterInputContainer">
                     <!-- Filter input field will be dynamically generated here -->
-                </div>  
+                </div>
+           
+            
         </div>
     </div>
     <div class="container">
@@ -143,34 +145,40 @@
                 });
                 filterInputContainer.appendChild(input);
             } else if (value === 'amountRange') {
+                const input1 = document.createElement('input');
+                input1.type = 'number';
+                input1.classList.add('form-control');
+                input1.id = 'filterAmount1';
+                input1.placeholder = 'Min Amount';
+                input1.addEventListener('input', function() {
+                    const value1 = this.value;
+                    const value2 = document.getElementById('filterAmount2').value;
+                    if (value1 === '' && value2 === '') {
+                        filteredPayments = payments;
+                    } else {
+                        filteredPayments = payments.filter(payment => (payment.amount >= value1 && payment.amount <= value2) || (value1 === '' && payment.amount <= value2) || (value2 === '' && payment.amount >= value1) );
+                    }
+                    displayPayments();
+                });
+                filterInputContainer.appendChild(input1);
 
-const filterInputContainer = document.getElementById('filterInputContainer');
+                const input2 = document.createElement('input');
+                input2.type = 'number';
+                input2.classList.add('form-control');
+                input2.id = 'filterAmount2';
+                input2.placeholder = 'Max Amount';
+                input2.addEventListener('input', function() {
+                    const value1 = document.getElementById('filterAmount1').value;
+                    const value2 = this.value;
+                    if (value1 === '' && value2 === '') {
+                        filteredPayments = payments;
+                    } else {
+                        filteredPayments = payments.filter(payment => (payment.amount >= value1 && payment.amount <= value2) || (value1 === '' && payment.amount <= value2) || (value2 === '' && payment.amount >= value1) );
+                    }
+                    displayPayments();
+                });
+                filterInputContainer.appendChild(input2);
 
-$(function() {
-    $("#slider-range").slider({
-        range: true,
-        min: 0,
-        max: 200000,
-        values: [0, 200000],
-        slide: function(event, ui) {
-            $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
-            const min = ui.values[0];
-            const max = ui.values[1];
-            filterPayments(min, max);
-        }
-    });
-    $("#amount").val("$" + $("#slider-range").slider("values", 0) +
-        " - $" + $("#slider-range").slider("values", 1));
-});
-
-function filterPayments(min, max) {
-    if (min === 0 && max === 200000) {
-        filteredPayments = payments;
-    } else {
-        filteredPayments = payments.filter(payment => payment.amount >= min && payment.amount <= max);
-    }
-    displayPayments();
-}
 }
         });
 
