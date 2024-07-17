@@ -246,26 +246,50 @@
                         <button type="button" class="btn btn-primary" id="add-passenger-btn">+ Add Passenger</button>
                     </form>
                 </div>
-                <button type="button" class="btn btn-success mt-3" id="book-ticket-btn">Book Ticket</button>
+                <button type="button" class="btn btn-success mt-3" id="book-ticket-btn">Book Ticket With Payment</button>
                 <div id="booking-preview" class="mt-3" style="display:none;">
                     <h3 class="text-center">Booking Preview</h3>
                     <div id="booking-details">
                         <!-- Booking details will be dynamically inserted here -->
                     </div>
-                    <button type="button" class="btn btn-success mt-3" id="make-payment-btn">Make Payment</button>
+                    <!-- <button type="button" class="btn btn-success mt-3" id="make-payment-btn">Make Payment</button> -->
                 </div>
             </div>
         </div>
     </div>
-
+    <div class="modal fade alertModel" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header" id="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel"></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="model-content">
+              
+            </div>
+          </div>
+        </div>
+      </div>
     <!-- Custom Script -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const flight = JSON.parse(localStorage.getItem('flight'));
             const urlParams = new URLSearchParams(window.location.search);
             const scheduleId = parseInt(urlParams.get('scheduleId'));
+            const scheduleId1 = parseInt(urlParams.get('scheduleId1'));
+            console.log(scheduleId);
+            console.log(scheduleId1);
             const userId = parseInt(localStorage.getItem('userId'));
             const token = localStorage.getItem('token');
+            let flight=[];
+            console.log(isNaN(scheduleId1));
+            if(isNaN(scheduleId1)){
+                flight.push(JSON.parse(localStorage.getItem('flight')));
+            }else{
+                flight=JSON.parse(localStorage.getItem('connectingflight'));
+            }
+            console.log(flight);
             displayFlightDetails(flight);
             let passengers = [];
             // Add passenger
@@ -291,21 +315,13 @@
                 calculateTotalPrice();
                 updateRemoveButtons();
             });
-        function displayFlightDetails(flight) {
+        function displayFlightDetails(data) {
+
             const flightResults = document.getElementById("flightResults");
             flightResults.innerHTML = "";
-
+            data.forEach((flight) => {
             const flightCard = document.createElement("div");
-          flightCard.classList.add("each-flight-div-box", "show");
-
-          const departureTime = new Date(
-            flight.departureTime
-          ).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-          const arrivalTime = new Date(flight.arrivalTime).toLocaleTimeString(
-            [],
-            { hour: "2-digit", minute: "2-digit" }
-          );
-
+            flightCard.classList.add("each-flight-div-box", "show");
           flightCard.innerHTML = `
             <div class="each-flight-div" onclick="media_click(this)">
                 <div class="flight-company">
@@ -358,6 +374,7 @@
             </div>
         `;
           flightResults.appendChild(flightCard);
+        });
         }
 
             // Remove passenger
@@ -380,14 +397,21 @@
 
             function calculateTotalPrice(){
                 const passengerList = document.getElementById('passenger-list');
-                document.getElementById('totalPrice').
-               innerHTML=`${passengerList.children.length*flight.price}`;
-              
-
+                if(passengerList.children.length===0){
+                    document.getElementById('totalPrice').innerHTML=0;
+                    return;
+                }
+                if(flight.length===1){
+                    document.getElementById('totalPrice').
+                    innerHTML=`${passengerList.children.length*flight[0].price}`;
+                }else{
+                    document.getElementById('totalPrice').
+                    innerHTML=`${passengerList.children.length*(flight[0].price+flight[1].price)}`;
+                }
             }
 
             // Book ticket
-            document.getElementById('book-ticket-btn').addEventListener('click', function() {
+            document.getElementById('book-ticket-btn').addEventListener('click', async function() {
                 const passengerList = document.getElementById('passenger-list');
                 passengers = [];
                 for (let i = 0; i < passengerList.children.length; i++) {
@@ -416,12 +440,27 @@
                     return;
                 }
                 console.log(scheduleId, userId, passengers);
-                const bookingDetails = {
-                    scheduleId: scheduleId,
-                    userId: userId,
-                    passengers: passengers
-                };
+                let bookingDetails = [];
+                if(isNaN(scheduleId1)){
+                    bookingDetails =[ {
+                        scheduleId: scheduleId,
+                        userId: userId,
+                        passengers: passengers
+                    }];
 
+                }else{
+                    bookingDetails =[{
+                        scheduleId: scheduleId,
+                        userId: userId,
+                        passengers: passengers
+                    },
+                    {
+                        scheduleId: scheduleId1,
+                        userId: userId,
+                        passengers: passengers
+                    }];
+                }
+                let bookingData = [];
                 fetch('https://localhost:7067/api/Booking/BookFlightByUser', {
                     method: 'POST',
                     headers: {
@@ -431,43 +470,57 @@
                     body: JSON.stringify(bookingDetails)
                 })
                 .then(response => response.json())
-                .then(data => {
+                .then( (data) => {
                     if (data.errorCode) {
                         showAlert(data.errorMessage, "danger");
                     } else {
                         console.log(data);
-                        showBookingPreview(data);
+                        showAlert('Booking Successful', 'success');
+                        data.forEach( (booking)=>{
+                             makePayment(booking.bookingId, booking.totalPrice);
+                        });
+                        setTimeout(() => {
+                            window.location.href = `TicketPage.html?BookingId=${data[0].bookingId}&bookingId1=${data[1]?.bookingId}`;
+                        }, 4000);
+                        // window.location.href = `TicketPage.html?BookingId=${data[0].bookingId}&bookingId1=${data[1]?.bookingId}`;
+
                     }
                 })
                 .catch(error => {
-                    showAlert('Error making booking', 'danger');
-                    console.error('Error:', error);
+                    if (error.errorMessage) {
+                        showAlert(error.errorMessage, "danger");
+                        setTimeout(() => {
+                            window.location.href = `TicketPage.html?BookingId=${data[0].bookingId}&bookingId1=${data[1]?.bookingId}`;
+                        }, 4000);
+                        // window.location.href = `TicketPage.html?BookingId=${data[0].bookingId}&bookingId1=${data[1]?.bookingId}`;
+                    } else {
+                        showAlert('Some unwanted error occurred', 'danger');
+                    }
                 });
+                
+                
             });
 
             function showBookingPreview(data) {
                 const bookingPreview = document.getElementById('booking-preview');
                 const bookingDetailsDiv = document.getElementById('booking-details');
                 bookingDetailsDiv.innerHTML = `
-                    <p><strong>Booking ID:</strong> ${data.bookingId}</p>
-                    <p><strong>Booking Status:</strong> ${data.bookingStatus}</p>
-                    <p><strong>Booking Date:</strong> ${new Date(data.bookingDate).toLocaleString()}</p>
-                    <p><strong>Payment Status:</strong> ${data.paymentStatus}</p>
-                    <p><strong>Total Price:</strong> ${data.totalPrice}</p>
+                    <p><strong>Booking ID:</strong> ${data[0].bookingId}</p>
+                    <p><strong>Booking Status:</strong> ${data[0].bookingStatus}</p>
+                    <p><strong>Booking Date:</strong> ${new Date(data[0].bookingDate).toLocaleString()}</p>
+                    <p><strong>Payment Status:</strong> ${data[0].paymentStatus}</p>
+                    <p><strong>Total Price:</strong> ${data[0].totalPrice}</p>
                     <h4>Flight Details</h4>
-                    <p><strong>Departure Time:</strong> ${new Date(data.flightDetails.departureTime).toLocaleString()}</p>
-                    <p><strong>Reaching Time:</strong> ${new Date(data.flightDetails.reachingTime).toLocaleString()}</p>
+                    <p><strong>Departure Time:</strong> ${new Date(data[0].flightDetails.departureTime).toLocaleString()}</p>
+                    <p><strong>Reaching Time:</strong> ${new Date(data[0].flightDetails.reachingTime).toLocaleString()}</p>
                     <h4>Passengers</h4>
-                    ${data.passengers.map(passenger => `
+                    ${data[0].passengers.map(passenger => `
                         <p><strong>Name:</strong> ${passenger.name}</p>
                         <p><strong>Age:</strong> ${passenger.age}</p>
                         <p><strong>Gender:</strong> ${passenger.gender}</p>
                     `).join('')}
                 `;
                 bookingPreview.style.display = 'block';
-                document.getElementById('make-payment-btn').addEventListener('click', function() {
-                    makePayment(data.bookingId, data.totalPrice);
-                });
             }
 
             function makePayment(bookingId, totalPrice) {
@@ -488,35 +541,40 @@
                 .then(data => {
                     if (data.errorCode) {
                         showAlert(data.errorMessage, "danger");
-                        window.location.href = `TicketPage.html?BookingId=${bookingId}`
+                        throw data.errorMessage;
+                        // window.location.href = `TicketPage.html?BookingId=${bookingId}`
                     }
                     else if (data.errors) {
                         showAlert('Some unwanted error occurred', 'danger');
+                        throw data.errors;
                     } else {
                         showAlert('Payment Successful', 'success');
-                        window.location.href = `TicketPage.html?BookingId=${bookingId}`
+                        // window.location.href = `TicketPage.html?BookingId=${bookingId}`
                     }
                 })
                 .catch(error => {
                     showAlert('Error making payment !! Try Again', 'danger');
                     console.error('Error:', error);
+                    throw error;
                 });
             }
 
             function showAlert(message, type) {
-                const alertContainer = document.createElement('div');
-                alertContainer.classList.add('alert', `alert-${type}`, 'alert-dismissible', 'fade', 'show');
-                alertContainer.innerHTML = `
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    ${message}
-                `;
-                document.body.appendChild(alertContainer);
-                setTimeout(() => {
-                    alertContainer.remove();
-                }, 3000);
+            document.getElementById('model-content').innerHTML = message;
+            if (type === 'danger') {
+                document.getElementById('exampleModalLabel').innerHTML = 'Error!';
+                document.getElementById('modal-header').classList.remove('bg-success');
+                document.getElementById('modal-header').classList.add('bg-danger');
+            } else {
+                document.getElementById('exampleModalLabel').innerHTML = 'Success!';
+                document.getElementById('modal-header').classList.remove('bg-danger');
+                document.getElementById('modal-header').classList.add('bg-success');
             }
+            $('.alertModel').modal('show');
+            setTimeout(() => {
+                $('.alertModel').modal('hide');
+            }, 4000);
+        }
         });
     </script>
 

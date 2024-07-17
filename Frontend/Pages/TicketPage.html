@@ -4,31 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Booking Details</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="../Css/Home.css">
-    <link rel="stylesheet" href="../Css/Navbar.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+    
 </head>
 <body>
     <div class="container mt-5 pt-5">
         <div class="row">
             <div class="col-md-12">
                 <h2 class="text-center">Booking Details</h2>
-                <div id="booking-details">
-                    <!-- Booking details will be dynamically inserted here -->
-                </div>
-                <div id="booking-actions" class="text-center mt-4">
-                    <!-- Actions like cancel or rebook will be inserted here -->
-                </div>
+                <div id="booking-details"></div>
+                <div id="booking-actions" class="text-center mt-4"></div> 
             </div>
         </div>
     </div>
 
-    <!-- Custom Script -->
     <script>
+        let bookingData=[];
         document.addEventListener("DOMContentLoaded", function() {
             const urlParams = new URLSearchParams(window.location.search);
             const bookingId = parseInt(urlParams.get('BookingId'));
+            const bookingId1=parseInt(urlParams.get('bookingId1'));
             const token = localStorage.getItem('token');
+
+
             fetch(`https://localhost:7067/api/Booking/getBookingDetailsByUser/${bookingId}`, {
                 method: 'GET',
                 headers: {
@@ -41,6 +39,7 @@
                 if (data.errorCode) {
                     showAlert(data.errorMessage, "danger");
                 } else {
+                    bookingData.push(data);
                     displayBookingDetails(data);
                     handleBookingActions(data);
                 }
@@ -49,10 +48,34 @@
                 showAlert('Error fetching booking details', 'danger');
                 console.error('Error:', error);
             });
-
+            console.log(bookingId1);
+            if(!isNaN(bookingId1)){
+                fetch(`https://localhost:7067/api/Booking/getBookingDetailsByUser/${bookingId1}`, {
+                method: 'GET',
+                headers: {
+                    contentType: 'application/json',
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.errorCode) {
+                    showAlert(data.errorMessage, "danger");
+                } else {
+                    bookingData.push(data);
+                    displayBookingDetails(data);
+                    handleBookingActions(data);
+                }
+            })
+            .catch(error => {
+                showAlert('Error fetching booking details', 'danger');
+                console.error('Error:', error);
+            });
+            }
+            
             function displayBookingDetails(data) {
                 const bookingDetailsDiv = document.getElementById('booking-details');
-                bookingDetailsDiv.innerHTML = `
+                bookingDetailsDiv.innerHTML += `
                     <h3>Booking ID: ${data.bookingId}</h3>
                     <p><strong>Status:</strong> ${data.bookingStatus}</p>
                     <p><strong>Booking Date:</strong> ${new Date(data.bookingDate).toLocaleString()}</p>
@@ -63,28 +86,35 @@
                     <p><strong>Reaching Time:</strong> ${new Date(data.flightDetails.reachingTime).toLocaleString()}</p>
                     <h4>Passengers</h4>
                     ${data.passengers.map(p => `
-                        <p><strong>Name:</strong> ${p.name}</p>
-                        <p><strong>Age:</strong> ${p.age}</p>
-                        <p><strong>Gender:</strong> ${p.gender}</p>
+                        <div class="ticket">
+                            <p><strong>Name:</strong> ${p.name}</p>
+                            <p><strong>Age:</strong> ${p.age}</p>
+                            <p><strong>Gender:</strong> ${p.gender}</p>
+                            
+                        </div>
                     `).join('')}
                 `;
             }
 
             function handleBookingActions(data) {
                 const bookingActionsDiv = document.getElementById('booking-actions');
-                if (data.bookingStatus === 'Completed') {
+                if (data.bookingStatus === 'Completed' && data.paymentStatus === 'Success') {
                     bookingActionsDiv.innerHTML = `
-                        <button class="btn btn-danger" id="cancel-booking-btn">Cancel Booking</button>
                         <button class="btn btn-primary" id="print-btn">Print Ticket</button>
+                        <button class="btn btn-danger" id="cancel-btn">Cancel Ticket</button>
                     `;
-                    document.getElementById('cancel-booking-btn').addEventListener('click', function() {
+                    document.getElementById('print-btn').addEventListener('click', function() {
+                        if (bookingData.length === 1) {
+                            window.location.href = `ticket.html?bookingId=${bookingData[0].bookingId}`;
+                        } else {
+                            window.location.href = `ticket.html?bookingId=${bookingData[0].bookingId}&bookingId1=${bookingData[1].bookingId}`;
+                        }
+                        
+                    });
+                    document.getElementById('cancel-btn').addEventListener('click', function() {
                         cancelBooking(data.bookingId);
                     });
-                    document.getElementById('print-btn').addEventListener('click', function() {
-                        window.print();
-                    });
-                }
-                 else {
+                } else if (data.bookingStatus !== 'Completed') {
                     bookingActionsDiv.innerHTML = `
                         <button class="btn btn-primary" id="rebook-btn">Rebook Ticket</button>
                     `;
@@ -117,7 +147,6 @@
             }
 
             function rebookTicket(bookingData) {
-                // Assuming you redirect to the booking page with pre-filled data
                 const urlParams = new URLSearchParams({
                     scheduleId: bookingData.scheduleId,
                     userId: bookingData.userId,
@@ -131,10 +160,9 @@
             }
         });
     </script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="../JavaScripts/UserNavbar.js"></script>
-    <script src="../JavaScripts/Home.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
+
