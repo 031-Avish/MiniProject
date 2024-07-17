@@ -88,8 +88,13 @@ namespace FlightBookingSystemAPI.Repositories
             {
                 _logger.LogInformation("Retrieving all bookings.");
                 var bookings = await _context.Bookings
-                    .Include(b => b.FlightDetails) // Include related FlightDetails entity
+                    .Include(b => b.FlightDetails)
+                        .ThenInclude(f => f.FlightInfo)
+                        // Include related FlightInfo entity
+                    .Include(b => b.FlightDetails)
+                        .ThenInclude(r => r.RouteInfo)  // Include related RouteInfo entity
                     .ToListAsync();
+
 
                 if (bookings.Count <= 0)
                 {

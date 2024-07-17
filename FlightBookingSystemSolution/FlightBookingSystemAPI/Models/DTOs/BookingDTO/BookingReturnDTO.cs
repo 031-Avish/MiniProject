@@ -27,7 +27,7 @@ namespace FlightBookingSystemAPI.Models.DTOs.BookingDTO
         public int ScheduleId { get; set; }
 
         [Required(ErrorMessage = "Flight details are required")]
-        public ScheduleBookingDTO FlightDetails { get; set; }
+        public ScheduleDetailDTO FlightDetails { get; set; }
 
         [Required(ErrorMessage = "Passengers information is required")]
         public List<PassengerReturnDTO> Passengers { get; set; }

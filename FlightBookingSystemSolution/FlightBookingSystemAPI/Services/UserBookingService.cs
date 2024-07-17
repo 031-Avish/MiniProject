@@ -4,7 +4,9 @@ using FlightBookingSystemAPI.Exceptions.ServiceExceptions;
 using FlightBookingSystemAPI.Interfaces;
 using FlightBookingSystemAPI.Models;
 using FlightBookingSystemAPI.Models.DTOs.BookingDTO;
+using FlightBookingSystemAPI.Models.DTOs.FlightDTO;
 using FlightBookingSystemAPI.Models.DTOs.PassengerDTO;
+using FlightBookingSystemAPI.Models.DTOs.RouteInfoDTO;
 using FlightBookingSystemAPI.Models.DTOs.ScheduleDTO;
 using System.Transactions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
@@ -504,28 +506,31 @@ namespace FlightBookingSystemAPI.Services
         /// <param name="booking">The booking entity.</param>
         /// <returns>The booking return DTO.</returns>
         #region DTOs
-        private BookingReturnDTO MapBookingToBookingReturnDTO(Booking booking)
+        private BookingReturnDTO MapBookingToBookingReturnDTO(Booking booking1)
         {
             var bookingDetails = _bookingDetailRepository.GetAll().Result
-                .Where(bd => bd.BookingId == booking.BookingId)
+                .Where(bd => bd.BookingId == booking1.BookingId)
                 .Select(bd => bd.PassengerDetail)
                 .ToList();
-
+            var booking = _bookingRepository.GetAll().Result
+                .Where(b=>b.BookingId == booking1.BookingId).ToList();
+            ;
             return new BookingReturnDTO
             {
-                BookingId = booking.BookingId,
-                BookingStatus = booking.BookingStatus,
-                BookingDate = booking.BookingDate,
-                PaymentStatus = booking.PaymentStatus,
-                TotalPrice = booking.TotalPrice,
-                UserId = booking.UserId,
-                ScheduleId = booking.ScheduleId,
-                FlightDetails = new ScheduleBookingDTO
+                BookingId = booking[0].BookingId,
+                BookingStatus = booking[0].BookingStatus,
+                BookingDate = booking[0].BookingDate,
+                PaymentStatus = booking[0].PaymentStatus,
+                TotalPrice = booking[0].TotalPrice,
+                UserId = booking[0].UserId,
+                ScheduleId = booking[0].ScheduleId,
+
+                FlightDetails = new ScheduleDetailDTO
                 {
-                    DepartureTime = booking.FlightDetails.DepartureTime,
-                    ReachingTime = booking.FlightDetails.ReachingTime,
-                    RouteId = booking.FlightDetails.RouteId,
-                    FlightId = booking.FlightDetails.FlightId
+                    DepartureTime = booking[0].FlightDetails.DepartureTime,
+                    ReachingTime = booking[0].FlightDetails.ReachingTime,
+                    RouteInfo = MapToRouteReturnDTO(booking[0].FlightDetails.RouteInfo),
+                    FlightInfo = MapBookingToFlightDTO(booking[0].FlightDetails.FlightInfo),
                 },
                 Passengers = bookingDetails.Select(pd => new PassengerReturnDTO
                 {
@@ -534,6 +539,27 @@ namespace FlightBookingSystemAPI.Services
                     Age = pd.Age,
                     Gender = pd.Gender
                 }).ToList()
+            };
+        }
+
+        private FlightReturnDTO MapBookingToFlightDTO(Flight flightInfo)
+        {
+            return new FlightReturnDTO
+            {
+                FlightId = flightInfo.FlightId,
+                Name = flightInfo.Name,
+                TotalSeats = flightInfo.TotalSeats,
+            };
+        }
+
+        private RouteInfoReturnDTO MapToRouteReturnDTO(RouteInfo routeInfo)
+        {
+            return new RouteInfoReturnDTO
+            {
+                RouteId = routeInfo.RouteId,
+                StartCity = routeInfo.StartCity,
+                EndCity = routeInfo.EndCity,
+                Distance = routeInfo.Distance,
             };
         }
         #endregion
