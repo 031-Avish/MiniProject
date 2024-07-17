@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Bookings</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../Css/Home.css">
+    <link rel="stylesheet" href="../Css/Navbar.css">
+    <style>
+        /* Your custom styles here */
+        .booking-card {
+            width: 300px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        .booking-actions {
+            margin-top: 10px;
+        }
+        .set-margin {
+            margin-top: 70px !important;
+        }
+        #bookingsList {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+            width: 80vw;
+        }
+    </style>
+</head>
+<body>
+    <div class="set-margin container mt-5">
+        <h2 class="text-center mb-4">User Bookings</h2>
+        <div id="bookingsList">
+            <!-- Bookings will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- Modal for cancellation confirmation -->
+    <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cancelModalLabel">Confirm Cancellation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to cancel this booking?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" id="confirmCancel">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for showing cancellation result -->
+    <div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resultModalLabel">Cancellation Result</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="resultMessage">
+                    <!-- Result message will be inserted here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade alertModel" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header" id="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel"></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="model-content">
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="../JavaScripts/UserNavbar.js"></script>
+    <script src="../JavaScripts/Home.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded",getBookings);
+        function getBookings() {
+            // Fetch bookings for the current user from API
+            const userId = localStorage.getItem('userId'); // Assuming user ID is stored in localStorage
+            const token = localStorage.getItem('token');
+            const apiUrl = `https://localhost:7067/api/Booking/GetAllBookingsByUser/${userId}`;
+
+            fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+            })
+            .then(response => response.json())
+            .then(bookings => 
+            {
+                if (bookings.errorCode) {
+                    showAlert(bookings.errorMessage, "danger");
+                } else if (bookings.errors) {
+                    showAlert("Some Unwanted Error Occurred", "danger");
+                }
+                else{
+                const bookingsList = document.getElementById('bookingsList');
+                const currentTime = new Date();
+
+                // const upcomingBookings = bookings.filter(booking => new Date(booking.flightDetails.departureTime) > currentTime);
+
+                bookings.sort((a, b) => {
+                    const departureTimeA = new Date(a.flightDetails.departureTime);
+                    const departureTimeB = new Date(b.flightDetails.departureTime);
+
+                    if (departureTimeA > departureTimeB) {
+                        return 1; // A comes before B (descending order)
+                    }
+                    if (departureTimeA < departureTimeB) {
+                        return -1; // B comes before A (descending order)
+                    }
+                    return 0; // A and B are equal
+                });
+                bookings.forEach(booking => {
+                    const bookingCard = createBookingCard(booking);
+                    bookingsList.appendChild(bookingCard);
+                });
+            }
+            })
+            .catch(error => {
+                showAlert(error, "danger");
+                // console.error('Error fetching bookings:', error);
+            });
+
+            // Function to create booking card
+            function createBookingCard(booking) {
+                
+                const { bookingId, bookingStatus, bookingDate, paymentStatus, totalPrice, flightDetails, passengers } = booking;
+
+                // Format date
+                const formattedBookingDate = new Date(bookingDate).toLocaleDateString();
+
+                // Create card element
+                const card = document.createElement('div');
+                card.classList.add('booking-card');
+                const departureTime = new Date(flightDetails.departureTime);
+                const currentTime = new Date();
+
+                card.innerHTML = `
+                    <h5>Booking ID: ${bookingId}</h5>
+                    <p>Status: ${bookingStatus}</p>
+                    <p>Booking Date: ${formattedBookingDate}</p>
+                    <p>Payment Status: ${paymentStatus}</p>
+                    <p>Total Price: $${totalPrice}</p>
+                    <p>Flight Details:</p>
+                    <ul>
+                        <li>Departure Time: ${departureTime.toLocaleString()}</li>
+                        <li>Reaching Time: ${new Date(flightDetails.reachingTime).toLocaleString()}</li>
+                        <li>Route: ${flightDetails.routeInfo.startCity} to ${flightDetails.routeInfo.endCity}</li>
+                        <li>Flight Name: ${flightDetails.flightInfo.name}</li>
+                    </ul>
+                    <p>Passengers:</p>
+                    <ul>
+                        ${passengers.map(passenger => `<li>${passenger.name} (${passenger.age} years, ${passenger.gender})</li>`).join('')}
+                    </ul>
+                    <div class="booking-actions">
+                        ${bookingStatus === 'Completed' && departureTime > currentTime ? `<button class="btn btn-danger mr-2" onclick="confirmCancellation(${bookingId})">Cancel Ticket</button>` : ''}
+                        <a class="btn btn-primary" href="ticket.html?bookingId=${bookingId}" target="_blank">Print Ticket</a>
+                    </div>
+                `;
+
+                return card;
+            }
+        }
+        const token=localStorage.getItem('token');
+            // Function to handle cancellation confirmation
+            window.confirmCancellation = function(bookingId) {
+                console.log('Cancelling booking:', bookingId);
+                // Show confirmation modal
+                $('#cancelModal').modal('show');
+
+                // Handle cancellation on confirmation
+                document.getElementById('confirmCancel').onclick = function() {
+                    // Perform cancellation logic (API call)
+                    const apiUrl = `https://localhost:7067/api/Booking/CancelBookingByUser/${bookingId}`;
+                    fetch(apiUrl, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.errorCode) {
+                            showAlert(data.errorMessage, "danger");
+                        } else if (data.errors) {
+                            showAlert("Some Unwanted Error Occurred", "danger");
+                        }
+                        else{
+                        // Show result message
+                            const resultMessage = `Message: ${data.message}<br>Refund Amount: $${data.refundAmount}`;
+                            document.getElementById('resultMessage').innerHTML = resultMessage;
+                            $('#resultModal').modal('show');
+
+                            getBookings();  // Refresh bookings list
+                        }
+                    })
+                    .catch(error => {                    
+                        showAlert("Some Unwanted Error Occurred", "danger");
+                        // console.error('Error cancelling booking:', error);
+                    });
+
+                    // Close modal
+                    $('#cancelModal').modal('hide');
+                };
+            };
+            function showAlert(message, type) {
+            document.getElementById('model-content').innerHTML = message;
+            if (type === 'danger') {
+                document.getElementById('exampleModalLabel').innerHTML = 'Error!';
+                document.getElementById('modal-header').classList.remove('bg-success');
+                document.getElementById('modal-header').classList.add('bg-danger');
+            } else {
+                document.getElementById('exampleModalLabel').innerHTML = 'Success!';
+                document.getElementById('modal-header').classList.remove('bg-danger');
+                document.getElementById('modal-header').classList.add('bg-success');
+            }
+            $('.alertModel').modal('show');
+            setTimeout(() => {
+                $('.alertModel').modal('hide');
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

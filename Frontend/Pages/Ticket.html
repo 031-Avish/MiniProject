@@ -6,6 +6,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
     <style>
+        
        
         nav {
             display: none !important;
@@ -36,8 +37,8 @@
         p.txt {
             text-transform: uppercase;
             font-family: arial;
-            font-size: 25px;
-            font-weight: bolder;
+            font-size: 22px;
+            font-weight: 600;
         }
         .bord {
             border: 2px solid lightgray;
@@ -53,7 +54,7 @@
         }
         h2, h1 {
             font-weight: lighter !important;
-            font-size: 35px !important;
+            font-size: 25px !important;
             margin-bottom: 20px;  
             font-family :'product sans' !important;
             font-weight: bolder;
@@ -61,6 +62,11 @@
         .tickets{
             width: 1000px;
             margin: auto;
+        }
+        .print-btn{
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
@@ -73,8 +79,10 @@
                 </div>
             </div>
         </div>
+        <div class="print-btn mb-5">
+        <button class="btn btn-primary" onclick="window.print()" id="print-btn">Print Ticket</button>
     </div>
-
+    </div>
 <script>
 
         let bookingData=[];
@@ -97,7 +105,8 @@
                 if (data.errorCode) {
                     showAlert(data.errorMessage, "danger");
                 } else {
-                    // console.log(data);
+                     console.log(data);
+                    
                     bookingData.push(data);
 
                     if(isNaN(bookingId1))
@@ -136,6 +145,7 @@
             }
         });
         function displayTickets() {
+                
                 const bookingDetailsDiv = document.getElementById('booking-details');
                 bookingData.forEach(data => {
                     
@@ -181,23 +191,23 @@
                             <div class="row mb-3">
                                 <div class="col-8">
                                     <p class="head">Passenger</p>
-                                    <p class="h5 text-uppercase">${passenger.name}</p>
+                                    <p class="txt text-uppercase">${passenger.name}</p>
                                 </div>
                                 <div class="col-4">
                                     <p class="head">Board Time</p>
-                                    <p class="txt">12:45</p>
+                                    <p class="txt">1 hour before Departure</p>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-3">
                                     <p class="head">Departure</p>
                                     <p class="txt mb-1">${departureDate}</p>
-                                    <p class="h1 font-weight-bold mb-3">${departureTime}</p>
+                                    <p class="h1  mb-3">${departureTime}</p>
                                 </div>
                                 <div class="col-3">
                                     <p class="head">Arrival</p>
                                     <p class="txt mb-1">${arrivalDate}</p>
-                                    <p class="h1 font-weight-bold mb-3">${arrivalTime}</p>
+                                    <p class="h1  mb-3">${arrivalTime}</p>
                                 </div>
                                 <div class="col-3">
                                     <p class="head">Gate</p>
@@ -235,8 +245,10 @@
                 alert(`${type.toUpperCase()}: ${message}`);
             }
 </script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+    <script src="../JavaScripts/AuthorizeUser.js"></script>
 </body>
 </html>
