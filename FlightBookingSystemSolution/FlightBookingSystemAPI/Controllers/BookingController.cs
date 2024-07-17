@@ -41,7 +41,7 @@ namespace FlightBookingSystemAPI.Controllers
         [ProducesResponseType(typeof(BookingReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<BookingReturnDTO>> BookFlight(BookingDTO bookingDTO)
+        public async Task<ActionResult<List<BookingReturnDTO>>> BookFlight(List<BookingDTO> bookingDTO)
         {
             try
             {

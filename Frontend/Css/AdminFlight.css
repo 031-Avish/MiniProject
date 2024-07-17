@@ -1,5 +1,26 @@
 body{
-    background: linear-gradient(45deg, #ada4d7, #8a58c8);
+    background: linear-gradient(45deg, #14155e, #6ca3ad);
+    min-height: 100vh;
+}
+footer{
+    background: #b3cdd4;
+    margin-bottom: auto;
+    margin-top: 20px;
+    height: 100px;
+}
+.spinner {
+    display: none;
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto;
+}
+.no-results {
+    display: none;
+    text-align: center;
+    color: red;
+    font-size: 2rem;
+    margin-top: 20px;
+    font-weight: bold;
 }
 .list-group-item{
     border: 1px solid rgba(0, 0, 0, .125);

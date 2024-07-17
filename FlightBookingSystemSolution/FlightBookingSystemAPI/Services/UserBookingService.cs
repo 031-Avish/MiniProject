@@ -56,75 +56,81 @@ namespace FlightBookingSystemAPI.Services
         /// <param name="bookingDTO">The booking details.</param>
         /// <returns>The booked flight details.</returns>
         #region BookFlight
-        public async Task<BookingReturnDTO> BookFlight(BookingDTO bookingDTO)
+        public async Task<List<BookingReturnDTO>> BookFlight(List<BookingDTO> bookingDTO)
         {
             using var transaction = await _dbContext.Database.BeginTransactionAsync();
             try
             {
-                _logger.LogInformation("Attempting to book a flight for user with ID {UserId}.", bookingDTO.UserId);
+                _logger.LogInformation("Attempting to book a flight for user with ID {UserId}.", bookingDTO[0].UserId);
 
+                List<BookingReturnDTO> bookingReturnDTOs = new List<BookingReturnDTO>();
                 // Get the schedule details
-                var schedule = await _scheduleRepository.GetByKey(bookingDTO.ScheduleId);
-                if (schedule.DepartureTime < DateTime.Now)
+                for (int i = 0; i < bookingDTO.Count; i++)
                 {
-                    throw new BookingServiceException("Cannot book for old schedule.");
+                    var schedule = await _scheduleRepository.GetByKey(bookingDTO[i].ScheduleId);
+                    if (schedule.DepartureTime < DateTime.Now)
+                    {
+                        throw new BookingServiceException("Cannot book for old schedule.");
+                    }
+
+                    _logger.LogInformation("Checking seat availability for schedule with ID {ScheduleId}.", bookingDTO[i].ScheduleId);
+
+                    // Check seat availability and reduce available seats immediately
+                    int totalPassengers = bookingDTO[i].Passengers.Count(p => p.Age > 2);
+                    if (!CheckSeatAvailability(schedule, totalPassengers))
+                    {
+                        throw new BookingServiceException("Not enough available seats for the requested booking.");
+                    }
+
+                    _logger.LogInformation("Reducing available seats for schedule with ID {ScheduleId} by {TotalPassengers}.", bookingDTO[i]    .ScheduleId, totalPassengers);
+
+                    // Reduce the available seats (Lock Seat)
+                    await ReduceAvailableSeats(schedule, totalPassengers);
+
+                    _logger.LogInformation("Calculating total price for booking.");
+
+                    // Calculate total price
+                    float totalPrice = CalculateTotalPrice(schedule, bookingDTO[i].Passengers);
+
+                    _logger.LogInformation("Applying first-time user discount for user with ID {UserId}.", bookingDTO[i].UserId);
+
+                    // Apply first-time user discount
+                    totalPrice = await ApplyFirstTimeUserDiscount(bookingDTO[i].UserId, totalPrice);
+
+                    _logger.LogInformation("Creating a new booking for user with ID {UserId}.", bookingDTO[i].UserId);
+
+                    // Create a new booking
+                    Booking booking = new Booking
+                    {
+                        BookingStatus = "Processing",
+                        TotalPrice = totalPrice,
+                        UserId = bookingDTO[i].UserId,
+                        ScheduleId = bookingDTO[i].ScheduleId,
+                        PassengerCount = bookingDTO[i].Passengers.Count
+                    };
+
+                    // Add the booking with status as Processing
+                    var addedBooking = await _bookingRepository.Add(booking);
+
+                    _logger.LogInformation("Adding passenger details and booking details for booking with ID {BookingId}.", addedBooking.BookingId);
+
+                    // Add passenger details and booking details for each passenger
+                    await AddBookingDetailsAndPassenger(bookingDTO[i], addedBooking);
+
+                    await _dbContext.SaveChangesAsync();
+
+                    bookingReturnDTOs.Add(MapBookingToBookingReturnDTO(addedBooking));
+                    _logger.LogInformation("Booking successfully completed for user with ID {UserId}.", bookingDTO[i].UserId);
+
+                    // Commit transaction if everything goes correct
+                    
                 }
-
-                _logger.LogInformation("Checking seat availability for schedule with ID {ScheduleId}.", bookingDTO.ScheduleId);
-
-                // Check seat availability and reduce available seats immediately
-                int totalPassengers = bookingDTO.Passengers.Count(p => p.Age > 2);
-                if (!CheckSeatAvailability(schedule, totalPassengers))
-                {
-                    throw new BookingServiceException("Not enough available seats for the requested booking.");
-                }
-
-                _logger.LogInformation("Reducing available seats for schedule with ID {ScheduleId} by {TotalPassengers}.", bookingDTO.ScheduleId, totalPassengers);
-
-                // Reduce the available seats (Lock Seat)
-                await ReduceAvailableSeats(schedule, totalPassengers);
-
-                _logger.LogInformation("Calculating total price for booking.");
-
-                // Calculate total price
-                float totalPrice = CalculateTotalPrice(schedule, bookingDTO.Passengers);
-
-                _logger.LogInformation("Applying first-time user discount for user with ID {UserId}.", bookingDTO.UserId);
-
-                // Apply first-time user discount
-                totalPrice = await ApplyFirstTimeUserDiscount(bookingDTO.UserId, totalPrice);
-
-                _logger.LogInformation("Creating a new booking for user with ID {UserId}.", bookingDTO.UserId);
-
-                // Create a new booking
-                Booking booking = new Booking
-                {
-                    BookingStatus = "Processing",
-                    TotalPrice = totalPrice,
-                    UserId = bookingDTO.UserId,
-                    ScheduleId = bookingDTO.ScheduleId,
-                    PassengerCount = bookingDTO.Passengers.Count
-                };
-
-                // Add the booking with status as Processing
-                var addedBooking = await _bookingRepository.Add(booking);
-
-                _logger.LogInformation("Adding passenger details and booking details for booking with ID {BookingId}.", addedBooking.BookingId);
-
-                // Add passenger details and booking details for each passenger
-                await AddBookingDetailsAndPassenger(bookingDTO, addedBooking);
-
-                await _dbContext.SaveChangesAsync();
-
-                _logger.LogInformation("Booking successfully completed for user with ID {UserId}.", bookingDTO.UserId);
-
-                // Commit transaction if everything goes correct
                 await transaction.CommitAsync();
-                return MapBookingToBookingReturnDTO(addedBooking);
+                return bookingReturnDTOs;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while booking the flight for user with ID {UserId}.", bookingDTO.UserId);
+                _logger.LogError(ex, "Error occurred while booking the flight for user with ID {UserId}.", bookingDTO[0].UserId);
 
                 // Roll back and throw error if anything went wrong
                 await transaction.RollbackAsync();

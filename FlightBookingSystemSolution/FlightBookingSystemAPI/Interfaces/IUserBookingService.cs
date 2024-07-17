@@ -4,7 +4,7 @@ namespace FlightBookingSystemAPI.Interfaces
 {
     public interface IUserBookingService
     {
-        Task<BookingReturnDTO> BookFlight(BookingDTO bookingDTO);
+        Task<List<BookingReturnDTO>> BookFlight(List<BookingDTO> bookingDTO);
         Task<BookingCancelReturnDTO> CancelBooking(int bookingId);
         Task<List<BookingReturnDTO>> GetUpcomingFlightsByUser(int userId);
         Task<List<BookingReturnDTO>> GetOldFlightsByUser(int userId);
