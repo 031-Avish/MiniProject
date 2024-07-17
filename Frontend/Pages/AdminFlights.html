@@ -1,116 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="../Css/Navbar.css">
-    <link rel="stylesheet" href="../Css/AdminFlight.css">
-    <title>AdminFlights</title>
-</head>
-<body>
-    <div class="nav-lite">
-        <div class="search-div">
-            <div class="form-group">
-                <label for="searchInput" class="labels">Search:</label>
-                <input type="text" class="form-control" id="searchInput" placeholder="Search by ID or Name">
-            </div>
-        </div>
-        <div class="sort-div">
-            <div class="form-group">
-                <label for="sortSelect" class="labels">Sort:</label>
-                <select class="form-control" id="sortSelect">
-                    <option value="idA">Id (Small First)</option>
-                    <option value="idD">Id (Large first) </option>
-                    <option value="nameAsc">Name A-Z</option>
-                    <option value="nameDesc">Name Z-A</option>
-                </select>
-            </div>
-        </div>
-        <div class="button-div">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-                Add Flight
-            </button>
-        </div>
-    </div>
-<div class="container">
-
-
-    <!-- Rest of the code -->
-
-  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">Add Flight</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-            <form>
-                <p id="error"></p>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+            crossorigin="anonymous">
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../Css/Navbar.css">
+        <link rel="stylesheet" href="../Css/AdminFlight.css">
+        <title>AdminFlights</title>
+    </head>
+    <body>
+        <div class="nav-lite">
+            <div class="search-div">
                 <div class="form-group">
-                  <label for="flightName">Flight Name</label>
-                  <input type="text" class="form-control" id="flightName" aria-describedby="emailHelp" placeholder="Enter Flight Name">
+                    <label for="searchInput" class="labels">Search:</label>
+                    <input type="text" class="form-control" id="searchInput"
+                        placeholder="Search by ID or Name">
                 </div>
+            </div>
+            <div class="sort-div">
                 <div class="form-group">
-                  <label for="totalSeats">Total Seats</label>
-                  <input type="number" class="form-control" id="totalSeats" placeholder="Total Seats">
+                    <label for="sortSelect" class="labels">Sort:</label>
+                    <select class="form-control" id="sortSelect">
+                        <option value="idA">Id (Small First)</option>
+                        <option value="idD">Id (Large first) </option>
+                        <option value="nameAsc">Name A-Z</option>
+                        <option value="nameDesc">Name Z-A</option>
+                    </select>
                 </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id="add">Add</button>
-        </div>
-        </form>
-      </div>
-    </div>
-  </div>
-   <!-- Modal -->
-  <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateModalTitle">Update Flight</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+            </div>
+            <div class="button-div">
+                <button type="button" class="btn btn-primary"
+                    data-toggle="modal" data-target="#exampleModalCenter">
+                    Add Flight
                 </button>
             </div>
-            <div class="modal-body">
-                <form id="updateFlightForm">
-                    <p id="updateError"></p>
-                    <input type="hidden" id="updateFlightId">
-                    <div class="form-group">
-                        <label for="updateFlightName">Flight Name</label>
-                        <input type="text" class="form-control" id="updateFlightName" placeholder="Enter Flight Name">
-                    </div>
-                    <div class="form-group">
-                        <label for="updateTotalSeats">Total Seats</label>
-                        <input type="number" class="form-control" id="updateTotalSeats" placeholder="Total Seats">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer ">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="update">Update</button>
-            </div>
         </div>
-    </div>
-</div>
-        <div class="heading">
-            Flights Details
-        </div>
-        <div>
-            <ul class="list-group">
-                <!-- Loop through the flights array and display each flight -->
-            </ul>
-        </div>
-        </div>
-    </div>
+        <div class="container">
 
+            
 
-    <script>
+            <!-- Rest of the code -->
+
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1"
+                role="dialog" aria-labelledby="exampleModalCenterTitle"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"
+                                id="exampleModalLongTitle">Add Flight</h5>
+                            <button type="button" class="close"
+                                data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <p id="error"></p>
+                                <div class="form-group">
+                                    <label for="flightName">Flight Name</label>
+                                    <input type="text" class="form-control"
+                                        id="flightName"
+                                        aria-describedby="emailHelp"
+                                        placeholder="Enter Flight Name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="totalSeats">Total Seats</label>
+                                    <input type="number" class="form-control"
+                                        id="totalSeats"
+                                        placeholder="Total Seats">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                    data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary"
+                                    id="add">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="updateModal" tabindex="-1" role="dialog"
+                aria-labelledby="updateModalTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="updateModalTitle">Update
+                                Flight</h5>
+                            <button type="button" class="close"
+                                data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="updateFlightForm">
+                                <p id="updateError"></p>
+                                <input type="hidden" id="updateFlightId">
+                                <div class="form-group">
+                                    <label for="updateFlightName">Flight
+                                        Name</label>
+                                    <input type="text" class="form-control"
+                                        id="updateFlightName"
+                                        placeholder="Enter Flight Name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="updateTotalSeats">Total
+                                        Seats</label>
+                                    <input type="number" class="form-control"
+                                        id="updateTotalSeats"
+                                        placeholder="Total Seats">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer ">
+                            <button type="button" class="btn btn-secondary"
+                                data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary"
+                                id="update">Update</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="heading">
+                Flights Details
+            </div>
+            <div class="spinner-border text-primary spinner" role="status" id="spinner">
+                <span >Loading...</span>
+            </div>
+            <!-- No Results Found -->
+            <div class="no-results" id="no-results">No results found</div>
+            <div>
+                <ul class="list-group">
+                    <!-- Loop through the flights array and display each flight -->
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2024 Your Company. All rights reserved.</p>
+        </footer>
+        <!-- Error Model  -->
+        <div class="modal fade alertModel" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header" id="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel"></h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body" id="model-content">
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        <script>
         // search functionality
         document.getElementById('searchInput').addEventListener('input', function() {
             const value = this.value;
@@ -258,7 +309,7 @@
                     $('#updateModal').modal('hide'); // Close the modal
                     document.getElementById('updateFlightForm').reset(); // Reset the form
                     showAlert('Flight updated successfully', 'success');
-                    fetchFlights(); // Refresh the flight list
+                    getFlights(); // Refresh the flight list
                 }
             })
             .catch(error => {
@@ -286,12 +337,17 @@
                 }
                 else{
                     console.log(data);
+                    if(data.flightStatus === 'Disabled'){
+                        showAlert('Flight cannot be deleted as it is scheduled So It is Disabled', 'danger');
+                    }
+                    else{
                     showAlert('Flight deleted successfully', 'success');
+                    }
                     getFlights();
                 }
             })
             .catch(error => {
-                alert('Error:', error); 
+                showAlert(error,'danger'); 
             });
         }
         
@@ -305,20 +361,20 @@
 
         // Function to show an alert
         function showAlert(message, type) {
-            const alertContainer = document.getElementById('alert-container');
-            const alert = document.createElement('div');
-            alert.className = `alert alert-${type} alert-dismissible fade show`;
-            alert.role = 'alert';
-            alert.innerHTML = `
-                ${message}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            `;
-            alertContainer.appendChild(alert);
+            document.getElementById('model-content').innerHTML = message;
+            if (type === 'danger') {
+                document.getElementById('exampleModalLabel').innerHTML = 'Error!';
+                document.getElementById('modal-header').classList.remove('bg-success');
+                document.getElementById('modal-header').classList.add('bg-danger');
+            } else {
+                document.getElementById('exampleModalLabel').innerHTML = 'Success!';
+                document.getElementById('modal-header').classList.remove('bg-danger');
+                document.getElementById('modal-header').classList.add('bg-success');
+            }
+            $('.alertModel').modal('show');
             setTimeout(() => {
-                $(alert).alert('close');
-            }, 5000);
+                $('.alertModel').modal('hide');
+            }, 4000);
         }
         
         // Function to get all flights
@@ -327,6 +383,7 @@
         function getFlights()
         {
             const token = localStorage.getItem('token');
+            document.getElementById('spinner').style.display = 'block';
             document.querySelector('.list-group').innerHTML = '';
             fetch('https://localhost:7067/api/AdminFlight/GetAllFlights',
             {
@@ -337,6 +394,7 @@
             })
             .then(response => response.json())
             .then(data => {
+                document.getElementById('spinner').style.display = 'none';
                 if(data.errorCode){
                     showAlert(data.errorMessage, "danger");
                 }
@@ -347,6 +405,12 @@
                 else{
                     flights = data;
                     dummyFlights = data;
+                    if(flights.length === 0){
+                        document.getElementById('no-results').style.display = 'block';
+                    }
+                    else{
+                        document.getElementById('no-results').style.display = 'none';
+                    }
                     DisplayFlights();
                     console.log(flights);
                 }
@@ -362,6 +426,13 @@
         // Function to display flights
         function DisplayFlights()
         {
+            console.log(flights);
+            if(flights.length === 0){
+                document.getElementById('no-results').style.display = 'block';
+            }
+            else{
+                document.getElementById('no-results').style.display = 'none';
+            }
             let flightsList = document.querySelector('.list-group');
             flightsList.innerHTML = '';
             console.log(flights);
@@ -389,12 +460,18 @@
         }
     </script>
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="../JavaScripts/LoadNavbar.js"></script>
-    <script src="../JavaScripts/AuthorizeAdmin.js"></script>
-
-</body>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+        <script src="../JavaScripts/LoadNavbar.js"></script>
+        <script src="../JavaScripts/AuthorizeAdmin.js"></script>
+    </body>
 </html>
-       
