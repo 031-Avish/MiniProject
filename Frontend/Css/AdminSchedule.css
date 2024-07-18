@@ -23,6 +23,15 @@ body{
     transition: 0.4s;
 
 }
+.container{
+    min-height: 100vh;
+}
+footer{
+    background: #b3cdd4;
+    margin-bottom: auto;
+    margin-top: 20px;
+    height: 100px;
+}
 .list-group{
     display: flex;
     padding-left: 0;

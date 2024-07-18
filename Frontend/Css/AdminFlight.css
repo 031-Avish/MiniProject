@@ -2,6 +2,9 @@ body{
     background: linear-gradient(45deg, #14155e, #6ca3ad);
     min-height: 100vh;
 }
+.container{
+    min-height: 100vh;
+}
 footer{
     background: #b3cdd4;
     margin-bottom: auto;

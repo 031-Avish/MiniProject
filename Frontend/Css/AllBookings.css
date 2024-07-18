@@ -1,0 +1,20 @@
+.booking-card {
+    width: 300px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+}
+.booking-actions {
+    margin-top: 10px;
+}
+.set-margin {
+    margin-top: 70px !important;
+}
+#bookingsList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    width: 80vw;
+}

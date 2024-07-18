@@ -1,502 +1,282 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="../Css/Navbar.css">
-    <link rel="stylesheet" href="../Css/AdminSchedule.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../Css/Navbar.css" />
+    <link rel="stylesheet" href="../Css/AdminSchedule.css" />
     <title>AdminSchedules</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="nav-lite">
-        <div class="search-div">
-            <div class="form-group">
-                <label for="searchInput">Search:</label>
-                <input type="text" class="form-control" id="searchInput" placeholder="Search by Departure Time or Price">
-            </div>
+      <div class="search-div">
+        <div class="form-group">
+          <label for="searchInput">Search:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="searchInput"
+            placeholder="Search by Departure Time or Price"
+          />
         </div>
-        <div class="sort-div">
-            <div class="form-group">
-                <label for="sortSelect">Sort:</label>
-                <select class="form-control" id="sortSelect">
-                    <option value="priceAsc">Price (Low to High)</option>
-                    <option value="priceDesc">Price (High to Low)</option>
-                    <option value="departureTimeAsc">Departure Time (Earliest to Latest)</option>
-                    <option value="departureTimeDesc">Departure Time (Latest to Earliest)</option>
-                </select>
-            </div>
+      </div>
+      <div class="sort-div">
+        <div class="form-group">
+          <label for="sortSelect">Sort:</label>
+          <select class="form-control" id="sortSelect">
+            <option value="priceAsc">Price (Low to High)</option>
+            <option value="priceDesc">Price (High to Low)</option>
+            <option value="departureTimeAsc">
+              Departure Time (Earliest to Latest)
+            </option>
+            <option value="departureTimeDesc">
+              Departure Time (Latest to Earliest)
+            </option>
+          </select>
         </div>
-    <div class="button-div">
+      </div>
+      <div class="button-div">
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addScheduleModal">
-            Add Schedule
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-toggle="modal"
+          data-target="#addScheduleModal"
+        >
+          Add Schedule
         </button>
+      </div>
     </div>
-</div>
-<div class="container">
-    
-
-    <!-- Add Schedule Modal -->
-    <div class="modal fade" id="addScheduleModal" tabindex="-1" role="dialog" aria-labelledby="addScheduleModalTitle" aria-hidden="true">
+    <div class="container">
+      <!-- Add Schedule Modal -->
+      <div
+        class="modal fade"
+        id="addScheduleModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="addScheduleModalTitle"
+        aria-hidden="true"
+      >
         <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addScheduleModalTitle">Add Schedule</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <p id="error"></p>
-                        <div class="form-group">
-                            <label for="departureTime">Departure Time</label>
-                            <input type="datetime-local" class="form-control" id="departureTime">
-                        </div>
-                        <div class="form-group">
-                            <label for="reachingTime">Reaching Time</label>
-                            <input type="datetime-local" class="form-control" id="reachingTime">
-                        </div>
-                        <div class="form-group">
-                            <label for="price">Price</label>
-                            <input type="number" class="form-control" id="price" step="0.01" placeholder="Enter Price">
-                        </div>
-                        <div class="form-group">
-                            <label for="routeId">Route ID</label>
-                            <input type="number" class="form-control" id="routeId" placeholder="Enter Route ID">
-                        </div>
-                        <div class="form-group">
-                            <label for="flightId">Flight ID</label>
-                            <input type="number" class="form-control" id="flightId" placeholder="Enter Flight ID">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="addSchedule">Add</button>
-                </div>
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addScheduleModalTitle">
+                Add Schedule
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
+            <div class="modal-body">
+              <form>
+                <p id="error"></p>
+                <div class="form-group">
+                  <label for="departureTime">Departure Time</label>
+                  <input
+                    type="datetime-local"
+                    class="form-control"
+                    id="departureTime"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="reachingTime">Reaching Time</label>
+                  <input
+                    type="datetime-local"
+                    class="form-control"
+                    id="reachingTime"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="price">Price</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="price"
+                    step="0.01"
+                    placeholder="Enter Price"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="routeId">Route ID</label>
+                  <select class="form-control" id="routeId">
+                    <option value="">Select Route</option>
+                    <!-- Options will be populated dynamically -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="flightId">Flight ID</label>
+                  <select class="form-control" id="flightId">
+                    <option value="">Select Flight</option>
+                    <!-- Options will be populated dynamically -->
+                  </select>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="button" class="btn btn-primary" id="addSchedule">
+                Add
+              </button>
+            </div>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <!-- Update Schedule Modal -->
-    <div class="modal fade" id="updateScheduleModal" tabindex="-1" role="dialog" aria-labelledby="updateScheduleModalTitle" aria-hidden="true">
+      <!-- Update Schedule Modal -->
+      <div
+        class="modal fade"
+        id="updateScheduleModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="updateScheduleModalTitle"
+        aria-hidden="true"
+      >
         <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="updateScheduleModalTitle">Update Schedule</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="updateScheduleForm">
-                        <p id="updateError"></p>
-                        <input type="hidden" id="updateScheduleId">
-                        <div class="form-group">
-                            <label for="updateDepartureTime">Departure Time</label>
-                            <input type="datetime-local" class="form-control" id="updateDepartureTime">
-                        </div>
-                        <div class="form-group">
-                            <label for="updateReachingTime">Reaching Time</label>
-                            <input type="datetime-local" class="form-control" id="updateReachingTime">
-                        </div>
-                        <div class="form-group">
-                            <label for="updatePrice">Price</label>
-                            <input type="number" class="form-control" id="updatePrice" step="0.01" placeholder="Enter Price">
-                        </div>
-                        <div class="form-group">
-                            <label for="updateRouteId">Route ID</label>
-                            <input type="number" class="form-control" id="updateRouteId" placeholder="Enter Route ID">
-                        </div>
-                        <div class="form-group">
-                            <label for="updateFlightId">Flight ID</label>
-                            <input type="number" class="form-control" id="updateFlightId" placeholder="Enter Flight ID">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="updateSchedule">Update</button>
-                </div>
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="updateScheduleModalTitle">
+                Update Schedule
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
+            <div class="modal-body">
+              <form id="updateScheduleForm">
+                <p id="updateError"></p>
+                <input type="hidden" id="updateScheduleId" />
+                <div class="form-group">
+                  <label for="updateDepartureTime">Departure Time</label>
+                  <input
+                    type="datetime-local"
+                    class="form-control"
+                    id="updateDepartureTime"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="updateReachingTime">Reaching Time</label>
+                  <input
+                    type="datetime-local"
+                    class="form-control"
+                    id="updateReachingTime"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="updatePrice">Price</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="updatePrice"
+                    step="0.01"
+                    placeholder="Enter Price"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="updateRouteId">Route ID</label>
+                  <select class="form-control" id="updateRouteId">
+                    <option value="">Select Route</option>
+                    <!-- Options will be populated dynamically -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="updateFlightId">Flight ID</label>
+                  <select class="form-control" id="updateFlightId">
+                    <option value="">Select Flight</option>
+                    <!-- Options will be populated dynamically -->
+                  </select>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="button" class="btn btn-primary" id="updateSchedule">
+                Update
+              </button>
+            </div>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <div id="alert-container"></div>
-
-    <div class="heading">
-        Schedule Details
-    </div>
-    <div id="displayResult">
+      <div class="heading">Schedule Details</div>
+      <div id="displayResult">
         <ul class="list-group" id="schedulesList">
-            <!-- Loop through the schedules array and display each schedule -->
+          <!-- Loop through the schedules array and display each schedule -->
         </ul>
+      </div>
     </div>
-</div>
-
-<script>
-// Dummy data for demonstration
-let schedules = [];
-let dummySchedules = [];
-
-document.getElementById('searchInput').addEventListener('input', function() {
-    const value = this.value;
-    schedules = dummySchedules;
-    const filteredSchedules = schedules.filter(schedule => {
-        return schedule.departureTime.includes(value) || schedule.price.toString().includes(value);
-    });
-    schedules = filteredSchedules;
-    displaySchedules();
-});
-
-document.getElementById('sortSelect').addEventListener('change', function() {
-    const value = this.value;
-    if (value === 'priceAsc') {
-        schedules.sort((a, b) => a.price - b.price);
-    } else if (value === 'priceDesc') {
-        schedules.sort((a, b) => b.price - a.price);
-    } else if (value === 'departureTimeAsc') {
-        schedules.sort((a, b) => new Date(a.departureTime) - new Date(b.departureTime));
-    } else if (value === 'departureTimeDesc') {
-        schedules.sort((a, b) => new Date(b.departureTime) - new Date(a.departureTime));
-    }
-    displaySchedules();
-});
-
-function validateAddSchedule() {
-    const departureTime = document.getElementById('departureTime').value;
-    const reachingTime = document.getElementById('reachingTime').value;
-    const price = document.getElementById('price').value;
-    const routeId = document.getElementById('routeId').value;
-    const flightId = document.getElementById('flightId').value;
-
-    if (departureTime === '' || reachingTime === '' || price === '' || routeId === '' || flightId === '') {
-        document.getElementById('error').innerHTML = 'Please fill all the fields';
-        document.getElementById('error').style.color = 'red';
-        return false;
-    }
-    else if(reachingTime <= departureTime)
-    {
-        document.getElementById('error').innerHTML = 'Reaching time should be greater than departure time';
-        document.getElementById('error').style.color = 'red';
-        return false;
-    }else if(price<0)
-    {
-        document.getElementById('error').innerHTML = 'Price should be greater than 0';
-        document.getElementById('error').style.color = 'red';
-        return false;
-    }
-    else {
-        document.getElementById('error').innerHTML = '';
-        return true;
-    }
-}
-
-function validateUpdateSchedule() {
-    const departureTime = document.getElementById('updateDepartureTime').value;
-    const reachingTime = document.getElementById('updateReachingTime').value;
-    const price = document.getElementById('updatePrice').value;
-    const routeId = document.getElementById('updateRouteId').value;
-    const flightId = document.getElementById('updateFlightId').value;
-
-    if (departureTime === '' || reachingTime === '' || price === '' || routeId === '' || flightId === '') {
-        document.getElementById('updateError').innerHTML = 'Please fill all the fields';
-        document.getElementById('updateError').style.color = 'red';
-        return false;
-    } else {
-        document.getElementById('updateError').innerHTML = '';
-        return true;
-    }
-}
-
-function addSchedule() {
-    if (!validateAddSchedule()) {
-        return;
-    }
-
-    const departureTime = document.getElementById('departureTime').value;
-    const reachingTime = document.getElementById('reachingTime').value;
-    const price = parseFloat(document.getElementById('price').value);
-    const routeId = parseInt(document.getElementById('routeId').value);
-    const flightId = parseInt(document.getElementById('flightId').value);
-
-    const token = localStorage.getItem('token');
-    fetch('https://localhost:7067/api/ScheduleFlight/AddScheduleByAdmin', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token,
-        },
-        body: JSON.stringify({
-            departureTime: departureTime,
-            reachingTime: reachingTime,
-            price: price,
-            routeId: routeId,
-            flightId: flightId
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.errorCode) {
-            $('#addScheduleModal').modal('hide');
-            showAlert(data.errorMessage, "danger");
-        } else if (data.errors) {
-            $('#addScheduleModal').modal('hide');
-            showAlert("Some Unwanted Error Occurred", "danger");
-        } else {
-            console.log(data);
-            document.getElementById('departureTime').value = '';
-            document.getElementById('reachingTime').value = '';
-            document.getElementById('price').value = '';
-            document.getElementById('routeId').value = '';
-            document.getElementById('flightId').value = '';
-            $('#addScheduleModal').modal('hide');
-            showAlert('Schedule added successfully', 'success');
-            getSchedules();
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showAlert('Error occurred while adding schedule', 'danger');
-    });
-}
-
-document.getElementById('addSchedule').addEventListener('click', addSchedule);
-
-// Function to update a schedule
-function updateSchedule() {
-    if (!validateUpdateSchedule()) {
-        return;
-    }
-
-    const scheduleId = parseInt(document.getElementById('updateScheduleId').value);
-    const departureTime = document.getElementById('updateDepartureTime').value;
-    const reachingTime = document.getElementById('updateReachingTime').value;
-    const price = parseFloat(document.getElementById('updatePrice').value);
-    const routeId = parseInt(document.getElementById('updateRouteId').value);
-    const flightId = parseInt(document.getElementById('updateFlightId').value);
-
-    const token = localStorage.getItem('token');
-    fetch(`https://localhost:7067/api/ScheduleFlight/UpdateScheduleByAdmin`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token,
-        },
-        body: JSON.stringify({
-            scheduleId: scheduleId,
-            departureTime: departureTime,
-            reachingTime: reachingTime,
-            price: price,
-            routeId: routeId,
-            flightId: flightId
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.errorCode) {
-            showAlert(data.errorMessage, 'danger');
-        } else if (data.errors) {
-            showAlert('Some unwanted error occurred', 'danger');
-        } else {
-            console.log(data);
-            $('#updateScheduleModal').modal('hide'); // Close the modal
-            document.getElementById('updateScheduleForm').reset(); // Reset the form
-            showAlert('Schedule updated successfully', 'success');
-            getSchedules(); // Refresh the schedule list
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showAlert('Error occurred while updating schedule', 'danger');
-    });
-}
-
-document.getElementById('updateSchedule').addEventListener('click', updateSchedule);
-
-// Function to delete a schedule
-function deleteSchedule(scheduleId) {
-    const token = localStorage.getItem('token');
-    fetch(`https://localhost:7067/api/ScheduleFlight/DeleteScheduleByAdmin/${scheduleId}`, {
-        method: 'DELETE',
-        headers: {
-            'Authorization': 'Bearer ' + token,
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.errorCode) {
-            showAlert(data.errorMessage, "danger");
-        } else if (data.errors) {
-            showAlert("Some Unwanted Error Occurred", "danger");
-        } else {
-            console.log(data);
-            showAlert('Schedule deleted successfully', 'success');
-            getSchedules();
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showAlert('Error occurred while deleting schedule', 'danger');
-    });
-}
-
-// Function to show update modal with schedule details
-function showUpdateScheduleModal(scheduleId, departureTime, reachingTime, price, routeId, flightId) {
-    document.getElementById('updateScheduleId').value = scheduleId;
-    document.getElementById('updateDepartureTime').value = departureTime.slice(0, 16); // Format to 'YYYY-MM-DDTHH:MM'
-    document.getElementById('updateReachingTime').value = reachingTime.slice(0, 16);
-    document.getElementById('updatePrice').value = price;
-    document.getElementById('updateRouteId').value = routeId;
-    document.getElementById('updateFlightId').value = flightId;
-    $('#updateScheduleModal').modal('show');
-}
-
-// Function to get all schedules
-function getSchedules() {
-    const token = localStorage.getItem('token');
-    document.getElementById('schedulesList').innerHTML = '';
-    fetch('https://localhost:7067/api/ScheduleFlight/GetAllSchedulesByAdmin', {
-        method: 'GET',
-        headers: {
-            'Authorization': 'Bearer ' + token,
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.errorCode) {
-            showAlert(data.errorMessage, "danger");
-        } else if (data.errors) {
-            showAlert("Some Unwanted Error Occurred", "danger");
-        } else {
-            schedules = data;
-            dummySchedules = data;
-            displaySchedules();
-            console.log(schedules);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showAlert('Error occurred while fetching schedules', 'danger');
-    });
-}
-
-getSchedules();
-
-// Function to display schedules
-function displaySchedules() {
-    let schedulesList = document.getElementById('schedulesList');
-    schedulesList.innerHTML = '';
-    schedules.forEach(schedule => {
-        let listItem = document.createElement('li');
-        listItem.classList.add('list-group-item');
-        listItem.innerHTML = `
-            <div class="item1">
-                <strong>Schedule ID:</strong> ${schedule.scheduleId}
-            </div>
-            <div>
-                <strong>Departure Time:</strong> ${new Date(schedule.departureTime).toLocaleString()}
-            </div>
-            <div>
-                <strong>Reaching Time:</strong> ${new Date(schedule.reachingTime).toLocaleString()}
-            </div>
-            <div>
-                <strong>Price:</strong> Rs ${schedule.price.toFixed(2)}
-            </div>
-            <div>
-                <strong>Route:</strong> ${schedule.routeInfo.startCity} - ${schedule.routeInfo.endCity}
-            </div>
-            <div class="item3">
-                <strong>Flight:</strong> ${schedule.flightInfo.name}
-            </div>
-            <div class="btns-div">
-                <button class="btn btn-primary" onclick="showUpdateScheduleModal(${schedule.scheduleId}, '${schedule.departureTime}', '${schedule.reachingTime}', ${schedule.price}, ${schedule.routeInfo.routeId}, ${schedule.flightInfo.flightId})">Update</button> 
-                <button class="btn btn-danger" onclick="deleteSchedule(${schedule.scheduleId})">Delete</button>
-                <button class="btn btn-info" onclick="viewDetails(${schedule.scheduleId})">View Details</button>
-            </div>
-        `;
-        schedulesList.appendChild(listItem);
-    });
-}
-
-// Function to view schedule details including route and flight info
-function viewDetails(scheduleId) {
-    const schedule = schedules.find(s => s.scheduleId == scheduleId);
-   if (schedule) {
-        console.log(schedule);
-        const routeDetails = `Route ID: ${schedule.routeInfo.routeId}<br>
-                              Start City: ${schedule.routeInfo.startCity}<br>
-                              End City: ${schedule.routeInfo.endCity}<br>
-                              Distance: ${schedule.routeInfo.distance} km`;
-        const flightDetails = `Flight ID: ${schedule.flightInfo.flightId}<br>
-                               Name: ${schedule.flightInfo.name}<br>
-                               Total Seats: ${schedule.flightInfo.totalSeats}`;
-        details = `
-            <div>
-                <h5>Route Details:</h5>
-                ${routeDetails}
-            </div>
-            <div>
-                <h5>Flight Details:</h5>
-                ${flightDetails}
-            </div>
-        `;
-
-        // Bootstrap modal to show details
-        const modal = `
-            <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsModalTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="detailsModalTitle">Schedule Details</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body" id="show-detail">
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // Append modal HTML to the body and show it
-        document.body.insertAdjacentHTML('beforeend', modal);
-        $('#show-detail').html("");
-        $('#show-detail').html(details);
-        $('#detailsModal').modal('show');
-    } else {
-        showAlert('Schedule not found', 'danger');
-    }
-}
-
-// Function to display alerts
-function showAlert(message, type) {
-    const alertContainer = document.getElementById('alert-container');
-    const alertDiv = document.createElement('div');
-    alertDiv.classList.add('alert', `alert-${type}`, 'alert-dismissible', 'fade', 'show');
-    alertDiv.innerHTML = `
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        ${message}
-    `;
-    alertContainer.appendChild(alertDiv);
-    setTimeout(() => {
-        alertDiv.remove();
-    }, 5000);
-}
-</script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-<script src="../JavaScripts/LoadNavbar.js"></script>
-<script src="../JavaScripts/AuthorizeAdmin.js"></script>
-</body>
+    <div
+      class="modal fade alertModel"
+      id="exampleModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" id="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel"></h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="model-content"></div>
+        </div>
+      </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 Your Company. All rights reserved.</p>
+    </footer>
+    <script src="../JavaScripts/AdminSchedules.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script src="../JavaScripts/LoadNavbar.js"></script>
+    <script src="../JavaScripts/AuthorizeAdmin.js"></script>
+  </body>
 </html>
-

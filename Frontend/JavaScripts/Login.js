@@ -33,7 +33,7 @@ document.querySelector('#register-user').addEventListener("click", (e)=>{
                 document.getElementById('error').style.color = 'Red';
             } else { // if the registration is successful then show the success message to the user and redirect to the login page
                 console.log(data);
-                alert(`${data.name} Your Registration is Successful Please Login to Continue`);
+                alert(`${data.name} Your Registration is Successful Please Login to Continue, Your ID is ${data.userId}`);
                 window.location.href = "Login.html";
             }
         }).catch((error) => {
